@@ -1,0 +1,5 @@
+model tableNew (
+    key id_t
+    field id_t text
+    )
+create tableNew()
