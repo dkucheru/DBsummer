@@ -1,19 +1,19 @@
 package dataBaseDir
 
 import (
-	"awesomeProject/config"
-	"awesomeProject/db/postgres"
+	"DBsummer/configDir"
+	"DBsummer/dataBaseDir/postgres"
 	"context"
 	"log"
 )
 
 type DatabaseRepository struct {
 	DBRepository *postgres.Repository
-	Config       config.DBConfig
+	Config       configDir.DBConfig
 	Log          *log.Logger
 }
 
-func NewDatabaseRepository(log *log.Logger, config config.DBConfig) (*DatabaseRepository, error) {
+func NewDatabaseRepository(log *log.Logger, config configDir.DBConfig) (*DatabaseRepository, error) {
 	repository := &DatabaseRepository{
 		Log:    log,
 		Config: config,
@@ -33,7 +33,7 @@ func (d *DatabaseRepository) Close() error {
 }
 
 func (d *DatabaseRepository) TableNew() TableNewInterface {
-	return d.DBRepository.Tests()
+	return d.DBRepository.TableNew()
 }
 
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {

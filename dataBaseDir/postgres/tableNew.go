@@ -11,7 +11,7 @@ type TableNewRepository struct {
 
 func (r TableNewRepository) Create(ctx context.Context) (id int, err error) {
 	query := r.db.Rebind(`
-		INSERT into test(id) VALUES(?);
+		INSERT into tablen(id_t) VALUES(?);
 	`)
 
 	id = int(rand.Uint32())

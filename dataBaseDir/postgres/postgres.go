@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"awesomeProject/config"
+	"DBsummer/configDir"
 	"context"
 	"errors"
 	"fmt"
@@ -19,14 +19,14 @@ type Repository struct {
 	methods Methods
 
 	Log    *log.Logger
-	Config *config.DBConfig
+	Config *configDir.DBConfig
 
 	tableNew TableNewRepository
 	//tests TestsRepository
 	//vidomosti VidomostiRepository
 }
 
-func New(log *log.Logger, config config.DBConfig) (*Repository, error) {
+func New(log *log.Logger, config configDir.DBConfig) (*Repository, error) {
 	dbURL := fmt.Sprintf("%s://%s:%s@%s:%d/%s%s", postgres, config.UserName, config.Password, config.Host, config.Port, config.DBName, config.SSL)
 
 	store, err := Open(postgres, dbURL)
