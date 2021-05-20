@@ -3,3 +3,12 @@ model tableNew (
     field id_t text
     )
 create tableNew()
+
+model subjects (
+    key subjectid
+    field subjectid int
+    field subjectname text
+    field educationallevel text
+    field faculty text
+    )
+create subjects()

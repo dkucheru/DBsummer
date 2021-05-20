@@ -17,7 +17,12 @@ type Transaction interface {
 	Rollback() error
 }
 
-type TableNewInterface interface { //functions to be used for the table 'test'
+type TableNewInterface interface { //functions to be used for the table 'tablen'
+	Get(ctx context.Context, id int) error
+	Create(ctx context.Context) (id int, err error)
+}
+
+type SubjectsInterface interface { //functions to be used for the table 'subjects'
 	Get(ctx context.Context, id int) error
 	Create(ctx context.Context) (id int, err error)
 }

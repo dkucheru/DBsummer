@@ -36,6 +36,10 @@ func (d *DatabaseRepository) TableNew() TableNewInterface {
 	return d.DBRepository.TableNew()
 }
 
+func (d *DatabaseRepository) Subjects() SubjectsInterface {
+	return d.DBRepository.Subjects()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

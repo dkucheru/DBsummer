@@ -265,7 +265,14 @@ func newpostgres(db *DB) *postgresDB {
 }
 
 func (obj *postgresDB) Schema() string {
-	return `CREATE TABLE tableNews (
+	return `CREATE TABLE subjects (
+	subjectid integer NOT NULL,
+	subjectname text NOT NULL,
+	educationallevel text NOT NULL,
+	faculty text NOT NULL,
+	PRIMARY KEY ( subjectid )
+);
+CREATE TABLE tableNews (
 	id_t text NOT NULL,
 	PRIMARY KEY ( id_t )
 );`
@@ -330,6 +337,94 @@ nextval:
 	}
 	fmt.Fprint(f, "]")
 }
+
+type Subjects struct {
+	Subjectid        int
+	Subjectname      string
+	Educationallevel string
+	Faculty          string
+}
+
+func (Subjects) _Table() string { return "subjects" }
+
+type Subjects_Update_Fields struct {
+}
+
+type Subjects_Subjectid_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Subjects_Subjectid(v int) Subjects_Subjectid_Field {
+	return Subjects_Subjectid_Field{_set: true, _value: v}
+}
+
+func (f Subjects_Subjectid_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Subjects_Subjectid_Field) _Column() string { return "subjectid" }
+
+type Subjects_Subjectname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Subjects_Subjectname(v string) Subjects_Subjectname_Field {
+	return Subjects_Subjectname_Field{_set: true, _value: v}
+}
+
+func (f Subjects_Subjectname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Subjects_Subjectname_Field) _Column() string { return "subjectname" }
+
+type Subjects_Educationallevel_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Subjects_Educationallevel(v string) Subjects_Educationallevel_Field {
+	return Subjects_Educationallevel_Field{_set: true, _value: v}
+}
+
+func (f Subjects_Educationallevel_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Subjects_Educationallevel_Field) _Column() string { return "educationallevel" }
+
+type Subjects_Faculty_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Subjects_Faculty(v string) Subjects_Faculty_Field {
+	return Subjects_Faculty_Field{_set: true, _value: v}
+}
+
+func (f Subjects_Faculty_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Subjects_Faculty_Field) _Column() string { return "faculty" }
 
 type TableNew struct {
 	IdT string
@@ -801,6 +896,34 @@ func (obj *postgresImpl) Create_TableNew(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Subjects(ctx context.Context,
+	subjects_subjectid Subjects_Subjectid_Field,
+	subjects_subjectname Subjects_Subjectname_Field,
+	subjects_educationallevel Subjects_Educationallevel_Field,
+	subjects_faculty Subjects_Faculty_Field) (
+	subjects *Subjects, err error) {
+	__subjectid_val := subjects_subjectid.value()
+	__subjectname_val := subjects_subjectname.value()
+	__educationallevel_val := subjects_educationallevel.value()
+	__faculty_val := subjects_faculty.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO subjects ( subjectid, subjectname, educationallevel, faculty ) VALUES ( ?, ?, ?, ? ) RETURNING subjects.subjectid, subjects.subjectname, subjects.educationallevel, subjects.faculty")
+
+	var __values []interface{}
+	__values = append(__values, __subjectid_val, __subjectname_val, __educationallevel_val, __faculty_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	subjects = &Subjects{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&subjects.Subjectid, &subjects.Subjectname, &subjects.Educationallevel, &subjects.Faculty)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return subjects, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -815,6 +938,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	var __res sql.Result
 	var __count int64
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM tableNews;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM subjects;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -871,6 +1004,20 @@ func (rx *Rx) Rollback() (err error) {
 	return err
 }
 
+func (rx *Rx) Create_Subjects(ctx context.Context,
+	subjects_subjectid Subjects_Subjectid_Field,
+	subjects_subjectname Subjects_Subjectname_Field,
+	subjects_educationallevel Subjects_Educationallevel_Field,
+	subjects_faculty Subjects_Faculty_Field) (
+	subjects *Subjects, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Subjects(ctx, subjects_subjectid, subjects_subjectname, subjects_educationallevel, subjects_faculty)
+
+}
+
 func (rx *Rx) Create_TableNew(ctx context.Context,
 	tableNew_id_t TableNew_IdT_Field) (
 	tableNew *TableNew, err error) {
@@ -883,6 +1030,13 @@ func (rx *Rx) Create_TableNew(ctx context.Context,
 }
 
 type Methods interface {
+	Create_Subjects(ctx context.Context,
+		subjects_subjectid Subjects_Subjectid_Field,
+		subjects_subjectname Subjects_Subjectname_Field,
+		subjects_educationallevel Subjects_Educationallevel_Field,
+		subjects_faculty Subjects_Faculty_Field) (
+		subjects *Subjects, err error)
+
 	Create_TableNew(ctx context.Context,
 		tableNew_id_t TableNew_IdT_Field) (
 		tableNew *TableNew, err error)

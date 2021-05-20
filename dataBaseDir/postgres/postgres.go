@@ -22,6 +22,7 @@ type Repository struct {
 	Config *configDir.DBConfig
 
 	tableNew TableNewRepository
+	subjects SubjectsRepository
 	//tests TestsRepository
 	//vidomosti VidomostiRepository
 }
@@ -55,6 +56,10 @@ func (r *Repository) Close() error {
 
 func (r *Repository) TableNew() TableNewRepository {
 	return r.tableNew
+}
+
+func (r *Repository) Subjects() SubjectsRepository {
+	return r.subjects
 }
 
 func (r *Repository) BeginTx(ctx context.Context) (*Repository, error) {
