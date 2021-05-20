@@ -4,12 +4,14 @@ import (
 	"DBsummer/apiDir"
 	"DBsummer/configDir"
 	"DBsummer/dataBaseDir"
+	"DBsummer/serviceDir"
 	"log"
 	"os"
 )
 
 type App struct {
 	Repository dataBaseDir.Repository
+	Service    *serviceDir.Service
 	Api        *apiDir.Rest
 }
 
@@ -29,7 +31,9 @@ func New() (*App, error) {
 		return nil, err
 	}
 
-	app.Api = apiDir.New(":8080")
+	app.Service = serviceDir.NewService(&serviceDir.Config{Repository: app.Repository})
+
+	app.Api = apiDir.New(":8080", app.Service)
 	return app, nil
 }
 

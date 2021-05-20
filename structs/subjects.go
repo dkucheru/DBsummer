@@ -1,19 +1,19 @@
 package structs
 
-type Subjects struct {
+type Subject struct {
 	SubjectId        int
 	SubjectName      string
-	EducationalLevel ed_level
+	EducationalLevel Ed_level
 	Faculty          string
 }
 
-type ed_level string
+type Ed_level string
 
 const (
-	Bachelor ed_level = "Bachelor"
-	Magistr  ed_level = "Magistr"
+	Bachelor Ed_level = "Bachelor"
+	Magistr  Ed_level = "Magistr"
 )
 
-func (c ed_level) string() string {
+func (c Ed_level) String() string {
 	return string(c)
 }

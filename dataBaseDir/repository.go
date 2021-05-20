@@ -1,6 +1,7 @@
 package dataBaseDir
 
 import (
+	"DBsummer/structs"
 	"context"
 )
 
@@ -8,6 +9,7 @@ type Repository interface {
 	Close() error
 	BeginTx(ctx context.Context) (Transaction, error)
 	TableNew() TableNewInterface
+	Subjects() SubjectsInterface
 }
 
 type Transaction interface {
@@ -23,6 +25,6 @@ type TableNewInterface interface { //functions to be used for the table 'tablen'
 }
 
 type SubjectsInterface interface { //functions to be used for the table 'subjects'
-	Get(ctx context.Context, id int) error
+	Get(ctx context.Context, id int) (*structs.Subject, error)
 	Create(ctx context.Context) (id int, err error)
 }

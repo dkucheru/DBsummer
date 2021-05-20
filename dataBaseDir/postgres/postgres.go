@@ -44,6 +44,7 @@ func New(log *log.Logger, config configDir.DBConfig) (*Repository, error) {
 	}
 
 	serverDB.tableNew = TableNewRepository{serverDB}
+	serverDB.subjects = SubjectsRepository{serverDB}
 	//serverDB.tests = TestsRepository{serverDB}
 	//serverDB.vidomosti = VidomostiRepository{serverDB}
 

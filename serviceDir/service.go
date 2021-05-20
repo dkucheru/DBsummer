@@ -1,7 +1,7 @@
 package serviceDir
 
 import (
-	"awesomeProject/db"
+	db "DBsummer/dataBaseDir"
 )
 
 type Config struct {
@@ -9,12 +9,17 @@ type Config struct {
 }
 
 type Service struct {
-	Repository db.Repository
+	repository db.Repository
+
+	Subjects *subjectsService
 }
 
 func NewService(conf *Config) *Service {
 	service := &Service{
-		Repository: conf.Repository,
+		repository: conf.Repository,
 	}
+
+	service.Subjects = newSubjectsService(service, service.repository)
+
 	return service
 }

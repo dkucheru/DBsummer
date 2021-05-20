@@ -19,10 +19,15 @@ func newSubjectsService(service *Service, repository dataBaseDir.Repository) *su
 	return &subServ
 }
 
-func (v subjectsService) Create(ctx context.Context, subject structs.Subjects) (structs.Subjects, error) {
+func (s *subjectsService) Create(ctx context.Context, subject structs.Subject) (structs.Subject, error) {
 	panic("implement me")
 }
 
-func (v subjectsService) Get(ctx context.Context, idVid string) (structs.Subjects, error) {
-	panic("implement me")
+func (s *subjectsService) Get(ctx context.Context, idVid int) (*structs.Subject, error) {
+	subj, err := s.repository.Subjects().Get(ctx, idVid)
+	if err != nil {
+		return nil, err
+	}
+
+	return subj, nil
 }

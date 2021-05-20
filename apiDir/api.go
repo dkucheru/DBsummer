@@ -1,6 +1,8 @@
 package apiDir
 
 import (
+	"DBsummer/serviceDir"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net"
@@ -11,17 +13,24 @@ type Rest struct {
 	address  string
 	mux      *mux.Router
 	listener net.Listener
+	service  *serviceDir.Service
 }
 
-func New(address string) *Rest {
+func New(address string, service *serviceDir.Service) *Rest {
+	rest := &Rest{
+		address: address,
+		service: service,
+	}
+
 	api := mux.NewRouter()
 
-	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./statics"))))
+	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("C:\\Users\\Dariia\\go\\src\\DBsummer\\runDir\\staticsDir"))))
+	api.HandleFunc("/test", rest.test)
+	api.HandleFunc("/subjects/{id}", rest.getSubject).Methods("GET")
 
-	return &Rest{
-		mux:     api,
-		address: address,
-	}
+	rest.mux = api
+
+	return rest
 }
 
 func (rest *Rest) Listen() (err error) {
@@ -47,4 +56,39 @@ func (rest *Rest) setupMiddleware() {
 			handler.ServeHTTP(w, r)
 		})
 	})
+}
+
+type Response struct {
+	Status int
+	Data   interface{}
+}
+
+func (rest *Rest) sendError(w http.ResponseWriter, err error) {
+	bytes, err := json.Marshal(Response{
+		Status: 2,
+		Data:   err,
+	})
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = w.Write(bytes)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (rest *Rest) sendData(w http.ResponseWriter, data interface{}) {
+	bytes, err := json.Marshal(Response{
+		Status: 1,
+		Data:   data,
+	})
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = w.Write(bytes)
+	if err != nil {
+		log.Println(err)
+	}
 }
