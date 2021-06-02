@@ -12,3 +12,14 @@ model subjects (
     field faculty text
     )
 create subjects()
+
+model groups (
+    key cipher
+    field cipher text
+    field groupname text
+    field educationalyear text
+    field semester text
+    field course text
+    field subject int
+    )
+create groups()

@@ -40,6 +40,10 @@ func (d *DatabaseRepository) Subjects() SubjectsInterface {
 	return d.DBRepository.Subjects()
 }
 
+func (d *DatabaseRepository) Groups() GroupsInterface {
+	return d.DBRepository.Groups()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

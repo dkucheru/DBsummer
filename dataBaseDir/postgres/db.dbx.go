@@ -265,7 +265,16 @@ func newpostgres(db *DB) *postgresDB {
 }
 
 func (obj *postgresDB) Schema() string {
-	return `CREATE TABLE subjects (
+	return `CREATE TABLE groups (
+	cipher text NOT NULL,
+	groupname text NOT NULL,
+	educationalyear text NOT NULL,
+	semester text NOT NULL,
+	course text NOT NULL,
+	subject integer NOT NULL,
+	PRIMARY KEY ( cipher )
+);
+CREATE TABLE subjects (
 	subjectid integer NOT NULL,
 	subjectname text NOT NULL,
 	educationallevel text NOT NULL,
@@ -337,6 +346,134 @@ nextval:
 	}
 	fmt.Fprint(f, "]")
 }
+
+type Groups struct {
+	Cipher          string
+	Groupname       string
+	Educationalyear string
+	Semester        string
+	Course          string
+	Subject         int
+}
+
+func (Groups) _Table() string { return "groups" }
+
+type Groups_Update_Fields struct {
+}
+
+type Groups_Cipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Groups_Cipher(v string) Groups_Cipher_Field {
+	return Groups_Cipher_Field{_set: true, _value: v}
+}
+
+func (f Groups_Cipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Cipher_Field) _Column() string { return "cipher" }
+
+type Groups_Groupname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Groups_Groupname(v string) Groups_Groupname_Field {
+	return Groups_Groupname_Field{_set: true, _value: v}
+}
+
+func (f Groups_Groupname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Groupname_Field) _Column() string { return "groupname" }
+
+type Groups_Educationalyear_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Groups_Educationalyear(v string) Groups_Educationalyear_Field {
+	return Groups_Educationalyear_Field{_set: true, _value: v}
+}
+
+func (f Groups_Educationalyear_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Educationalyear_Field) _Column() string { return "educationalyear" }
+
+type Groups_Semester_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Groups_Semester(v string) Groups_Semester_Field {
+	return Groups_Semester_Field{_set: true, _value: v}
+}
+
+func (f Groups_Semester_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Semester_Field) _Column() string { return "semester" }
+
+type Groups_Course_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Groups_Course(v string) Groups_Course_Field {
+	return Groups_Course_Field{_set: true, _value: v}
+}
+
+func (f Groups_Course_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Course_Field) _Column() string { return "course" }
+
+type Groups_Subject_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Groups_Subject(v int) Groups_Subject_Field {
+	return Groups_Subject_Field{_set: true, _value: v}
+}
+
+func (f Groups_Subject_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Groups_Subject_Field) _Column() string { return "subject" }
 
 type Subjects struct {
 	Subjectid        int
@@ -924,6 +1061,38 @@ func (obj *postgresImpl) Create_Subjects(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Groups(ctx context.Context,
+	groups_cipher Groups_Cipher_Field,
+	groups_groupname Groups_Groupname_Field,
+	groups_educationalyear Groups_Educationalyear_Field,
+	groups_semester Groups_Semester_Field,
+	groups_course Groups_Course_Field,
+	groups_subject Groups_Subject_Field) (
+	groups *Groups, err error) {
+	__cipher_val := groups_cipher.value()
+	__groupname_val := groups_groupname.value()
+	__educationalyear_val := groups_educationalyear.value()
+	__semester_val := groups_semester.value()
+	__course_val := groups_course.value()
+	__subject_val := groups_subject.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO groups ( cipher, groupname, educationalyear, semester, course, subject ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING groups.cipher, groups.groupname, groups.educationalyear, groups.semester, groups.course, groups.subject")
+
+	var __values []interface{}
+	__values = append(__values, __cipher_val, __groupname_val, __educationalyear_val, __semester_val, __course_val, __subject_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	groups = &Groups{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&groups.Cipher, &groups.Groupname, &groups.Educationalyear, &groups.Semester, &groups.Course, &groups.Subject)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return groups, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -948,6 +1117,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM subjects;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM groups;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1004,6 +1183,22 @@ func (rx *Rx) Rollback() (err error) {
 	return err
 }
 
+func (rx *Rx) Create_Groups(ctx context.Context,
+	groups_cipher Groups_Cipher_Field,
+	groups_groupname Groups_Groupname_Field,
+	groups_educationalyear Groups_Educationalyear_Field,
+	groups_semester Groups_Semester_Field,
+	groups_course Groups_Course_Field,
+	groups_subject Groups_Subject_Field) (
+	groups *Groups, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Groups(ctx, groups_cipher, groups_groupname, groups_educationalyear, groups_semester, groups_course, groups_subject)
+
+}
+
 func (rx *Rx) Create_Subjects(ctx context.Context,
 	subjects_subjectid Subjects_Subjectid_Field,
 	subjects_subjectname Subjects_Subjectname_Field,
@@ -1030,6 +1225,15 @@ func (rx *Rx) Create_TableNew(ctx context.Context,
 }
 
 type Methods interface {
+	Create_Groups(ctx context.Context,
+		groups_cipher Groups_Cipher_Field,
+		groups_groupname Groups_Groupname_Field,
+		groups_educationalyear Groups_Educationalyear_Field,
+		groups_semester Groups_Semester_Field,
+		groups_course Groups_Course_Field,
+		groups_subject Groups_Subject_Field) (
+		groups *Groups, err error)
+
 	Create_Subjects(ctx context.Context,
 		subjects_subjectid Subjects_Subjectid_Field,
 		subjects_subjectname Subjects_Subjectname_Field,

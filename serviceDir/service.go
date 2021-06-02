@@ -12,6 +12,7 @@ type Service struct {
 	repository db.Repository
 
 	Subjects *subjectsService
+	Groups   *groupsService
 }
 
 func NewService(conf *Config) *Service {
@@ -20,6 +21,6 @@ func NewService(conf *Config) *Service {
 	}
 
 	service.Subjects = newSubjectsService(service, service.repository)
-
+	service.Groups = newGroupsService(service, service.repository)
 	return service
 }

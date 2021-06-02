@@ -23,6 +23,7 @@ type Repository struct {
 
 	tableNew TableNewRepository
 	subjects SubjectsRepository
+	groups   GroupsRepository
 	//tests TestsRepository
 	//vidomosti VidomostiRepository
 }
@@ -45,6 +46,7 @@ func New(log *log.Logger, config configDir.DBConfig) (*Repository, error) {
 
 	serverDB.tableNew = TableNewRepository{serverDB}
 	serverDB.subjects = SubjectsRepository{serverDB}
+	serverDB.groups = GroupsRepository{serverDB}
 	//serverDB.tests = TestsRepository{serverDB}
 	//serverDB.vidomosti = VidomostiRepository{serverDB}
 
@@ -61,6 +63,10 @@ func (r *Repository) TableNew() TableNewRepository {
 
 func (r *Repository) Subjects() SubjectsRepository {
 	return r.subjects
+}
+
+func (r *Repository) Groups() GroupsRepository {
+	return r.groups
 }
 
 func (r *Repository) BeginTx(ctx context.Context) (*Repository, error) {
