@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:400,600');
+body {
+    margin: 0;
+    background: #ffffff;
+    font-family: 'Nunito', sans-serif;
+}
+
+.logo-image {
+    padding-left: 10%;
+    max-width:50%;
+    max-height: 50%;
+}
+.navbar-brand {
+    width: 80%;
+    background: darkorange;
+
+}
+header::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+navbar-nav{
+    float: right;
+}
+nav ul {
+    list-style: none;
+    background: brown;
+    float: right;
+}
+
+nav a {
+    color: #15479d;;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-right: 10%;
+
+}
+
+nav a:hover {
+    color: #000;
+}
+
+nav a::before {
+    content: '';
+    display: block;
+    height: 5px;
+
+    position: absolute;
+    top: 0;
+    width: 0%;
+
+    transition: all ease-in-out 250ms;
+}
+
+nav a:hover::before {
+    width: 100%;
+}
+table, th, td {
+    border: 1px solid black;
+
+}
+table,input {
+    width: 90%;
+    height: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+th {
+    height: 70px;
+    font-size: 20px;
+    background: cornflowerblue;
+}
+table{
+    margin-top: 30px;
+}
+input{
+    margin-left: 5%;
+    margin-right: auto;
+    height: 40px;
+}
+input[type=text]:focus {
+    border: 3px solid #555;
+
+}
