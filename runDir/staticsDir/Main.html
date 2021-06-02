@@ -1,40 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="style_main.css">
 <head>
+
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <header>
+        <nav class="navbar navbar-expand-sm bg-light">
+
+            <a class="navbar-brand">
+                <div class="logo-image">
+                    <img src="logo.jpg" class="img-fluid">
+                </div>
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Main.html">Головна</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="student_list.html">Список cтудентів</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Перелік оцінок</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Відомість</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Додати дані</a>
+                </li>
+            </ul>
+
+
+        </nav>
+    </header>
 </head>
-<body>
-<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">
-<button type="button" onclick="loadPresidents()">Search for Presidents</button>
+<script src=
+                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+</script>
+<body onload="loadPresidents()">
+<input type="text" placeholder="ПІБ" id="search-text" onkeyup="tableSearch()">
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
+        <th>Номер</th>
+        <th>Ім'я</th>
+        <th>Дата</th>
+        <th>Почав</th>
+        <th>Закінчив</th>
     </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
-<form>
-    <label>
-        ID:
-        <input type="text" id="input-id">
-    </label>
-    <button type="submit" onclick="loadSubject()">Get</button>
-</form>
 <script>
-    // function test() {
-    //     var xhttp = new XMLHttpRequest();
-    //     xhttp.onreadystatechange = function() {
-    //         if (this.readyState === 4 && this.status === 200) {
-    //             //let response = JSON.parse(this.responseText);
-    //             alert(this.responseText);
-    //         }
-    //     };
-    //     xhttp.open("GET", "/test", true);
-    //     xhttp.send();
-    // }
 
     function loadSubject() {
         var xhttp = new XMLHttpRequest();
@@ -45,13 +66,9 @@
             }
         };
 
-        // let field = document.getElementById("input-id");
-        //
-        // let url = "/subjects/"+field.value;
-        // //alert(url);
-        //
-        // xhttp.open("GET", url, false);
-        let url = "/subjects";
+        let field = document.getElementById("input-id");
+
+        let url = "/subjects/"+field.value;
         //alert(url);
 
         xhttp.open("GET", url, false);
@@ -77,42 +94,26 @@
 
         }
     }
-
     function loadPresidents() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
                 var jsonResponse = JSON.parse(data);
-                // console.log(jsonResponse["presidents"]);
+               // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['SubjectId', 'SubjectName', 'EducationalLevel', 'Faculty']; // changed this
-                // var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
-
-                // var capitalize = function(s) {
-                //     return s.charAt(0).toUpperCase() + s.slice(1);
-                // }
-                var tr = document.createElement('tr');
-                for (var i = 0; i < properties.length; i++) {
-                    var th = document.createElement('th');
-                    // th.appendChild(document.createTextNode(capitalize(properties[i])));
-                    th.appendChild(document.createTextNode(properties[i]));
-
-                    tr.appendChild(th);
+                var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
+                var capitalize = function(s) {
+                    return s.charAt(0) + s.slice(1);
                 }
+                var tr = document.createElement('tr');
                 table.appendChild(tr);
                 var tr, row;
                 console.log("jsonResponse", jsonResponse); // changed this
-                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
-                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
-                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
-                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
-
-
-                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                for (var r = 0; r < jsonResponse["presidents"].president.length; r++) { // changed this
                     tr = document.createElement('tr');
-                    row = jsonResponse.Data[r]; // changed this
+                    row = jsonResponse["presidents"].president[r]; // changed this
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
                         td.appendChild(document.createTextNode(row[properties[i]]));
@@ -123,11 +124,7 @@
                 // document.getElementById('presidentialTable').appendChild(table);
             }
         };
-        let url = "/subjects";
-        //alert(url);
-
-        xhttp.open("GET", url, false);
-        // xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
+        xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
         xhttp.send();
     }
 </script>
