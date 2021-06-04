@@ -45,11 +45,10 @@
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
-        <th>Номер</th>
-        <th>Ім'я</th>
-        <th>Дата</th>
-        <th>Почав</th>
-        <th>Закінчив</th>
+        <th>Код предмету</th>
+        <th>Назва</th>
+        <th>Рівень</th>
+        <th>Факультет</th>
     </tr>
     </thead>
     <tbody>
@@ -100,20 +99,35 @@
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
                 var jsonResponse = JSON.parse(data);
-               // console.log(jsonResponse["presidents"]);
+                // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
-                var capitalize = function(s) {
-                    return s.charAt(0) + s.slice(1);
-                }
+                var properties = ['SubjectId', 'SubjectName', 'EducationalLevel', 'Faculty']; // changed this
+                // var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
+
+                // var capitalize = function(s) {
+                //     return s.charAt(0).toUpperCase() + s.slice(1);
+                // }
                 var tr = document.createElement('tr');
+                /* for (var i = 0; i < properties.length; i++) {
+                     var th = document.createElement('th');
+                     // th.appendChild(document.createTextNode(capitalize(properties[i])));
+                     th.appendChild(document.createTextNode(properties[i]));
+
+                     tr.appendChild(th);
+                 }*/
                 table.appendChild(tr);
                 var tr, row;
                 console.log("jsonResponse", jsonResponse); // changed this
-                for (var r = 0; r < jsonResponse["presidents"].president.length; r++) { // changed this
+                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
+                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
+                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
+                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
+
+
+                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
                     tr = document.createElement('tr');
-                    row = jsonResponse["presidents"].president[r]; // changed this
+                    row = jsonResponse.Data[r]; // changed this
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
                         td.appendChild(document.createTextNode(row[properties[i]]));
@@ -124,7 +138,11 @@
                 // document.getElementById('presidentialTable').appendChild(table);
             }
         };
-        xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
+        let url = "/subjects";
+        //alert(url);
+
+        xhttp.open("GET", url, false);
+        // xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
         xhttp.send();
     }
 </script>
