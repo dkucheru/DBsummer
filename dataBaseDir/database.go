@@ -44,6 +44,10 @@ func (d *DatabaseRepository) Groups() GroupsInterface {
 	return d.DBRepository.Groups()
 }
 
+func (d *DatabaseRepository) Students() StudentsInterface {
+	return d.DBRepository.Students()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

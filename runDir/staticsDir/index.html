@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">
+<button type="button" onclick="loadPresidents()">Search for Presidents</button>
+<table class="table table-striped" id="info-table">
+    <thead>
+    <tr>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<form>
+    <label>
+        ID:
+        <input type="text" id="input-id">
+    </label>
+    <button type="submit" onclick="loadSubject()">Get</button>
+</form>
+<script>
+    // function test() {
+    //     var xhttp = new XMLHttpRequest();
+    //     xhttp.onreadystatechange = function() {
+    //         if (this.readyState === 4 && this.status === 200) {
+    //             //let response = JSON.parse(this.responseText);
+    //             alert(this.responseText);
+    //         }
+    //     };
+    //     xhttp.open("GET", "/test", true);
+    //     xhttp.send();
+    // }
+
+    function loadSubject() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                //let response = JSON.parse(this.responseText);
+                alert(this.responseText);
+            }
+        };
+
+        // let field = document.getElementById("input-id");
+        //
+        // let url = "/subjects/"+field.value;
+        // //alert(url);
+        //
+        // xhttp.open("GET", url, false);
+        let url = "/students";
+        //alert(url);
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
+
+    function tableSearch() {
+        var phrase = document.getElementById('search-text');
+        var table = document.getElementById('info-table');
+        var regPhrase = new RegExp(phrase.value, 'i');
+        var flag = false;
+        for (var i = 1; i < table.rows.length; i++) {
+            flag = false;
+            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
+                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
+                if (flag) break;
+            }
+            if (flag) {
+                table.rows[i].style.display = "";
+            } else {
+                table.rows[i].style.display = "none";
+            }
+
+        }
+    }
+
+    function loadPresidents() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                var data = this.responseText;
+                var jsonResponse = JSON.parse(data);
+                // console.log(jsonResponse["presidents"]);
+                var table = document.getElementById('info-table');
+                table.setAttribute('class', 'history');
+                var properties = ['SubjectId', 'SubjectName', 'EducationalLevel', 'Faculty']; // changed this
+                // var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
+
+                // var capitalize = function(s) {
+                //     return s.charAt(0).toUpperCase() + s.slice(1);
+                // }
+                var tr = document.createElement('tr');
+                for (var i = 0; i < properties.length; i++) {
+                    var th = document.createElement('th');
+                    // th.appendChild(document.createTextNode(capitalize(properties[i])));
+                    th.appendChild(document.createTextNode(properties[i]));
+
+                    tr.appendChild(th);
+                }
+                table.appendChild(tr);
+                var tr, row;
+                console.log("jsonResponse", jsonResponse); // changed this
+                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
+                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
+                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
+                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
+
+
+                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                    tr = document.createElement('tr');
+                    row = jsonResponse.Data[r]; // changed this
+                    for (var i = 0; i < properties.length; i++) {
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(row[properties[i]]));
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+                // document.getElementById('presidentialTable').appendChild(table);
+            }
+        };
+        let url = "/subjects";
+        //alert(url);
+
+        xhttp.open("GET", url, false);
+        // xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
+        xhttp.send();
+    }
+</script>
+</body>
+</html>
