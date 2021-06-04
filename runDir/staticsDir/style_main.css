@@ -1,14 +1,18 @@
 @import url('https://fonts.googleapis.com/css?family=Work+Sans:400,600');
 body {
     margin: 0;
-    background: #ffffff;
+    background: #f6f6f6;
     font-family: 'Nunito', sans-serif;
 }
 
-.logo-image {
-    padding-left: 10%;
-    max-width:30%;
-    max-height: 30%;
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+header {
+    background: #15479d;
+    margin-bottom: 50px;
 }
 
 header::after {
@@ -17,21 +21,40 @@ header::after {
     clear: both;
 }
 
-navbar-nav{
+.logo {
+    float: left;
+    margin-top:auto;
+    margin-bottom:auto;
+    width:40%;
+}
+.img-fluid{
+    width:50%;
+    height:50%;
+}
+
+nav {
     float: right;
 }
+
 nav ul {
+    margin: 0;
+    padding: 0;
     list-style: none;
-   float: right;
+}
+
+nav li {
+    display: inline-block;
+    margin-left: 70px;
+    padding-top: 23px;
+
+    position: relative;
 }
 
 nav a {
-    color: #f1f1f1;;
+    color: white;;
     text-decoration: none;
     text-transform: uppercase;
     font-size: 14px;
-    margin-right: 10%;
-
 }
 
 nav a:hover {
@@ -42,6 +65,7 @@ nav a::before {
     content: '';
     display: block;
     height: 5px;
+    background-color:white;
 
     position: absolute;
     top: 0;
@@ -53,6 +77,8 @@ nav a::before {
 nav a:hover::before {
     width: 100%;
 }
+
+
 table, th, td {
     border: 1px solid black;
 
