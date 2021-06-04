@@ -9,6 +9,14 @@ CREATE TABLE groups (
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE students (
+	student_cipher text NOT NULL,
+	firstname text NOT NULL,
+	last_name text NOT NULL,
+	middle_name text NOT NULL,
+	record_book_number text NOT NULL,
+	PRIMARY KEY ( student_cipher )
+);
 CREATE TABLE subjects (
 	subjectid integer NOT NULL,
 	subjectname text NOT NULL,

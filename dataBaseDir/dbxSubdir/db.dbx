@@ -23,3 +23,13 @@ model groups (
     field subject int
     )
 create groups()
+
+model student (
+    key student_cipher
+    field student_cipher text
+    field firstname text
+    field last_name text
+    field middle_name text
+    field record_book_number text
+    )
+create student()

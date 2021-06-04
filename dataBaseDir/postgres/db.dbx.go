@@ -274,6 +274,14 @@ func (obj *postgresDB) Schema() string {
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE students (
+	student_cipher text NOT NULL,
+	firstname text NOT NULL,
+	last_name text NOT NULL,
+	middle_name text NOT NULL,
+	record_book_number text NOT NULL,
+	PRIMARY KEY ( student_cipher )
+);
 CREATE TABLE subjects (
 	subjectid integer NOT NULL,
 	subjectname text NOT NULL,
@@ -474,6 +482,114 @@ func (f Groups_Subject_Field) value() interface{} {
 }
 
 func (Groups_Subject_Field) _Column() string { return "subject" }
+
+type Student struct {
+	StudentCipher    string
+	Firstname        string
+	LastName         string
+	MiddleName       string
+	RecordBookNumber string
+}
+
+func (Student) _Table() string { return "students" }
+
+type Student_Update_Fields struct {
+}
+
+type Student_StudentCipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Student_StudentCipher(v string) Student_StudentCipher_Field {
+	return Student_StudentCipher_Field{_set: true, _value: v}
+}
+
+func (f Student_StudentCipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Student_StudentCipher_Field) _Column() string { return "student_cipher" }
+
+type Student_Firstname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Student_Firstname(v string) Student_Firstname_Field {
+	return Student_Firstname_Field{_set: true, _value: v}
+}
+
+func (f Student_Firstname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Student_Firstname_Field) _Column() string { return "firstname" }
+
+type Student_LastName_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Student_LastName(v string) Student_LastName_Field {
+	return Student_LastName_Field{_set: true, _value: v}
+}
+
+func (f Student_LastName_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Student_LastName_Field) _Column() string { return "last_name" }
+
+type Student_MiddleName_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Student_MiddleName(v string) Student_MiddleName_Field {
+	return Student_MiddleName_Field{_set: true, _value: v}
+}
+
+func (f Student_MiddleName_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Student_MiddleName_Field) _Column() string { return "middle_name" }
+
+type Student_RecordBookNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Student_RecordBookNumber(v string) Student_RecordBookNumber_Field {
+	return Student_RecordBookNumber_Field{_set: true, _value: v}
+}
+
+func (f Student_RecordBookNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Student_RecordBookNumber_Field) _Column() string { return "record_book_number" }
 
 type Subjects struct {
 	Subjectid        int
@@ -1093,6 +1209,36 @@ func (obj *postgresImpl) Create_Groups(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Student(ctx context.Context,
+	student_student_cipher Student_StudentCipher_Field,
+	student_firstname Student_Firstname_Field,
+	student_last_name Student_LastName_Field,
+	student_middle_name Student_MiddleName_Field,
+	student_record_book_number Student_RecordBookNumber_Field) (
+	student *Student, err error) {
+	__student_cipher_val := student_student_cipher.value()
+	__firstname_val := student_firstname.value()
+	__last_name_val := student_last_name.value()
+	__middle_name_val := student_middle_name.value()
+	__record_book_number_val := student_record_book_number.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO students ( student_cipher, firstname, last_name, middle_name, record_book_number ) VALUES ( ?, ?, ?, ?, ? ) RETURNING students.student_cipher, students.firstname, students.last_name, students.middle_name, students.record_book_number")
+
+	var __values []interface{}
+	__values = append(__values, __student_cipher_val, __firstname_val, __last_name_val, __middle_name_val, __record_book_number_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	student = &Student{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&student.StudentCipher, &student.Firstname, &student.LastName, &student.MiddleName, &student.RecordBookNumber)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return student, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1117,6 +1263,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM subjects;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM students;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1199,6 +1355,21 @@ func (rx *Rx) Create_Groups(ctx context.Context,
 
 }
 
+func (rx *Rx) Create_Student(ctx context.Context,
+	student_student_cipher Student_StudentCipher_Field,
+	student_firstname Student_Firstname_Field,
+	student_last_name Student_LastName_Field,
+	student_middle_name Student_MiddleName_Field,
+	student_record_book_number Student_RecordBookNumber_Field) (
+	student *Student, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Student(ctx, student_student_cipher, student_firstname, student_last_name, student_middle_name, student_record_book_number)
+
+}
+
 func (rx *Rx) Create_Subjects(ctx context.Context,
 	subjects_subjectid Subjects_Subjectid_Field,
 	subjects_subjectname Subjects_Subjectname_Field,
@@ -1233,6 +1404,14 @@ type Methods interface {
 		groups_course Groups_Course_Field,
 		groups_subject Groups_Subject_Field) (
 		groups *Groups, err error)
+
+	Create_Student(ctx context.Context,
+		student_student_cipher Student_StudentCipher_Field,
+		student_firstname Student_Firstname_Field,
+		student_last_name Student_LastName_Field,
+		student_middle_name Student_MiddleName_Field,
+		student_record_book_number Student_RecordBookNumber_Field) (
+		student *Student, err error)
 
 	Create_Subjects(ctx context.Context,
 		subjects_subjectid Subjects_Subjectid_Field,

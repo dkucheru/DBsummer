@@ -11,6 +11,7 @@ type Repository interface {
 	TableNew() TableNewInterface
 	Subjects() SubjectsInterface
 	Groups() GroupsInterface
+	Students() StudentsInterface
 }
 
 type Transaction interface {
@@ -32,4 +33,10 @@ type SubjectsInterface interface { //functions to be used for the table 'subject
 }
 
 type GroupsInterface interface {
+}
+
+type StudentsInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context, id int) (*structs.Student, error)
+	GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error)
 }
