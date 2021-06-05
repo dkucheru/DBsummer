@@ -2,8 +2,9 @@ package structs
 
 type AllStudInfo struct {
 	RecordBook  string
-	Pib         string
+	PibStud     string
 	SubjectName string
 	GroupCipher string
 	GroupName   string
+	PibTeach    string
 }
