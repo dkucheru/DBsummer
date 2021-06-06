@@ -17,9 +17,21 @@
     </tbody>
 </table>
 <form>
+<!--    <label>-->
+<!--        ID:-->
+<!--        <input type="text" id="input-id">-->
+<!--    </label>-->
     <label>
-        ID:
-        <input type="text" id="input-id">
+        FirstName:
+        <input type="text" id="fn">
+    </label>
+    <label>
+        LastName:
+        <input type="text" id="ln">
+    </label>
+    <label>
+        MiddleName:
+        <input type="text" id="mn">
     </label>
     <button type="submit" onclick="loadSubject()">Get</button>
 </form>
@@ -46,13 +58,22 @@
         };
 
         // let field = document.getElementById("input-id");
+        let fn = document.getElementById("fn");
+        console.log("firstname : ", fn.value);
+
+        let ln = document.getElementById("ln");
+        console.log("lastname : ", ln.value);
+
+        let mn = document.getElementById("mn");
+        console.log("secondname : ", mn.value);
+
         //
         // let url = "/subjects/"+field.value;
+        let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
         // //alert(url);
         //
         // xhttp.open("GET", url, false);
-        let url = "/students/who_skipped_exam";
-        //alert(url);
+        // let url = "/students/who_skipped_exam";
 
         xhttp.open("GET", url, false);
         xhttp.send();
