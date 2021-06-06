@@ -48,6 +48,7 @@ create teachers()
 
 model sheet (
     key sheetid
+    unique group_cipher
     field sheetid int
     field number_of_attendees int
     field number_of_absent int
@@ -58,3 +59,17 @@ model sheet (
     field group_cipher text
    )
 create sheet()
+
+model runner_marks (
+    key runner_mark_number
+    unique sheet_mark
+    field check_mark int
+    field runner_mark_number int
+    field national_mark text
+    field semester_mark int
+    field together_mark int
+    field ects_mark text
+    field sheet_mark int
+    field runner int
+   )
+create runner_marks()

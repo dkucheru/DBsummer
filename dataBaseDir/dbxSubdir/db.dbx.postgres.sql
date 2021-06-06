@@ -9,6 +9,18 @@ CREATE TABLE groups_s (
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE runner_marks (
+	check_mark integer NOT NULL,
+	runner_mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet_mark integer NOT NULL,
+	runner integer NOT NULL,
+	PRIMARY KEY ( runner_mark_number ),
+	UNIQUE ( sheet_mark )
+);
 CREATE TABLE sheets (
 	sheetid integer NOT NULL,
 	number_of_attendees integer NOT NULL,
@@ -18,7 +30,8 @@ CREATE TABLE sheets (
 	date_of_compilation timestamp with time zone NOT NULL,
 	teacher text NOT NULL,
 	group_cipher text NOT NULL,
-	PRIMARY KEY ( sheetid )
+	PRIMARY KEY ( sheetid ),
+	UNIQUE ( group_cipher )
 );
 CREATE TABLE students (
 	student_cipher text NOT NULL,

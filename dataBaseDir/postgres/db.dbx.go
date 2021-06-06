@@ -274,6 +274,18 @@ func (obj *postgresDB) Schema() string {
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE runner_marks (
+	check_mark integer NOT NULL,
+	runner_mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet_mark integer NOT NULL,
+	runner integer NOT NULL,
+	PRIMARY KEY ( runner_mark_number ),
+	UNIQUE ( sheet_mark )
+);
 CREATE TABLE sheets (
 	sheetid integer NOT NULL,
 	number_of_attendees integer NOT NULL,
@@ -283,7 +295,8 @@ CREATE TABLE sheets (
 	date_of_compilation timestamp with time zone NOT NULL,
 	teacher text NOT NULL,
 	group_cipher text NOT NULL,
-	PRIMARY KEY ( sheetid )
+	PRIMARY KEY ( sheetid ),
+	UNIQUE ( group_cipher )
 );
 CREATE TABLE students (
 	student_cipher text NOT NULL,
@@ -503,6 +516,174 @@ func (f Groups_Subject_Field) value() interface{} {
 }
 
 func (Groups_Subject_Field) _Column() string { return "subject" }
+
+type RunnerMarks struct {
+	CheckMark        int
+	RunnerMarkNumber int
+	NationalMark     string
+	SemesterMark     int
+	TogetherMark     int
+	EctsMark         string
+	SheetMark        int
+	Runner           int
+}
+
+func (RunnerMarks) _Table() string { return "runner_marks" }
+
+type RunnerMarks_Update_Fields struct {
+}
+
+type RunnerMarks_CheckMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_CheckMark(v int) RunnerMarks_CheckMark_Field {
+	return RunnerMarks_CheckMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_CheckMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_CheckMark_Field) _Column() string { return "check_mark" }
+
+type RunnerMarks_RunnerMarkNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_RunnerMarkNumber(v int) RunnerMarks_RunnerMarkNumber_Field {
+	return RunnerMarks_RunnerMarkNumber_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_RunnerMarkNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_RunnerMarkNumber_Field) _Column() string { return "runner_mark_number" }
+
+type RunnerMarks_NationalMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func RunnerMarks_NationalMark(v string) RunnerMarks_NationalMark_Field {
+	return RunnerMarks_NationalMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_NationalMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_NationalMark_Field) _Column() string { return "national_mark" }
+
+type RunnerMarks_SemesterMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_SemesterMark(v int) RunnerMarks_SemesterMark_Field {
+	return RunnerMarks_SemesterMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_SemesterMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_SemesterMark_Field) _Column() string { return "semester_mark" }
+
+type RunnerMarks_TogetherMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_TogetherMark(v int) RunnerMarks_TogetherMark_Field {
+	return RunnerMarks_TogetherMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_TogetherMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_TogetherMark_Field) _Column() string { return "together_mark" }
+
+type RunnerMarks_EctsMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func RunnerMarks_EctsMark(v string) RunnerMarks_EctsMark_Field {
+	return RunnerMarks_EctsMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_EctsMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_EctsMark_Field) _Column() string { return "ects_mark" }
+
+type RunnerMarks_SheetMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_SheetMark(v int) RunnerMarks_SheetMark_Field {
+	return RunnerMarks_SheetMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_SheetMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_SheetMark_Field) _Column() string { return "sheet_mark" }
+
+type RunnerMarks_Runner_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_Runner(v int) RunnerMarks_Runner_Field {
+	return RunnerMarks_Runner_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_Runner_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_Runner_Field) _Column() string { return "runner" }
 
 type Sheet struct {
 	Sheetid            int
@@ -1646,6 +1827,42 @@ func (obj *postgresImpl) Create_Sheet(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_RunnerMarks(ctx context.Context,
+	runner_marks_check_mark RunnerMarks_CheckMark_Field,
+	runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+	runner_marks_national_mark RunnerMarks_NationalMark_Field,
+	runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+	runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+	runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+	runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+	runner_marks_runner RunnerMarks_Runner_Field) (
+	runner_marks *RunnerMarks, err error) {
+	__check_mark_val := runner_marks_check_mark.value()
+	__runner_mark_number_val := runner_marks_runner_mark_number.value()
+	__national_mark_val := runner_marks_national_mark.value()
+	__semester_mark_val := runner_marks_semester_mark.value()
+	__together_mark_val := runner_marks_together_mark.value()
+	__ects_mark_val := runner_marks_ects_mark.value()
+	__sheet_mark_val := runner_marks_sheet_mark.value()
+	__runner_val := runner_marks_runner.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO runner_marks ( check_mark, runner_mark_number, national_mark, semester_mark, together_mark, ects_mark, sheet_mark, runner ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING runner_marks.check_mark, runner_marks.runner_mark_number, runner_marks.national_mark, runner_marks.semester_mark, runner_marks.together_mark, runner_marks.ects_mark, runner_marks.sheet_mark, runner_marks.runner")
+
+	var __values []interface{}
+	__values = append(__values, __check_mark_val, __runner_mark_number_val, __national_mark_val, __semester_mark_val, __together_mark_val, __ects_mark_val, __sheet_mark_val, __runner_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	runner_marks = &RunnerMarks{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&runner_marks.CheckMark, &runner_marks.RunnerMarkNumber, &runner_marks.NationalMark, &runner_marks.SemesterMark, &runner_marks.TogetherMark, &runner_marks.EctsMark, &runner_marks.SheetMark, &runner_marks.Runner)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return runner_marks, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1700,6 +1917,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM sheets;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM runner_marks;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1779,6 +2006,24 @@ func (rx *Rx) Create_Groups(ctx context.Context,
 		return
 	}
 	return tx.Create_Groups(ctx, groups__cipher, groups__groupname, groups__educationalyear, groups__semester, groups__course, groups__subject)
+
+}
+
+func (rx *Rx) Create_RunnerMarks(ctx context.Context,
+	runner_marks_check_mark RunnerMarks_CheckMark_Field,
+	runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+	runner_marks_national_mark RunnerMarks_NationalMark_Field,
+	runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+	runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+	runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+	runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+	runner_marks_runner RunnerMarks_Runner_Field) (
+	runner_marks *RunnerMarks, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_RunnerMarks(ctx, runner_marks_check_mark, runner_marks_runner_mark_number, runner_marks_national_mark, runner_marks_semester_mark, runner_marks_together_mark, runner_marks_ects_mark, runner_marks_sheet_mark, runner_marks_runner)
 
 }
 
@@ -1866,6 +2111,17 @@ type Methods interface {
 		groups__course Groups_Course_Field,
 		groups__subject Groups_Subject_Field) (
 		groups_ *Groups, err error)
+
+	Create_RunnerMarks(ctx context.Context,
+		runner_marks_check_mark RunnerMarks_CheckMark_Field,
+		runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+		runner_marks_national_mark RunnerMarks_NationalMark_Field,
+		runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+		runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+		runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+		runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+		runner_marks_runner RunnerMarks_Runner_Field) (
+		runner_marks *RunnerMarks, err error)
 
 	Create_Sheet(ctx context.Context,
 		sheet_sheetid Sheet_Sheetid_Field,

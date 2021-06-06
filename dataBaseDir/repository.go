@@ -14,6 +14,7 @@ type Repository interface {
 	Students() StudentsInterface
 	Teachers() TeachersInterface
 	Sheets() SheetsInterface
+	RunnerMarks() RunnerMarksInterface
 }
 
 type Transaction interface {
@@ -49,6 +50,11 @@ type TeachersInterface interface {
 }
 
 type SheetsInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type RunnerMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 }
