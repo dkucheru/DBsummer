@@ -56,6 +56,7 @@ type TeachersInterface interface {
 type SheetsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
+	GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error)
 }
 
 type RunnerMarksInterface interface {

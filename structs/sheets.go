@@ -12,3 +12,13 @@ type Sheet struct {
 	Teacher            string
 	GroupCipher        string
 }
+
+type SheetByQuery struct {
+	SheetId      int
+	PibStudent   string
+	SemesterMark int
+	CheckMark    int
+	TogetherMark int
+	NationalMark string
+	EctsMark     string
+}

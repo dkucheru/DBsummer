@@ -33,6 +33,18 @@
         MiddleName:
         <input type="text" id="mn">
     </label>
+    <label>
+        Subject:
+        <input type="text" id="subj">
+    </label>
+    <label>
+        Group:
+        <input type="text" id="gr">
+    </label>
+    <label>
+        Year:
+        <input type="text" id="ye">
+    </label>
     <button type="submit" onclick="loadSubject()">Get</button>
 </form>
 <script>
@@ -67,9 +79,20 @@
         let mn = document.getElementById("mn");
         console.log("secondname : ", mn.value);
 
+        let  subj = document.getElementById("subj");
+        console.log("subject : ", subj.value);
+
+        let  gr = document.getElementById("gr");
+        console.log("group : ", gr.value);
+
+        let  ye = document.getElementById("ye");
+        console.log("year : ", ye.value);
+
         //
         // let url = "/subjects/"+field.value;
-        let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
+        // let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
+        let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
+
         // //alert(url);
         //
         // xhttp.open("GET", url, false);
