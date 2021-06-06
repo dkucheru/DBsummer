@@ -13,6 +13,7 @@ type Repository interface {
 	Groups() GroupsInterface
 	Students() StudentsInterface
 	Teachers() TeachersInterface
+	Sheets() SheetsInterface
 }
 
 type Transaction interface {
@@ -43,6 +44,11 @@ type StudentsInterface interface {
 }
 
 type TeachersInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type SheetsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 }

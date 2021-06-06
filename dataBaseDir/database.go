@@ -52,6 +52,10 @@ func (d *DatabaseRepository) Teachers() TeachersInterface {
 	return d.DBRepository.Teachers()
 }
 
+func (d *DatabaseRepository) Sheets() SheetsInterface {
+	return d.DBRepository.Sheets()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

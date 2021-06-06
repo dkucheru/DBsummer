@@ -45,3 +45,16 @@ model teachers (
     field post text
     )
 create teachers()
+
+model sheet (
+    key sheetid
+    field sheetid int
+    field number_of_attendees int
+    field number_of_absent int
+    field number_of_ineligible int
+    field type_of_control text
+    field date_of_compilation timestamp
+    field teacher text
+    field group_cipher text
+   )
+create sheet()

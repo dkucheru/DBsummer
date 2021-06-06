@@ -9,6 +9,17 @@ CREATE TABLE groups_s (
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE sheets (
+	sheetid integer NOT NULL,
+	number_of_attendees integer NOT NULL,
+	number_of_absent integer NOT NULL,
+	number_of_ineligible integer NOT NULL,
+	type_of_control text NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	teacher text NOT NULL,
+	group_cipher text NOT NULL,
+	PRIMARY KEY ( sheetid )
+);
 CREATE TABLE students (
 	student_cipher text NOT NULL,
 	firstname text NOT NULL,

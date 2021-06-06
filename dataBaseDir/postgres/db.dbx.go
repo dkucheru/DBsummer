@@ -274,6 +274,17 @@ func (obj *postgresDB) Schema() string {
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE sheets (
+	sheetid integer NOT NULL,
+	number_of_attendees integer NOT NULL,
+	number_of_absent integer NOT NULL,
+	number_of_ineligible integer NOT NULL,
+	type_of_control text NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	teacher text NOT NULL,
+	group_cipher text NOT NULL,
+	PRIMARY KEY ( sheetid )
+);
 CREATE TABLE students (
 	student_cipher text NOT NULL,
 	firstname text NOT NULL,
@@ -492,6 +503,174 @@ func (f Groups_Subject_Field) value() interface{} {
 }
 
 func (Groups_Subject_Field) _Column() string { return "subject" }
+
+type Sheet struct {
+	Sheetid            int
+	NumberOfAttendees  int
+	NumberOfAbsent     int
+	NumberOfIneligible int
+	TypeOfControl      string
+	DateOfCompilation  time.Time
+	Teacher            string
+	GroupCipher        string
+}
+
+func (Sheet) _Table() string { return "sheets" }
+
+type Sheet_Update_Fields struct {
+}
+
+type Sheet_Sheetid_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_Sheetid(v int) Sheet_Sheetid_Field {
+	return Sheet_Sheetid_Field{_set: true, _value: v}
+}
+
+func (f Sheet_Sheetid_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_Sheetid_Field) _Column() string { return "sheetid" }
+
+type Sheet_NumberOfAttendees_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfAttendees(v int) Sheet_NumberOfAttendees_Field {
+	return Sheet_NumberOfAttendees_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfAttendees_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfAttendees_Field) _Column() string { return "number_of_attendees" }
+
+type Sheet_NumberOfAbsent_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfAbsent(v int) Sheet_NumberOfAbsent_Field {
+	return Sheet_NumberOfAbsent_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfAbsent_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfAbsent_Field) _Column() string { return "number_of_absent" }
+
+type Sheet_NumberOfIneligible_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfIneligible(v int) Sheet_NumberOfIneligible_Field {
+	return Sheet_NumberOfIneligible_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfIneligible_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfIneligible_Field) _Column() string { return "number_of_ineligible" }
+
+type Sheet_TypeOfControl_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_TypeOfControl(v string) Sheet_TypeOfControl_Field {
+	return Sheet_TypeOfControl_Field{_set: true, _value: v}
+}
+
+func (f Sheet_TypeOfControl_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_TypeOfControl_Field) _Column() string { return "type_of_control" }
+
+type Sheet_DateOfCompilation_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Sheet_DateOfCompilation(v time.Time) Sheet_DateOfCompilation_Field {
+	return Sheet_DateOfCompilation_Field{_set: true, _value: v}
+}
+
+func (f Sheet_DateOfCompilation_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_DateOfCompilation_Field) _Column() string { return "date_of_compilation" }
+
+type Sheet_Teacher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_Teacher(v string) Sheet_Teacher_Field {
+	return Sheet_Teacher_Field{_set: true, _value: v}
+}
+
+func (f Sheet_Teacher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_Teacher_Field) _Column() string { return "teacher" }
+
+type Sheet_GroupCipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_GroupCipher(v string) Sheet_GroupCipher_Field {
+	return Sheet_GroupCipher_Field{_set: true, _value: v}
+}
+
+func (f Sheet_GroupCipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_GroupCipher_Field) _Column() string { return "group_cipher" }
 
 type Student struct {
 	StudentCipher    string
@@ -1431,6 +1610,42 @@ func (obj *postgresImpl) Create_Teachers(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Sheet(ctx context.Context,
+	sheet_sheetid Sheet_Sheetid_Field,
+	sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+	sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+	sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+	sheet_type_of_control Sheet_TypeOfControl_Field,
+	sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+	sheet_teacher Sheet_Teacher_Field,
+	sheet_group_cipher Sheet_GroupCipher_Field) (
+	sheet *Sheet, err error) {
+	__sheetid_val := sheet_sheetid.value()
+	__number_of_attendees_val := sheet_number_of_attendees.value()
+	__number_of_absent_val := sheet_number_of_absent.value()
+	__number_of_ineligible_val := sheet_number_of_ineligible.value()
+	__type_of_control_val := sheet_type_of_control.value()
+	__date_of_compilation_val := sheet_date_of_compilation.value()
+	__teacher_val := sheet_teacher.value()
+	__group_cipher_val := sheet_group_cipher.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO sheets ( sheetid, number_of_attendees, number_of_absent, number_of_ineligible, type_of_control, date_of_compilation, teacher, group_cipher ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING sheets.sheetid, sheets.number_of_attendees, sheets.number_of_absent, sheets.number_of_ineligible, sheets.type_of_control, sheets.date_of_compilation, sheets.teacher, sheets.group_cipher")
+
+	var __values []interface{}
+	__values = append(__values, __sheetid_val, __number_of_attendees_val, __number_of_absent_val, __number_of_ineligible_val, __type_of_control_val, __date_of_compilation_val, __teacher_val, __group_cipher_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	sheet = &Sheet{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&sheet.Sheetid, &sheet.NumberOfAttendees, &sheet.NumberOfAbsent, &sheet.NumberOfIneligible, &sheet.TypeOfControl, &sheet.DateOfCompilation, &sheet.Teacher, &sheet.GroupCipher)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return sheet, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1475,6 +1690,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM students;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM sheets;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1557,6 +1782,24 @@ func (rx *Rx) Create_Groups(ctx context.Context,
 
 }
 
+func (rx *Rx) Create_Sheet(ctx context.Context,
+	sheet_sheetid Sheet_Sheetid_Field,
+	sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+	sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+	sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+	sheet_type_of_control Sheet_TypeOfControl_Field,
+	sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+	sheet_teacher Sheet_Teacher_Field,
+	sheet_group_cipher Sheet_GroupCipher_Field) (
+	sheet *Sheet, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Sheet(ctx, sheet_sheetid, sheet_number_of_attendees, sheet_number_of_absent, sheet_number_of_ineligible, sheet_type_of_control, sheet_date_of_compilation, sheet_teacher, sheet_group_cipher)
+
+}
+
 func (rx *Rx) Create_Student(ctx context.Context,
 	student_student_cipher Student_StudentCipher_Field,
 	student_firstname Student_Firstname_Field,
@@ -1623,6 +1866,17 @@ type Methods interface {
 		groups__course Groups_Course_Field,
 		groups__subject Groups_Subject_Field) (
 		groups_ *Groups, err error)
+
+	Create_Sheet(ctx context.Context,
+		sheet_sheetid Sheet_Sheetid_Field,
+		sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+		sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+		sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+		sheet_type_of_control Sheet_TypeOfControl_Field,
+		sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+		sheet_teacher Sheet_Teacher_Field,
+		sheet_group_cipher Sheet_GroupCipher_Field) (
+		sheet *Sheet, err error)
 
 	Create_Student(ctx context.Context,
 		student_student_cipher Student_StudentCipher_Field,
