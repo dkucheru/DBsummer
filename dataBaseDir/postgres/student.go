@@ -32,7 +32,7 @@ FROM ((((student LEFT JOIN sheet_marks ON student_cipher = student )
 	  LEFT JOIN groups_ ON group_cipher = cipher) 
 	  LEFT JOIN subjects ON subject = subjectid)
 	  LEFT JOIN teachers ON teacher_cipher = sheet.teacher
-WHERE student.firstname = ? AND last_name = ? AND middle_name = ?;`)
+WHERE student.firstname = ? AND last_name = ? AND (middle_name = ? OR middle_name IS NULL);`)
 
 	rows, err := r.db.QueryContext(ctx, query, fn, ln, mn)
 	if err != nil {
