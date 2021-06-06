@@ -42,6 +42,17 @@ CREATE TABLE sheets (
 	PRIMARY KEY ( sheetid ),
 	UNIQUE ( group_cipher )
 );
+CREATE TABLE sheet_marks (
+	check_mark integer NOT NULL,
+	mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet integer NOT NULL,
+	student text NOT NULL,
+	PRIMARY KEY ( mark_number )
+);
 CREATE TABLE students (
 	student_cipher text NOT NULL,
 	firstname text NOT NULL,

@@ -16,6 +16,7 @@ type Repository interface {
 	Sheets() SheetsInterface
 	RunnerMarks() RunnerMarksInterface
 	Runners() RunnerInterface
+	SheetMarks() SheetMarksInterface
 }
 
 type Transaction interface {
@@ -61,6 +62,11 @@ type RunnerMarksInterface interface {
 }
 
 type RunnerInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type SheetMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 }

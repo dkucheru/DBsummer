@@ -64,6 +64,10 @@ func (d *DatabaseRepository) Runners() RunnerInterface {
 	return d.DBRepository.Runner()
 }
 
+func (d *DatabaseRepository) SheetMarks() SheetMarksInterface {
+	return d.DBRepository.SheetMarks()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

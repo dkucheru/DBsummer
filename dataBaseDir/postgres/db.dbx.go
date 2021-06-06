@@ -307,6 +307,17 @@ CREATE TABLE sheets (
 	PRIMARY KEY ( sheetid ),
 	UNIQUE ( group_cipher )
 );
+CREATE TABLE sheet_marks (
+	check_mark integer NOT NULL,
+	mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet integer NOT NULL,
+	student text NOT NULL,
+	PRIMARY KEY ( mark_number )
+);
 CREATE TABLE students (
 	student_cipher text NOT NULL,
 	firstname text NOT NULL,
@@ -989,6 +1000,174 @@ func (f Sheet_GroupCipher_Field) value() interface{} {
 }
 
 func (Sheet_GroupCipher_Field) _Column() string { return "group_cipher" }
+
+type SheetMarks struct {
+	CheckMark    int
+	MarkNumber   int
+	NationalMark string
+	SemesterMark int
+	TogetherMark int
+	EctsMark     string
+	Sheet        int
+	Student      string
+}
+
+func (SheetMarks) _Table() string { return "sheet_marks" }
+
+type SheetMarks_Update_Fields struct {
+}
+
+type SheetMarks_CheckMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_CheckMark(v int) SheetMarks_CheckMark_Field {
+	return SheetMarks_CheckMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_CheckMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_CheckMark_Field) _Column() string { return "check_mark" }
+
+type SheetMarks_MarkNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_MarkNumber(v int) SheetMarks_MarkNumber_Field {
+	return SheetMarks_MarkNumber_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_MarkNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_MarkNumber_Field) _Column() string { return "mark_number" }
+
+type SheetMarks_NationalMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_NationalMark(v string) SheetMarks_NationalMark_Field {
+	return SheetMarks_NationalMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_NationalMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_NationalMark_Field) _Column() string { return "national_mark" }
+
+type SheetMarks_SemesterMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_SemesterMark(v int) SheetMarks_SemesterMark_Field {
+	return SheetMarks_SemesterMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_SemesterMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_SemesterMark_Field) _Column() string { return "semester_mark" }
+
+type SheetMarks_TogetherMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_TogetherMark(v int) SheetMarks_TogetherMark_Field {
+	return SheetMarks_TogetherMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_TogetherMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_TogetherMark_Field) _Column() string { return "together_mark" }
+
+type SheetMarks_EctsMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_EctsMark(v string) SheetMarks_EctsMark_Field {
+	return SheetMarks_EctsMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_EctsMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_EctsMark_Field) _Column() string { return "ects_mark" }
+
+type SheetMarks_Sheet_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_Sheet(v int) SheetMarks_Sheet_Field {
+	return SheetMarks_Sheet_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_Sheet_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_Sheet_Field) _Column() string { return "sheet" }
+
+type SheetMarks_Student_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_Student(v string) SheetMarks_Student_Field {
+	return SheetMarks_Student_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_Student_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_Student_Field) _Column() string { return "student" }
 
 type Student struct {
 	StudentCipher    string
@@ -2032,6 +2211,42 @@ func (obj *postgresImpl) Create_Runner(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_SheetMarks(ctx context.Context,
+	sheet_marks_check_mark SheetMarks_CheckMark_Field,
+	sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+	sheet_marks_national_mark SheetMarks_NationalMark_Field,
+	sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+	sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+	sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+	sheet_marks_sheet SheetMarks_Sheet_Field,
+	sheet_marks_student SheetMarks_Student_Field) (
+	sheet_marks *SheetMarks, err error) {
+	__check_mark_val := sheet_marks_check_mark.value()
+	__mark_number_val := sheet_marks_mark_number.value()
+	__national_mark_val := sheet_marks_national_mark.value()
+	__semester_mark_val := sheet_marks_semester_mark.value()
+	__together_mark_val := sheet_marks_together_mark.value()
+	__ects_mark_val := sheet_marks_ects_mark.value()
+	__sheet_val := sheet_marks_sheet.value()
+	__student_val := sheet_marks_student.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO sheet_marks ( check_mark, mark_number, national_mark, semester_mark, together_mark, ects_mark, sheet, student ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING sheet_marks.check_mark, sheet_marks.mark_number, sheet_marks.national_mark, sheet_marks.semester_mark, sheet_marks.together_mark, sheet_marks.ects_mark, sheet_marks.sheet, sheet_marks.student")
+
+	var __values []interface{}
+	__values = append(__values, __check_mark_val, __mark_number_val, __national_mark_val, __semester_mark_val, __together_mark_val, __ects_mark_val, __sheet_val, __student_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	sheet_marks = &SheetMarks{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&sheet_marks.CheckMark, &sheet_marks.MarkNumber, &sheet_marks.NationalMark, &sheet_marks.SemesterMark, &sheet_marks.TogetherMark, &sheet_marks.EctsMark, &sheet_marks.Sheet, &sheet_marks.Student)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return sheet_marks, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -2076,6 +2291,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM students;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM sheet_marks;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -2240,6 +2465,24 @@ func (rx *Rx) Create_Sheet(ctx context.Context,
 
 }
 
+func (rx *Rx) Create_SheetMarks(ctx context.Context,
+	sheet_marks_check_mark SheetMarks_CheckMark_Field,
+	sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+	sheet_marks_national_mark SheetMarks_NationalMark_Field,
+	sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+	sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+	sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+	sheet_marks_sheet SheetMarks_Sheet_Field,
+	sheet_marks_student SheetMarks_Student_Field) (
+	sheet_marks *SheetMarks, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_SheetMarks(ctx, sheet_marks_check_mark, sheet_marks_mark_number, sheet_marks_national_mark, sheet_marks_semester_mark, sheet_marks_together_mark, sheet_marks_ects_mark, sheet_marks_sheet, sheet_marks_student)
+
+}
+
 func (rx *Rx) Create_Student(ctx context.Context,
 	student_student_cipher Student_StudentCipher_Field,
 	student_firstname Student_Firstname_Field,
@@ -2337,6 +2580,17 @@ type Methods interface {
 		sheet_teacher Sheet_Teacher_Field,
 		sheet_group_cipher Sheet_GroupCipher_Field) (
 		sheet *Sheet, err error)
+
+	Create_SheetMarks(ctx context.Context,
+		sheet_marks_check_mark SheetMarks_CheckMark_Field,
+		sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+		sheet_marks_national_mark SheetMarks_NationalMark_Field,
+		sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+		sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+		sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+		sheet_marks_sheet SheetMarks_Sheet_Field,
+		sheet_marks_student SheetMarks_Student_Field) (
+		sheet_marks *SheetMarks, err error)
 
 	Create_Student(ctx context.Context,
 		student_student_cipher Student_StudentCipher_Field,

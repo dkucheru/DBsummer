@@ -84,3 +84,16 @@ model runner (
     field teacher text
    )
 create runner()
+
+model sheet_marks (
+    key mark_number
+    field check_mark int
+    field mark_number int
+    field national_mark text
+    field semester_mark int
+    field together_mark int
+    field ects_mark text
+    field sheet int
+    field student text
+    )
+create sheet_marks()
