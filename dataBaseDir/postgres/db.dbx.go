@@ -265,7 +265,7 @@ func newpostgres(db *DB) *postgresDB {
 }
 
 func (obj *postgresDB) Schema() string {
-	return `CREATE TABLE groups (
+	return `CREATE TABLE groups_s (
 	cipher text NOT NULL,
 	groupname text NOT NULL,
 	educationalyear text NOT NULL,
@@ -364,7 +364,7 @@ type Groups struct {
 	Subject         int
 }
 
-func (Groups) _Table() string { return "groups" }
+func (Groups) _Table() string { return "groups_s" }
 
 type Groups_Update_Fields struct {
 }
@@ -1178,21 +1178,21 @@ func (obj *postgresImpl) Create_Subjects(ctx context.Context,
 }
 
 func (obj *postgresImpl) Create_Groups(ctx context.Context,
-	groups_cipher Groups_Cipher_Field,
-	groups_groupname Groups_Groupname_Field,
-	groups_educationalyear Groups_Educationalyear_Field,
-	groups_semester Groups_Semester_Field,
-	groups_course Groups_Course_Field,
-	groups_subject Groups_Subject_Field) (
-	groups *Groups, err error) {
-	__cipher_val := groups_cipher.value()
-	__groupname_val := groups_groupname.value()
-	__educationalyear_val := groups_educationalyear.value()
-	__semester_val := groups_semester.value()
-	__course_val := groups_course.value()
-	__subject_val := groups_subject.value()
+	groups__cipher Groups_Cipher_Field,
+	groups__groupname Groups_Groupname_Field,
+	groups__educationalyear Groups_Educationalyear_Field,
+	groups__semester Groups_Semester_Field,
+	groups__course Groups_Course_Field,
+	groups__subject Groups_Subject_Field) (
+	groups_ *Groups, err error) {
+	__cipher_val := groups__cipher.value()
+	__groupname_val := groups__groupname.value()
+	__educationalyear_val := groups__educationalyear.value()
+	__semester_val := groups__semester.value()
+	__course_val := groups__course.value()
+	__subject_val := groups__subject.value()
 
-	var __embed_stmt = __sqlbundle_Literal("INSERT INTO groups ( cipher, groupname, educationalyear, semester, course, subject ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING groups.cipher, groups.groupname, groups.educationalyear, groups.semester, groups.course, groups.subject")
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO groups_s ( cipher, groupname, educationalyear, semester, course, subject ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING groups_s.cipher, groups_s.groupname, groups_s.educationalyear, groups_s.semester, groups_s.course, groups_s.subject")
 
 	var __values []interface{}
 	__values = append(__values, __cipher_val, __groupname_val, __educationalyear_val, __semester_val, __course_val, __subject_val)
@@ -1200,12 +1200,12 @@ func (obj *postgresImpl) Create_Groups(ctx context.Context,
 	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
 	obj.logStmt(__stmt, __values...)
 
-	groups = &Groups{}
-	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&groups.Cipher, &groups.Groupname, &groups.Educationalyear, &groups.Semester, &groups.Course, &groups.Subject)
+	groups_ = &Groups{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&groups_.Cipher, &groups_.Groupname, &groups_.Educationalyear, &groups_.Semester, &groups_.Course, &groups_.Subject)
 	if err != nil {
 		return nil, obj.makeErr(err)
 	}
-	return groups, nil
+	return groups_, nil
 
 }
 
@@ -1282,7 +1282,7 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 		return 0, obj.makeErr(err)
 	}
 	count += __count
-	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM groups;")
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM groups_s;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1340,18 +1340,18 @@ func (rx *Rx) Rollback() (err error) {
 }
 
 func (rx *Rx) Create_Groups(ctx context.Context,
-	groups_cipher Groups_Cipher_Field,
-	groups_groupname Groups_Groupname_Field,
-	groups_educationalyear Groups_Educationalyear_Field,
-	groups_semester Groups_Semester_Field,
-	groups_course Groups_Course_Field,
-	groups_subject Groups_Subject_Field) (
-	groups *Groups, err error) {
+	groups__cipher Groups_Cipher_Field,
+	groups__groupname Groups_Groupname_Field,
+	groups__educationalyear Groups_Educationalyear_Field,
+	groups__semester Groups_Semester_Field,
+	groups__course Groups_Course_Field,
+	groups__subject Groups_Subject_Field) (
+	groups_ *Groups, err error) {
 	var tx *Tx
 	if tx, err = rx.getTx(ctx); err != nil {
 		return
 	}
-	return tx.Create_Groups(ctx, groups_cipher, groups_groupname, groups_educationalyear, groups_semester, groups_course, groups_subject)
+	return tx.Create_Groups(ctx, groups__cipher, groups__groupname, groups__educationalyear, groups__semester, groups__course, groups__subject)
 
 }
 
@@ -1397,13 +1397,13 @@ func (rx *Rx) Create_TableNew(ctx context.Context,
 
 type Methods interface {
 	Create_Groups(ctx context.Context,
-		groups_cipher Groups_Cipher_Field,
-		groups_groupname Groups_Groupname_Field,
-		groups_educationalyear Groups_Educationalyear_Field,
-		groups_semester Groups_Semester_Field,
-		groups_course Groups_Course_Field,
-		groups_subject Groups_Subject_Field) (
-		groups *Groups, err error)
+		groups__cipher Groups_Cipher_Field,
+		groups__groupname Groups_Groupname_Field,
+		groups__educationalyear Groups_Educationalyear_Field,
+		groups__semester Groups_Semester_Field,
+		groups__course Groups_Course_Field,
+		groups__subject Groups_Subject_Field) (
+		groups_ *Groups, err error)
 
 	Create_Student(ctx context.Context,
 		student_student_cipher Student_StudentCipher_Field,

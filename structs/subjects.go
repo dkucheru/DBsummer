@@ -17,12 +17,3 @@ const (
 func (c Ed_level) String() string {
 	return string(c)
 }
-
-type Group struct {
-	Cipher          string
-	groupname       string
-	educationalyear string
-	semester        string
-	course          string
-	subject         int
-}

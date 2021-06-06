@@ -13,7 +13,7 @@ model subjects (
     )
 create subjects()
 
-model groups (
+model groups_ (
     key cipher
     field cipher text
     field groupname text
@@ -22,7 +22,7 @@ model groups (
     field course text
     field subject int
     )
-create groups()
+create groups_()
 
 model student (
     key student_cipher
