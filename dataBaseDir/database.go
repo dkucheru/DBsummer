@@ -48,6 +48,10 @@ func (d *DatabaseRepository) Students() StudentsInterface {
 	return d.DBRepository.Students()
 }
 
+func (d *DatabaseRepository) Teachers() TeachersInterface {
+	return d.DBRepository.Teachers()
+}
+
 func (d *DatabaseRepository) BeginTx(ctx context.Context) (Transaction, error) {
 	tx, err := d.DBRepository.BeginTx(ctx)
 	if err != nil {

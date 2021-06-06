@@ -28,3 +28,13 @@ CREATE TABLE tableNews (
 	id_t text NOT NULL,
 	PRIMARY KEY ( id_t )
 );
+CREATE TABLE teachers (
+	teacher_cipher text NOT NULL,
+	firstname text NOT NULL,
+	lastname text NOT NULL,
+	middlename text NOT NULL,
+	scientificdegree text NOT NULL,
+	academictitles text NOT NULL,
+	post text NOT NULL,
+	PRIMARY KEY ( teacher_cipher )
+);

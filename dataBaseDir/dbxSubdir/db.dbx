@@ -33,3 +33,15 @@ model student (
     field record_book_number text
     )
 create student()
+
+model teachers (
+    key teacher_cipher
+    field teacher_cipher text
+    field firstname text
+    field lastname text
+    field middlename text
+    field scientificdegree text
+    field academictitles text
+    field post text
+    )
+create teachers()

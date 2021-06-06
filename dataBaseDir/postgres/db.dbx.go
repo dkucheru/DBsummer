@@ -292,6 +292,16 @@ CREATE TABLE subjects (
 CREATE TABLE tableNews (
 	id_t text NOT NULL,
 	PRIMARY KEY ( id_t )
+);
+CREATE TABLE teachers (
+	teacher_cipher text NOT NULL,
+	firstname text NOT NULL,
+	lastname text NOT NULL,
+	middlename text NOT NULL,
+	scientificdegree text NOT NULL,
+	academictitles text NOT NULL,
+	post text NOT NULL,
+	PRIMARY KEY ( teacher_cipher )
 );`
 }
 
@@ -706,6 +716,154 @@ func (f TableNew_IdT_Field) value() interface{} {
 }
 
 func (TableNew_IdT_Field) _Column() string { return "id_t" }
+
+type Teachers struct {
+	TeacherCipher    string
+	Firstname        string
+	Lastname         string
+	Middlename       string
+	Scientificdegree string
+	Academictitles   string
+	Post             string
+}
+
+func (Teachers) _Table() string { return "teachers" }
+
+type Teachers_Update_Fields struct {
+}
+
+type Teachers_TeacherCipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_TeacherCipher(v string) Teachers_TeacherCipher_Field {
+	return Teachers_TeacherCipher_Field{_set: true, _value: v}
+}
+
+func (f Teachers_TeacherCipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_TeacherCipher_Field) _Column() string { return "teacher_cipher" }
+
+type Teachers_Firstname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Firstname(v string) Teachers_Firstname_Field {
+	return Teachers_Firstname_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Firstname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Firstname_Field) _Column() string { return "firstname" }
+
+type Teachers_Lastname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Lastname(v string) Teachers_Lastname_Field {
+	return Teachers_Lastname_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Lastname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Lastname_Field) _Column() string { return "lastname" }
+
+type Teachers_Middlename_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Middlename(v string) Teachers_Middlename_Field {
+	return Teachers_Middlename_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Middlename_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Middlename_Field) _Column() string { return "middlename" }
+
+type Teachers_Scientificdegree_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Scientificdegree(v string) Teachers_Scientificdegree_Field {
+	return Teachers_Scientificdegree_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Scientificdegree_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Scientificdegree_Field) _Column() string { return "scientificdegree" }
+
+type Teachers_Academictitles_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Academictitles(v string) Teachers_Academictitles_Field {
+	return Teachers_Academictitles_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Academictitles_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Academictitles_Field) _Column() string { return "academictitles" }
+
+type Teachers_Post_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Post(v string) Teachers_Post_Field {
+	return Teachers_Post_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Post_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Post_Field) _Column() string { return "post" }
 
 func toUTC(t time.Time) time.Time {
 	return t.UTC()
@@ -1239,6 +1397,40 @@ func (obj *postgresImpl) Create_Student(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Teachers(ctx context.Context,
+	teachers_teacher_cipher Teachers_TeacherCipher_Field,
+	teachers_firstname Teachers_Firstname_Field,
+	teachers_lastname Teachers_Lastname_Field,
+	teachers_middlename Teachers_Middlename_Field,
+	teachers_scientificdegree Teachers_Scientificdegree_Field,
+	teachers_academictitles Teachers_Academictitles_Field,
+	teachers_post Teachers_Post_Field) (
+	teachers *Teachers, err error) {
+	__teacher_cipher_val := teachers_teacher_cipher.value()
+	__firstname_val := teachers_firstname.value()
+	__lastname_val := teachers_lastname.value()
+	__middlename_val := teachers_middlename.value()
+	__scientificdegree_val := teachers_scientificdegree.value()
+	__academictitles_val := teachers_academictitles.value()
+	__post_val := teachers_post.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO teachers ( teacher_cipher, firstname, lastname, middlename, scientificdegree, academictitles, post ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) RETURNING teachers.teacher_cipher, teachers.firstname, teachers.lastname, teachers.middlename, teachers.scientificdegree, teachers.academictitles, teachers.post")
+
+	var __values []interface{}
+	__values = append(__values, __teacher_cipher_val, __firstname_val, __lastname_val, __middlename_val, __scientificdegree_val, __academictitles_val, __post_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	teachers = &Teachers{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&teachers.TeacherCipher, &teachers.Firstname, &teachers.Lastname, &teachers.Middlename, &teachers.Scientificdegree, &teachers.Academictitles, &teachers.Post)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return teachers, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1252,6 +1444,16 @@ func (impl postgresImpl) isConstraintError(err error) (
 func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error) {
 	var __res sql.Result
 	var __count int64
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM teachers;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM tableNews;")
 	if err != nil {
 		return 0, obj.makeErr(err)
@@ -1395,6 +1597,23 @@ func (rx *Rx) Create_TableNew(ctx context.Context,
 
 }
 
+func (rx *Rx) Create_Teachers(ctx context.Context,
+	teachers_teacher_cipher Teachers_TeacherCipher_Field,
+	teachers_firstname Teachers_Firstname_Field,
+	teachers_lastname Teachers_Lastname_Field,
+	teachers_middlename Teachers_Middlename_Field,
+	teachers_scientificdegree Teachers_Scientificdegree_Field,
+	teachers_academictitles Teachers_Academictitles_Field,
+	teachers_post Teachers_Post_Field) (
+	teachers *Teachers, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Teachers(ctx, teachers_teacher_cipher, teachers_firstname, teachers_lastname, teachers_middlename, teachers_scientificdegree, teachers_academictitles, teachers_post)
+
+}
+
 type Methods interface {
 	Create_Groups(ctx context.Context,
 		groups__cipher Groups_Cipher_Field,
@@ -1423,6 +1642,16 @@ type Methods interface {
 	Create_TableNew(ctx context.Context,
 		tableNew_id_t TableNew_IdT_Field) (
 		tableNew *TableNew, err error)
+
+	Create_Teachers(ctx context.Context,
+		teachers_teacher_cipher Teachers_TeacherCipher_Field,
+		teachers_firstname Teachers_Firstname_Field,
+		teachers_lastname Teachers_Lastname_Field,
+		teachers_middlename Teachers_Middlename_Field,
+		teachers_scientificdegree Teachers_Scientificdegree_Field,
+		teachers_academictitles Teachers_Academictitles_Field,
+		teachers_post Teachers_Post_Field) (
+		teachers *Teachers, err error)
 }
 
 type TxMethods interface {

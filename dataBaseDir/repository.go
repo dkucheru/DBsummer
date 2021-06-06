@@ -12,6 +12,7 @@ type Repository interface {
 	Subjects() SubjectsInterface
 	Groups() GroupsInterface
 	Students() StudentsInterface
+	Teachers() TeachersInterface
 }
 
 type Transaction interface {
@@ -39,4 +40,9 @@ type StudentsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context, id int) (*structs.Student, error)
 	GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error)
+}
+
+type TeachersInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
 }
