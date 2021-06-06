@@ -9,6 +9,15 @@ CREATE TABLE groups_s (
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE runners (
+	runner_number integer NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	date_of_expiration timestamp with time zone NOT NULL,
+	postponing_reason text NOT NULL,
+	type_of_control text NOT NULL,
+	teacher text NOT NULL,
+	PRIMARY KEY ( runner_number )
+);
 CREATE TABLE runner_marks (
 	check_mark integer NOT NULL,
 	runner_mark_number integer NOT NULL,

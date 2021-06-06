@@ -17,6 +17,7 @@ type Service struct {
 	Teachers    *teachersService
 	Sheets      *sheetsService
 	RunnerMarks *runnerMarksService
+	Runners     *runnersService
 }
 
 func NewService(conf *Config) *Service {
@@ -30,5 +31,6 @@ func NewService(conf *Config) *Service {
 	service.Teachers = newTeachersService(service, service.repository)
 	service.Sheets = newSheetsService(service, service.repository)
 	service.RunnerMarks = newrunnerMarksService(service, service.repository)
+	service.Runners = newRunnersService(service, service.repository)
 	return service
 }

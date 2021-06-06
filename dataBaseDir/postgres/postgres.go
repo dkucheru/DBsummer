@@ -28,6 +28,7 @@ type Repository struct {
 	teachers     TeachersRepository
 	sheets       SheetsRepository
 	runner_marks RunnerMarksRepository
+	runner       RunnersRepository
 	//tests TestsRepository
 	//vidomosti VidomostiRepository
 }
@@ -55,6 +56,7 @@ func New(log *log.Logger, config configDir.DBConfig) (*Repository, error) {
 	serverDB.teachers = TeachersRepository{serverDB}
 	serverDB.sheets = SheetsRepository{serverDB}
 	serverDB.runner_marks = RunnerMarksRepository{serverDB}
+	serverDB.runner = RunnersRepository{serverDB}
 	//serverDB.tests = TestsRepository{serverDB}
 	//serverDB.vidomosti = VidomostiRepository{serverDB}
 
@@ -91,6 +93,10 @@ func (r *Repository) Sheets() SheetsRepository {
 
 func (r *Repository) RunnerMarks() RunnerMarksRepository {
 	return r.runner_marks
+}
+
+func (r *Repository) Runner() RunnersRepository {
+	return r.runner
 }
 
 func (r *Repository) BeginTx(ctx context.Context) (*Repository, error) {

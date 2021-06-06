@@ -274,6 +274,15 @@ func (obj *postgresDB) Schema() string {
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
 );
+CREATE TABLE runners (
+	runner_number integer NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	date_of_expiration timestamp with time zone NOT NULL,
+	postponing_reason text NOT NULL,
+	type_of_control text NOT NULL,
+	teacher text NOT NULL,
+	PRIMARY KEY ( runner_number )
+);
 CREATE TABLE runner_marks (
 	check_mark integer NOT NULL,
 	runner_mark_number integer NOT NULL,
@@ -516,6 +525,134 @@ func (f Groups_Subject_Field) value() interface{} {
 }
 
 func (Groups_Subject_Field) _Column() string { return "subject" }
+
+type Runner struct {
+	RunnerNumber      int
+	DateOfCompilation time.Time
+	DateOfExpiration  time.Time
+	PostponingReason  string
+	TypeOfControl     string
+	Teacher           string
+}
+
+func (Runner) _Table() string { return "runners" }
+
+type Runner_Update_Fields struct {
+}
+
+type Runner_RunnerNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Runner_RunnerNumber(v int) Runner_RunnerNumber_Field {
+	return Runner_RunnerNumber_Field{_set: true, _value: v}
+}
+
+func (f Runner_RunnerNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_RunnerNumber_Field) _Column() string { return "runner_number" }
+
+type Runner_DateOfCompilation_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Runner_DateOfCompilation(v time.Time) Runner_DateOfCompilation_Field {
+	return Runner_DateOfCompilation_Field{_set: true, _value: v}
+}
+
+func (f Runner_DateOfCompilation_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_DateOfCompilation_Field) _Column() string { return "date_of_compilation" }
+
+type Runner_DateOfExpiration_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Runner_DateOfExpiration(v time.Time) Runner_DateOfExpiration_Field {
+	return Runner_DateOfExpiration_Field{_set: true, _value: v}
+}
+
+func (f Runner_DateOfExpiration_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_DateOfExpiration_Field) _Column() string { return "date_of_expiration" }
+
+type Runner_PostponingReason_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_PostponingReason(v string) Runner_PostponingReason_Field {
+	return Runner_PostponingReason_Field{_set: true, _value: v}
+}
+
+func (f Runner_PostponingReason_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_PostponingReason_Field) _Column() string { return "postponing_reason" }
+
+type Runner_TypeOfControl_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_TypeOfControl(v string) Runner_TypeOfControl_Field {
+	return Runner_TypeOfControl_Field{_set: true, _value: v}
+}
+
+func (f Runner_TypeOfControl_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_TypeOfControl_Field) _Column() string { return "type_of_control" }
+
+type Runner_Teacher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_Teacher(v string) Runner_Teacher_Field {
+	return Runner_Teacher_Field{_set: true, _value: v}
+}
+
+func (f Runner_Teacher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_Teacher_Field) _Column() string { return "teacher" }
 
 type RunnerMarks struct {
 	CheckMark        int
@@ -1863,6 +2000,38 @@ func (obj *postgresImpl) Create_RunnerMarks(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Runner(ctx context.Context,
+	runner_runner_number Runner_RunnerNumber_Field,
+	runner_date_of_compilation Runner_DateOfCompilation_Field,
+	runner_date_of_expiration Runner_DateOfExpiration_Field,
+	runner_postponing_reason Runner_PostponingReason_Field,
+	runner_type_of_control Runner_TypeOfControl_Field,
+	runner_teacher Runner_Teacher_Field) (
+	runner *Runner, err error) {
+	__runner_number_val := runner_runner_number.value()
+	__date_of_compilation_val := runner_date_of_compilation.value()
+	__date_of_expiration_val := runner_date_of_expiration.value()
+	__postponing_reason_val := runner_postponing_reason.value()
+	__type_of_control_val := runner_type_of_control.value()
+	__teacher_val := runner_teacher.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO runners ( runner_number, date_of_compilation, date_of_expiration, postponing_reason, type_of_control, teacher ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING runners.runner_number, runners.date_of_compilation, runners.date_of_expiration, runners.postponing_reason, runners.type_of_control, runners.teacher")
+
+	var __values []interface{}
+	__values = append(__values, __runner_number_val, __date_of_compilation_val, __date_of_expiration_val, __postponing_reason_val, __type_of_control_val, __teacher_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	runner = &Runner{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&runner.RunnerNumber, &runner.DateOfCompilation, &runner.DateOfExpiration, &runner.PostponingReason, &runner.TypeOfControl, &runner.Teacher)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return runner, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1927,6 +2096,16 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 	}
 	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM runner_marks;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM runners;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -2006,6 +2185,22 @@ func (rx *Rx) Create_Groups(ctx context.Context,
 		return
 	}
 	return tx.Create_Groups(ctx, groups__cipher, groups__groupname, groups__educationalyear, groups__semester, groups__course, groups__subject)
+
+}
+
+func (rx *Rx) Create_Runner(ctx context.Context,
+	runner_runner_number Runner_RunnerNumber_Field,
+	runner_date_of_compilation Runner_DateOfCompilation_Field,
+	runner_date_of_expiration Runner_DateOfExpiration_Field,
+	runner_postponing_reason Runner_PostponingReason_Field,
+	runner_type_of_control Runner_TypeOfControl_Field,
+	runner_teacher Runner_Teacher_Field) (
+	runner *Runner, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Runner(ctx, runner_runner_number, runner_date_of_compilation, runner_date_of_expiration, runner_postponing_reason, runner_type_of_control, runner_teacher)
 
 }
 
@@ -2111,6 +2306,15 @@ type Methods interface {
 		groups__course Groups_Course_Field,
 		groups__subject Groups_Subject_Field) (
 		groups_ *Groups, err error)
+
+	Create_Runner(ctx context.Context,
+		runner_runner_number Runner_RunnerNumber_Field,
+		runner_date_of_compilation Runner_DateOfCompilation_Field,
+		runner_date_of_expiration Runner_DateOfExpiration_Field,
+		runner_postponing_reason Runner_PostponingReason_Field,
+		runner_type_of_control Runner_TypeOfControl_Field,
+		runner_teacher Runner_Teacher_Field) (
+		runner *Runner, err error)
 
 	Create_RunnerMarks(ctx context.Context,
 		runner_marks_check_mark RunnerMarks_CheckMark_Field,

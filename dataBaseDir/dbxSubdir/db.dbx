@@ -73,3 +73,14 @@ model runner_marks (
     field runner int
    )
 create runner_marks()
+
+model runner (
+    key runner_number
+    field runner_number int
+    field date_of_compilation timestamp
+    field date_of_expiration timestamp
+    field postponing_reason text
+    field type_of_control text
+    field teacher text
+   )
+create runner()
