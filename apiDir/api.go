@@ -29,6 +29,7 @@ func New(address string, service *serviceDir.Service) *Rest {
 	api.HandleFunc("/subjects/{id}", rest.getSubject).Methods("GET")
 	api.HandleFunc("/subjects", rest.getSubjects).Methods("GET")
 	api.HandleFunc("/students", rest.getStudentsList).Methods("GET")
+	api.HandleFunc("/students/who_skipped_exam", rest.getAllBorjniki).Methods("GET")
 	rest.mux = api
 
 	return rest

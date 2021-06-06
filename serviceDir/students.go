@@ -35,3 +35,12 @@ func (s *studentsService) GetAllStudInfo(ctx context.Context) ([]*structs.AllStu
 
 	return subj, nil
 }
+
+func (s *studentsService) GetAllBorjniki(ctx context.Context) ([]*structs.AllStudInfo, error) {
+	subj, err := s.repository.Students().GetAllBorjniki(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return subj, nil
+}
