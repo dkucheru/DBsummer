@@ -18,10 +18,11 @@ func main() {
 	if err1 != nil {
 		log.Fatal(err1)
 	}
-	//id, err1 := appNew.repository.TableNew().Create(context.Background())
-	//if err1 != nil {
-	//	log.Fatal(err1)
-	//}
-	//
-	//log.Println(id)
 }
+
+//id, err1 := appNew.repository.TableNew().Create(context.Background())
+//if err1 != nil {
+//	log.Fatal(err1)
+//}
+//
+//log.Println(id)

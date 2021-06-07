@@ -38,6 +38,5 @@ func (s *subjectsService) GetAll(ctx context.Context) ([]*structs.Subject, error
 	if err != nil {
 		return nil, err
 	}
-
 	return subj, nil
 }

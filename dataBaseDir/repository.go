@@ -1,6 +1,7 @@
 package dataBaseDir
 
 import (
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 )
@@ -57,6 +58,7 @@ type SheetsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 	GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error)
+	PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*pdfReading.ExtractedInformation, error)
 }
 
 type RunnerMarksInterface interface {
@@ -72,4 +74,5 @@ type RunnerInterface interface {
 type SheetMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
+	PostSheetMarksToDataBase(ctx context.Context, sheetID int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error)
 }

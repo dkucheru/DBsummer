@@ -3,7 +3,10 @@ package postgres
 import (
 	"DBsummer/pdfReading"
 	"context"
+	"fmt"
+	"log"
 	"math/rand"
+	"time"
 )
 
 type SheetMarksRepository struct {
@@ -18,7 +21,7 @@ func (r SheetMarksRepository) Get(ctx context.Context) error {
 	panic("implement me")
 }
 
-func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, sheetID int, sheetMarks *pdfReading.StudInfoFromPDF) error {
+func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, sheetID int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error) {
 	getStudentCipher := r.db.Rebind(`
 		SELECT student_cipher
 		FROM student
@@ -26,10 +29,15 @@ func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, shee
 ;
 	`)
 	row := r.db.QueryRowContext(ctx, getStudentCipher, sheetMarks.FirstName, sheetMarks.Lastname, sheetMarks.MiddleName)
+	fmt.Println("group name : " + sheetMarks.FirstName)
+	fmt.Println("year : " + sheetMarks.Lastname)
+	fmt.Println("semester : " + sheetMarks.MiddleName)
+
 	var studentID string
 	err := row.Scan(&studentID)
 	if err != nil {
-		return err
+		log.Println(err)
+		return sheetID, err
 	}
 
 	query := r.db.Rebind(`
@@ -37,12 +45,19 @@ func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, shee
 	together_mark,ects_mark,sheet,student) VALUES(?,?,?,?,?,?,?,?);
 		`)
 
-	id := int(rand.Uint32())
+	rand.Seed(time.Now().UnixNano())
+	min := 1
+	max := 1000
+	random := rand.Intn(max-min+1) + min
+	random2 := rand.Intn(max-min+1) + min
+	id := int(sheetID + sheetMarks.SemesterMark + random + random2)
+	fmt.Println(id)
 
 	_, err = r.db.Exec(query, sheetMarks.ControlMark, id, sheetMarks.NationalMark, sheetMarks.SemesterMark, sheetMarks.TogetherMark,
 		sheetMarks.EctsMark, sheetID, studentID)
 	if err != nil {
-		return err
+		log.Println(err)
+		return sheetID, err
 	}
-	return nil
+	return sheetID, nil
 }
