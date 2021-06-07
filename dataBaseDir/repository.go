@@ -45,7 +45,7 @@ type StudentsInterface interface {
 	Get(ctx context.Context, id int) (*structs.Student, error)
 	GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error)
 	GetAllBorjniki(ctx context.Context) ([]*structs.AllStudInfo, error)
-	GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.AllStudInfo, error)
+	GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.StudentMarks, error)
 }
 
 type TeachersInterface interface {

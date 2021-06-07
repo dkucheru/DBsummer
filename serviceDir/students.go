@@ -45,7 +45,7 @@ func (s *studentsService) GetAllBorjniki(ctx context.Context) ([]*structs.AllStu
 	return subj, nil
 }
 
-func (s *studentsService) GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.AllStudInfo, error) {
+func (s *studentsService) GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.StudentMarks, error) {
 	subj, err := s.repository.Students().GetStudentByPIB(ctx, fn, ln, mn, year)
 	if err != nil {
 		return nil, err
