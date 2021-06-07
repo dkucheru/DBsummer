@@ -91,12 +91,12 @@
         //
         // let url = "/subjects/"+field.value;
         // let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
-        let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
+        // let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
 
         // //alert(url);
         //
         // xhttp.open("GET", url, false);
-        // let url = "/students/who_skipped_exam";
+        let url = "/students";
 
         xhttp.open("GET", url, false);
         xhttp.send();
@@ -131,7 +131,9 @@
                 // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['SubjectId', 'SubjectName', 'EducationalLevel', 'Faculty']; // changed this
+                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupCipher', 'GroupName', 'PibTeach']; // changed this
+
+                // var properties = ['SubjectId', 'SubjectName', 'EducationalLevel', 'Faculty']; // changed this
                 // var properties = ['number', 'name', 'date', 'took_office', 'left_office']; // changed this
 
                 // var capitalize = function(s) {
@@ -167,7 +169,7 @@
                 // document.getElementById('presidentialTable').appendChild(table);
             }
         };
-        let url = "/subjects";
+        let url = "/students";
         //alert(url);
 
         xhttp.open("GET", url, false);
