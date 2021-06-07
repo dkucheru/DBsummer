@@ -7,3 +7,10 @@ type Student struct {
 	MiddleName       string
 	RecordBookNumber string
 }
+
+type StudentMarks struct {
+	SubjectName  string
+	MarkTogether int
+	EctsMark     string
+	TeacherPIB   string
+}
