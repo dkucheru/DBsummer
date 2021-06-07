@@ -24,11 +24,15 @@ func New(address string, service *serviceDir.Service) *Rest {
 
 	api := mux.NewRouter()
 
-	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("C:\\Users\\Алина\\go\\src\\DBsummer\\runDir\\staticsDir"))))
+	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("C:\\Users\\Dariia\\go\\src\\DBsummer\\runDir\\staticsDir"))))
 	api.HandleFunc("/test", rest.test)
 	api.HandleFunc("/subjects/{id}", rest.getSubject).Methods("GET")
 	api.HandleFunc("/subjects", rest.getSubjects).Methods("GET")
 	api.HandleFunc("/students", rest.getStudentsList).Methods("GET")
+	api.HandleFunc("/students/who_skipped_exam", rest.getAllBorjniki).Methods("GET")
+	api.HandleFunc("/subjects/{fn}/{ln}/{mn}", rest.getStudentByPIB).Methods("GET")
+	api.HandleFunc("/sheets/{fn}/{ln}/{mn}/{subj}/{gr}/{ye}", rest.getSheetFromParams).Methods("GET")
+
 	rest.mux = api
 
 	return rest

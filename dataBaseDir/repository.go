@@ -12,6 +12,11 @@ type Repository interface {
 	Subjects() SubjectsInterface
 	Groups() GroupsInterface
 	Students() StudentsInterface
+	Teachers() TeachersInterface
+	Sheets() SheetsInterface
+	RunnerMarks() RunnerMarksInterface
+	Runners() RunnerInterface
+	SheetMarks() SheetMarksInterface
 }
 
 type Transaction interface {
@@ -39,4 +44,32 @@ type StudentsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context, id int) (*structs.Student, error)
 	GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error)
+	GetAllBorjniki(ctx context.Context) ([]*structs.AllStudInfo, error)
+	GetStudentByPIB(ctx context.Context, fn string, ln string, mn string) ([]*structs.AllStudInfo, error)
+}
+
+type TeachersInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type SheetsInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+	GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error)
+}
+
+type RunnerMarksInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type RunnerInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
+}
+
+type SheetMarksInterface interface {
+	Create(ctx context.Context) (id int, err error)
+	Get(ctx context.Context) error
 }

@@ -265,7 +265,7 @@ func newpostgres(db *DB) *postgresDB {
 }
 
 func (obj *postgresDB) Schema() string {
-	return `CREATE TABLE groups (
+	return `CREATE TABLE groups_s (
 	cipher text NOT NULL,
 	groupname text NOT NULL,
 	educationalyear text NOT NULL,
@@ -273,6 +273,50 @@ func (obj *postgresDB) Schema() string {
 	course text NOT NULL,
 	subject integer NOT NULL,
 	PRIMARY KEY ( cipher )
+);
+CREATE TABLE runners (
+	runner_number integer NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	date_of_expiration timestamp with time zone NOT NULL,
+	postponing_reason text NOT NULL,
+	type_of_control text NOT NULL,
+	teacher text NOT NULL,
+	PRIMARY KEY ( runner_number )
+);
+CREATE TABLE runner_marks (
+	check_mark integer NOT NULL,
+	runner_mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet_mark integer NOT NULL,
+	runner integer NOT NULL,
+	PRIMARY KEY ( runner_mark_number ),
+	UNIQUE ( sheet_mark )
+);
+CREATE TABLE sheets (
+	sheetid integer NOT NULL,
+	number_of_attendees integer NOT NULL,
+	number_of_absent integer NOT NULL,
+	number_of_ineligible integer NOT NULL,
+	type_of_control text NOT NULL,
+	date_of_compilation timestamp with time zone NOT NULL,
+	teacher text NOT NULL,
+	group_cipher text NOT NULL,
+	PRIMARY KEY ( sheetid ),
+	UNIQUE ( group_cipher )
+);
+CREATE TABLE sheet_marks (
+	check_mark integer NOT NULL,
+	mark_number integer NOT NULL,
+	national_mark text NOT NULL,
+	semester_mark integer NOT NULL,
+	together_mark integer NOT NULL,
+	ects_mark text NOT NULL,
+	sheet integer NOT NULL,
+	student text NOT NULL,
+	PRIMARY KEY ( mark_number )
 );
 CREATE TABLE students (
 	student_cipher text NOT NULL,
@@ -292,6 +336,16 @@ CREATE TABLE subjects (
 CREATE TABLE tableNews (
 	id_t text NOT NULL,
 	PRIMARY KEY ( id_t )
+);
+CREATE TABLE teachers (
+	teacher_cipher text NOT NULL,
+	firstname text NOT NULL,
+	lastname text NOT NULL,
+	middlename text NOT NULL,
+	scientificdegree text NOT NULL,
+	academictitles text NOT NULL,
+	post text NOT NULL,
+	PRIMARY KEY ( teacher_cipher )
 );`
 }
 
@@ -364,7 +418,7 @@ type Groups struct {
 	Subject         int
 }
 
-func (Groups) _Table() string { return "groups" }
+func (Groups) _Table() string { return "groups_s" }
 
 type Groups_Update_Fields struct {
 }
@@ -482,6 +536,638 @@ func (f Groups_Subject_Field) value() interface{} {
 }
 
 func (Groups_Subject_Field) _Column() string { return "subject" }
+
+type Runner struct {
+	RunnerNumber      int
+	DateOfCompilation time.Time
+	DateOfExpiration  time.Time
+	PostponingReason  string
+	TypeOfControl     string
+	Teacher           string
+}
+
+func (Runner) _Table() string { return "runners" }
+
+type Runner_Update_Fields struct {
+}
+
+type Runner_RunnerNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Runner_RunnerNumber(v int) Runner_RunnerNumber_Field {
+	return Runner_RunnerNumber_Field{_set: true, _value: v}
+}
+
+func (f Runner_RunnerNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_RunnerNumber_Field) _Column() string { return "runner_number" }
+
+type Runner_DateOfCompilation_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Runner_DateOfCompilation(v time.Time) Runner_DateOfCompilation_Field {
+	return Runner_DateOfCompilation_Field{_set: true, _value: v}
+}
+
+func (f Runner_DateOfCompilation_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_DateOfCompilation_Field) _Column() string { return "date_of_compilation" }
+
+type Runner_DateOfExpiration_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Runner_DateOfExpiration(v time.Time) Runner_DateOfExpiration_Field {
+	return Runner_DateOfExpiration_Field{_set: true, _value: v}
+}
+
+func (f Runner_DateOfExpiration_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_DateOfExpiration_Field) _Column() string { return "date_of_expiration" }
+
+type Runner_PostponingReason_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_PostponingReason(v string) Runner_PostponingReason_Field {
+	return Runner_PostponingReason_Field{_set: true, _value: v}
+}
+
+func (f Runner_PostponingReason_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_PostponingReason_Field) _Column() string { return "postponing_reason" }
+
+type Runner_TypeOfControl_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_TypeOfControl(v string) Runner_TypeOfControl_Field {
+	return Runner_TypeOfControl_Field{_set: true, _value: v}
+}
+
+func (f Runner_TypeOfControl_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_TypeOfControl_Field) _Column() string { return "type_of_control" }
+
+type Runner_Teacher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Runner_Teacher(v string) Runner_Teacher_Field {
+	return Runner_Teacher_Field{_set: true, _value: v}
+}
+
+func (f Runner_Teacher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Runner_Teacher_Field) _Column() string { return "teacher" }
+
+type RunnerMarks struct {
+	CheckMark        int
+	RunnerMarkNumber int
+	NationalMark     string
+	SemesterMark     int
+	TogetherMark     int
+	EctsMark         string
+	SheetMark        int
+	Runner           int
+}
+
+func (RunnerMarks) _Table() string { return "runner_marks" }
+
+type RunnerMarks_Update_Fields struct {
+}
+
+type RunnerMarks_CheckMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_CheckMark(v int) RunnerMarks_CheckMark_Field {
+	return RunnerMarks_CheckMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_CheckMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_CheckMark_Field) _Column() string { return "check_mark" }
+
+type RunnerMarks_RunnerMarkNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_RunnerMarkNumber(v int) RunnerMarks_RunnerMarkNumber_Field {
+	return RunnerMarks_RunnerMarkNumber_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_RunnerMarkNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_RunnerMarkNumber_Field) _Column() string { return "runner_mark_number" }
+
+type RunnerMarks_NationalMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func RunnerMarks_NationalMark(v string) RunnerMarks_NationalMark_Field {
+	return RunnerMarks_NationalMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_NationalMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_NationalMark_Field) _Column() string { return "national_mark" }
+
+type RunnerMarks_SemesterMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_SemesterMark(v int) RunnerMarks_SemesterMark_Field {
+	return RunnerMarks_SemesterMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_SemesterMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_SemesterMark_Field) _Column() string { return "semester_mark" }
+
+type RunnerMarks_TogetherMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_TogetherMark(v int) RunnerMarks_TogetherMark_Field {
+	return RunnerMarks_TogetherMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_TogetherMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_TogetherMark_Field) _Column() string { return "together_mark" }
+
+type RunnerMarks_EctsMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func RunnerMarks_EctsMark(v string) RunnerMarks_EctsMark_Field {
+	return RunnerMarks_EctsMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_EctsMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_EctsMark_Field) _Column() string { return "ects_mark" }
+
+type RunnerMarks_SheetMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_SheetMark(v int) RunnerMarks_SheetMark_Field {
+	return RunnerMarks_SheetMark_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_SheetMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_SheetMark_Field) _Column() string { return "sheet_mark" }
+
+type RunnerMarks_Runner_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func RunnerMarks_Runner(v int) RunnerMarks_Runner_Field {
+	return RunnerMarks_Runner_Field{_set: true, _value: v}
+}
+
+func (f RunnerMarks_Runner_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (RunnerMarks_Runner_Field) _Column() string { return "runner" }
+
+type Sheet struct {
+	Sheetid            int
+	NumberOfAttendees  int
+	NumberOfAbsent     int
+	NumberOfIneligible int
+	TypeOfControl      string
+	DateOfCompilation  time.Time
+	Teacher            string
+	GroupCipher        string
+}
+
+func (Sheet) _Table() string { return "sheets" }
+
+type Sheet_Update_Fields struct {
+}
+
+type Sheet_Sheetid_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_Sheetid(v int) Sheet_Sheetid_Field {
+	return Sheet_Sheetid_Field{_set: true, _value: v}
+}
+
+func (f Sheet_Sheetid_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_Sheetid_Field) _Column() string { return "sheetid" }
+
+type Sheet_NumberOfAttendees_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfAttendees(v int) Sheet_NumberOfAttendees_Field {
+	return Sheet_NumberOfAttendees_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfAttendees_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfAttendees_Field) _Column() string { return "number_of_attendees" }
+
+type Sheet_NumberOfAbsent_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfAbsent(v int) Sheet_NumberOfAbsent_Field {
+	return Sheet_NumberOfAbsent_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfAbsent_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfAbsent_Field) _Column() string { return "number_of_absent" }
+
+type Sheet_NumberOfIneligible_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func Sheet_NumberOfIneligible(v int) Sheet_NumberOfIneligible_Field {
+	return Sheet_NumberOfIneligible_Field{_set: true, _value: v}
+}
+
+func (f Sheet_NumberOfIneligible_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_NumberOfIneligible_Field) _Column() string { return "number_of_ineligible" }
+
+type Sheet_TypeOfControl_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_TypeOfControl(v string) Sheet_TypeOfControl_Field {
+	return Sheet_TypeOfControl_Field{_set: true, _value: v}
+}
+
+func (f Sheet_TypeOfControl_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_TypeOfControl_Field) _Column() string { return "type_of_control" }
+
+type Sheet_DateOfCompilation_Field struct {
+	_set   bool
+	_null  bool
+	_value time.Time
+}
+
+func Sheet_DateOfCompilation(v time.Time) Sheet_DateOfCompilation_Field {
+	return Sheet_DateOfCompilation_Field{_set: true, _value: v}
+}
+
+func (f Sheet_DateOfCompilation_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_DateOfCompilation_Field) _Column() string { return "date_of_compilation" }
+
+type Sheet_Teacher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_Teacher(v string) Sheet_Teacher_Field {
+	return Sheet_Teacher_Field{_set: true, _value: v}
+}
+
+func (f Sheet_Teacher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_Teacher_Field) _Column() string { return "teacher" }
+
+type Sheet_GroupCipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Sheet_GroupCipher(v string) Sheet_GroupCipher_Field {
+	return Sheet_GroupCipher_Field{_set: true, _value: v}
+}
+
+func (f Sheet_GroupCipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Sheet_GroupCipher_Field) _Column() string { return "group_cipher" }
+
+type SheetMarks struct {
+	CheckMark    int
+	MarkNumber   int
+	NationalMark string
+	SemesterMark int
+	TogetherMark int
+	EctsMark     string
+	Sheet        int
+	Student      string
+}
+
+func (SheetMarks) _Table() string { return "sheet_marks" }
+
+type SheetMarks_Update_Fields struct {
+}
+
+type SheetMarks_CheckMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_CheckMark(v int) SheetMarks_CheckMark_Field {
+	return SheetMarks_CheckMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_CheckMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_CheckMark_Field) _Column() string { return "check_mark" }
+
+type SheetMarks_MarkNumber_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_MarkNumber(v int) SheetMarks_MarkNumber_Field {
+	return SheetMarks_MarkNumber_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_MarkNumber_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_MarkNumber_Field) _Column() string { return "mark_number" }
+
+type SheetMarks_NationalMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_NationalMark(v string) SheetMarks_NationalMark_Field {
+	return SheetMarks_NationalMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_NationalMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_NationalMark_Field) _Column() string { return "national_mark" }
+
+type SheetMarks_SemesterMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_SemesterMark(v int) SheetMarks_SemesterMark_Field {
+	return SheetMarks_SemesterMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_SemesterMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_SemesterMark_Field) _Column() string { return "semester_mark" }
+
+type SheetMarks_TogetherMark_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_TogetherMark(v int) SheetMarks_TogetherMark_Field {
+	return SheetMarks_TogetherMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_TogetherMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_TogetherMark_Field) _Column() string { return "together_mark" }
+
+type SheetMarks_EctsMark_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_EctsMark(v string) SheetMarks_EctsMark_Field {
+	return SheetMarks_EctsMark_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_EctsMark_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_EctsMark_Field) _Column() string { return "ects_mark" }
+
+type SheetMarks_Sheet_Field struct {
+	_set   bool
+	_null  bool
+	_value int
+}
+
+func SheetMarks_Sheet(v int) SheetMarks_Sheet_Field {
+	return SheetMarks_Sheet_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_Sheet_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_Sheet_Field) _Column() string { return "sheet" }
+
+type SheetMarks_Student_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func SheetMarks_Student(v string) SheetMarks_Student_Field {
+	return SheetMarks_Student_Field{_set: true, _value: v}
+}
+
+func (f SheetMarks_Student_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (SheetMarks_Student_Field) _Column() string { return "student" }
 
 type Student struct {
 	StudentCipher    string
@@ -706,6 +1392,154 @@ func (f TableNew_IdT_Field) value() interface{} {
 }
 
 func (TableNew_IdT_Field) _Column() string { return "id_t" }
+
+type Teachers struct {
+	TeacherCipher    string
+	Firstname        string
+	Lastname         string
+	Middlename       string
+	Scientificdegree string
+	Academictitles   string
+	Post             string
+}
+
+func (Teachers) _Table() string { return "teachers" }
+
+type Teachers_Update_Fields struct {
+}
+
+type Teachers_TeacherCipher_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_TeacherCipher(v string) Teachers_TeacherCipher_Field {
+	return Teachers_TeacherCipher_Field{_set: true, _value: v}
+}
+
+func (f Teachers_TeacherCipher_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_TeacherCipher_Field) _Column() string { return "teacher_cipher" }
+
+type Teachers_Firstname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Firstname(v string) Teachers_Firstname_Field {
+	return Teachers_Firstname_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Firstname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Firstname_Field) _Column() string { return "firstname" }
+
+type Teachers_Lastname_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Lastname(v string) Teachers_Lastname_Field {
+	return Teachers_Lastname_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Lastname_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Lastname_Field) _Column() string { return "lastname" }
+
+type Teachers_Middlename_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Middlename(v string) Teachers_Middlename_Field {
+	return Teachers_Middlename_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Middlename_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Middlename_Field) _Column() string { return "middlename" }
+
+type Teachers_Scientificdegree_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Scientificdegree(v string) Teachers_Scientificdegree_Field {
+	return Teachers_Scientificdegree_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Scientificdegree_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Scientificdegree_Field) _Column() string { return "scientificdegree" }
+
+type Teachers_Academictitles_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Academictitles(v string) Teachers_Academictitles_Field {
+	return Teachers_Academictitles_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Academictitles_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Academictitles_Field) _Column() string { return "academictitles" }
+
+type Teachers_Post_Field struct {
+	_set   bool
+	_null  bool
+	_value string
+}
+
+func Teachers_Post(v string) Teachers_Post_Field {
+	return Teachers_Post_Field{_set: true, _value: v}
+}
+
+func (f Teachers_Post_Field) value() interface{} {
+	if !f._set || f._null {
+		return nil
+	}
+	return f._value
+}
+
+func (Teachers_Post_Field) _Column() string { return "post" }
 
 func toUTC(t time.Time) time.Time {
 	return t.UTC()
@@ -1178,21 +2012,21 @@ func (obj *postgresImpl) Create_Subjects(ctx context.Context,
 }
 
 func (obj *postgresImpl) Create_Groups(ctx context.Context,
-	groups_cipher Groups_Cipher_Field,
-	groups_groupname Groups_Groupname_Field,
-	groups_educationalyear Groups_Educationalyear_Field,
-	groups_semester Groups_Semester_Field,
-	groups_course Groups_Course_Field,
-	groups_subject Groups_Subject_Field) (
-	groups *Groups, err error) {
-	__cipher_val := groups_cipher.value()
-	__groupname_val := groups_groupname.value()
-	__educationalyear_val := groups_educationalyear.value()
-	__semester_val := groups_semester.value()
-	__course_val := groups_course.value()
-	__subject_val := groups_subject.value()
+	groups__cipher Groups_Cipher_Field,
+	groups__groupname Groups_Groupname_Field,
+	groups__educationalyear Groups_Educationalyear_Field,
+	groups__semester Groups_Semester_Field,
+	groups__course Groups_Course_Field,
+	groups__subject Groups_Subject_Field) (
+	groups_ *Groups, err error) {
+	__cipher_val := groups__cipher.value()
+	__groupname_val := groups__groupname.value()
+	__educationalyear_val := groups__educationalyear.value()
+	__semester_val := groups__semester.value()
+	__course_val := groups__course.value()
+	__subject_val := groups__subject.value()
 
-	var __embed_stmt = __sqlbundle_Literal("INSERT INTO groups ( cipher, groupname, educationalyear, semester, course, subject ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING groups.cipher, groups.groupname, groups.educationalyear, groups.semester, groups.course, groups.subject")
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO groups_s ( cipher, groupname, educationalyear, semester, course, subject ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING groups_s.cipher, groups_s.groupname, groups_s.educationalyear, groups_s.semester, groups_s.course, groups_s.subject")
 
 	var __values []interface{}
 	__values = append(__values, __cipher_val, __groupname_val, __educationalyear_val, __semester_val, __course_val, __subject_val)
@@ -1200,12 +2034,12 @@ func (obj *postgresImpl) Create_Groups(ctx context.Context,
 	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
 	obj.logStmt(__stmt, __values...)
 
-	groups = &Groups{}
-	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&groups.Cipher, &groups.Groupname, &groups.Educationalyear, &groups.Semester, &groups.Course, &groups.Subject)
+	groups_ = &Groups{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&groups_.Cipher, &groups_.Groupname, &groups_.Educationalyear, &groups_.Semester, &groups_.Course, &groups_.Subject)
 	if err != nil {
 		return nil, obj.makeErr(err)
 	}
-	return groups, nil
+	return groups_, nil
 
 }
 
@@ -1239,6 +2073,180 @@ func (obj *postgresImpl) Create_Student(ctx context.Context,
 
 }
 
+func (obj *postgresImpl) Create_Teachers(ctx context.Context,
+	teachers_teacher_cipher Teachers_TeacherCipher_Field,
+	teachers_firstname Teachers_Firstname_Field,
+	teachers_lastname Teachers_Lastname_Field,
+	teachers_middlename Teachers_Middlename_Field,
+	teachers_scientificdegree Teachers_Scientificdegree_Field,
+	teachers_academictitles Teachers_Academictitles_Field,
+	teachers_post Teachers_Post_Field) (
+	teachers *Teachers, err error) {
+	__teacher_cipher_val := teachers_teacher_cipher.value()
+	__firstname_val := teachers_firstname.value()
+	__lastname_val := teachers_lastname.value()
+	__middlename_val := teachers_middlename.value()
+	__scientificdegree_val := teachers_scientificdegree.value()
+	__academictitles_val := teachers_academictitles.value()
+	__post_val := teachers_post.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO teachers ( teacher_cipher, firstname, lastname, middlename, scientificdegree, academictitles, post ) VALUES ( ?, ?, ?, ?, ?, ?, ? ) RETURNING teachers.teacher_cipher, teachers.firstname, teachers.lastname, teachers.middlename, teachers.scientificdegree, teachers.academictitles, teachers.post")
+
+	var __values []interface{}
+	__values = append(__values, __teacher_cipher_val, __firstname_val, __lastname_val, __middlename_val, __scientificdegree_val, __academictitles_val, __post_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	teachers = &Teachers{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&teachers.TeacherCipher, &teachers.Firstname, &teachers.Lastname, &teachers.Middlename, &teachers.Scientificdegree, &teachers.Academictitles, &teachers.Post)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return teachers, nil
+
+}
+
+func (obj *postgresImpl) Create_Sheet(ctx context.Context,
+	sheet_sheetid Sheet_Sheetid_Field,
+	sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+	sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+	sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+	sheet_type_of_control Sheet_TypeOfControl_Field,
+	sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+	sheet_teacher Sheet_Teacher_Field,
+	sheet_group_cipher Sheet_GroupCipher_Field) (
+	sheet *Sheet, err error) {
+	__sheetid_val := sheet_sheetid.value()
+	__number_of_attendees_val := sheet_number_of_attendees.value()
+	__number_of_absent_val := sheet_number_of_absent.value()
+	__number_of_ineligible_val := sheet_number_of_ineligible.value()
+	__type_of_control_val := sheet_type_of_control.value()
+	__date_of_compilation_val := sheet_date_of_compilation.value()
+	__teacher_val := sheet_teacher.value()
+	__group_cipher_val := sheet_group_cipher.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO sheets ( sheetid, number_of_attendees, number_of_absent, number_of_ineligible, type_of_control, date_of_compilation, teacher, group_cipher ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING sheets.sheetid, sheets.number_of_attendees, sheets.number_of_absent, sheets.number_of_ineligible, sheets.type_of_control, sheets.date_of_compilation, sheets.teacher, sheets.group_cipher")
+
+	var __values []interface{}
+	__values = append(__values, __sheetid_val, __number_of_attendees_val, __number_of_absent_val, __number_of_ineligible_val, __type_of_control_val, __date_of_compilation_val, __teacher_val, __group_cipher_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	sheet = &Sheet{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&sheet.Sheetid, &sheet.NumberOfAttendees, &sheet.NumberOfAbsent, &sheet.NumberOfIneligible, &sheet.TypeOfControl, &sheet.DateOfCompilation, &sheet.Teacher, &sheet.GroupCipher)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return sheet, nil
+
+}
+
+func (obj *postgresImpl) Create_RunnerMarks(ctx context.Context,
+	runner_marks_check_mark RunnerMarks_CheckMark_Field,
+	runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+	runner_marks_national_mark RunnerMarks_NationalMark_Field,
+	runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+	runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+	runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+	runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+	runner_marks_runner RunnerMarks_Runner_Field) (
+	runner_marks *RunnerMarks, err error) {
+	__check_mark_val := runner_marks_check_mark.value()
+	__runner_mark_number_val := runner_marks_runner_mark_number.value()
+	__national_mark_val := runner_marks_national_mark.value()
+	__semester_mark_val := runner_marks_semester_mark.value()
+	__together_mark_val := runner_marks_together_mark.value()
+	__ects_mark_val := runner_marks_ects_mark.value()
+	__sheet_mark_val := runner_marks_sheet_mark.value()
+	__runner_val := runner_marks_runner.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO runner_marks ( check_mark, runner_mark_number, national_mark, semester_mark, together_mark, ects_mark, sheet_mark, runner ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING runner_marks.check_mark, runner_marks.runner_mark_number, runner_marks.national_mark, runner_marks.semester_mark, runner_marks.together_mark, runner_marks.ects_mark, runner_marks.sheet_mark, runner_marks.runner")
+
+	var __values []interface{}
+	__values = append(__values, __check_mark_val, __runner_mark_number_val, __national_mark_val, __semester_mark_val, __together_mark_val, __ects_mark_val, __sheet_mark_val, __runner_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	runner_marks = &RunnerMarks{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&runner_marks.CheckMark, &runner_marks.RunnerMarkNumber, &runner_marks.NationalMark, &runner_marks.SemesterMark, &runner_marks.TogetherMark, &runner_marks.EctsMark, &runner_marks.SheetMark, &runner_marks.Runner)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return runner_marks, nil
+
+}
+
+func (obj *postgresImpl) Create_Runner(ctx context.Context,
+	runner_runner_number Runner_RunnerNumber_Field,
+	runner_date_of_compilation Runner_DateOfCompilation_Field,
+	runner_date_of_expiration Runner_DateOfExpiration_Field,
+	runner_postponing_reason Runner_PostponingReason_Field,
+	runner_type_of_control Runner_TypeOfControl_Field,
+	runner_teacher Runner_Teacher_Field) (
+	runner *Runner, err error) {
+	__runner_number_val := runner_runner_number.value()
+	__date_of_compilation_val := runner_date_of_compilation.value()
+	__date_of_expiration_val := runner_date_of_expiration.value()
+	__postponing_reason_val := runner_postponing_reason.value()
+	__type_of_control_val := runner_type_of_control.value()
+	__teacher_val := runner_teacher.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO runners ( runner_number, date_of_compilation, date_of_expiration, postponing_reason, type_of_control, teacher ) VALUES ( ?, ?, ?, ?, ?, ? ) RETURNING runners.runner_number, runners.date_of_compilation, runners.date_of_expiration, runners.postponing_reason, runners.type_of_control, runners.teacher")
+
+	var __values []interface{}
+	__values = append(__values, __runner_number_val, __date_of_compilation_val, __date_of_expiration_val, __postponing_reason_val, __type_of_control_val, __teacher_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	runner = &Runner{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&runner.RunnerNumber, &runner.DateOfCompilation, &runner.DateOfExpiration, &runner.PostponingReason, &runner.TypeOfControl, &runner.Teacher)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return runner, nil
+
+}
+
+func (obj *postgresImpl) Create_SheetMarks(ctx context.Context,
+	sheet_marks_check_mark SheetMarks_CheckMark_Field,
+	sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+	sheet_marks_national_mark SheetMarks_NationalMark_Field,
+	sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+	sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+	sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+	sheet_marks_sheet SheetMarks_Sheet_Field,
+	sheet_marks_student SheetMarks_Student_Field) (
+	sheet_marks *SheetMarks, err error) {
+	__check_mark_val := sheet_marks_check_mark.value()
+	__mark_number_val := sheet_marks_mark_number.value()
+	__national_mark_val := sheet_marks_national_mark.value()
+	__semester_mark_val := sheet_marks_semester_mark.value()
+	__together_mark_val := sheet_marks_together_mark.value()
+	__ects_mark_val := sheet_marks_ects_mark.value()
+	__sheet_val := sheet_marks_sheet.value()
+	__student_val := sheet_marks_student.value()
+
+	var __embed_stmt = __sqlbundle_Literal("INSERT INTO sheet_marks ( check_mark, mark_number, national_mark, semester_mark, together_mark, ects_mark, sheet, student ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? ) RETURNING sheet_marks.check_mark, sheet_marks.mark_number, sheet_marks.national_mark, sheet_marks.semester_mark, sheet_marks.together_mark, sheet_marks.ects_mark, sheet_marks.sheet, sheet_marks.student")
+
+	var __values []interface{}
+	__values = append(__values, __check_mark_val, __mark_number_val, __national_mark_val, __semester_mark_val, __together_mark_val, __ects_mark_val, __sheet_val, __student_val)
+
+	var __stmt = __sqlbundle_Render(obj.dialect, __embed_stmt)
+	obj.logStmt(__stmt, __values...)
+
+	sheet_marks = &SheetMarks{}
+	err = obj.driver.QueryRowContext(ctx, __stmt, __values...).Scan(&sheet_marks.CheckMark, &sheet_marks.MarkNumber, &sheet_marks.NationalMark, &sheet_marks.SemesterMark, &sheet_marks.TogetherMark, &sheet_marks.EctsMark, &sheet_marks.Sheet, &sheet_marks.Student)
+	if err != nil {
+		return nil, obj.makeErr(err)
+	}
+	return sheet_marks, nil
+
+}
+
 func (impl postgresImpl) isConstraintError(err error) (
 	constraint string, ok bool) {
 	if e, ok := err.(*pq.Error); ok {
@@ -1252,6 +2260,16 @@ func (impl postgresImpl) isConstraintError(err error) (
 func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error) {
 	var __res sql.Result
 	var __count int64
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM teachers;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
 	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM tableNews;")
 	if err != nil {
 		return 0, obj.makeErr(err)
@@ -1282,7 +2300,47 @@ func (obj *postgresImpl) deleteAll(ctx context.Context) (count int64, err error)
 		return 0, obj.makeErr(err)
 	}
 	count += __count
-	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM groups;")
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM sheet_marks;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM sheets;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM runner_marks;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM runners;")
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+
+	__count, err = __res.RowsAffected()
+	if err != nil {
+		return 0, obj.makeErr(err)
+	}
+	count += __count
+	__res, err = obj.driver.ExecContext(ctx, "DELETE FROM groups_s;")
 	if err != nil {
 		return 0, obj.makeErr(err)
 	}
@@ -1340,18 +2398,88 @@ func (rx *Rx) Rollback() (err error) {
 }
 
 func (rx *Rx) Create_Groups(ctx context.Context,
-	groups_cipher Groups_Cipher_Field,
-	groups_groupname Groups_Groupname_Field,
-	groups_educationalyear Groups_Educationalyear_Field,
-	groups_semester Groups_Semester_Field,
-	groups_course Groups_Course_Field,
-	groups_subject Groups_Subject_Field) (
-	groups *Groups, err error) {
+	groups__cipher Groups_Cipher_Field,
+	groups__groupname Groups_Groupname_Field,
+	groups__educationalyear Groups_Educationalyear_Field,
+	groups__semester Groups_Semester_Field,
+	groups__course Groups_Course_Field,
+	groups__subject Groups_Subject_Field) (
+	groups_ *Groups, err error) {
 	var tx *Tx
 	if tx, err = rx.getTx(ctx); err != nil {
 		return
 	}
-	return tx.Create_Groups(ctx, groups_cipher, groups_groupname, groups_educationalyear, groups_semester, groups_course, groups_subject)
+	return tx.Create_Groups(ctx, groups__cipher, groups__groupname, groups__educationalyear, groups__semester, groups__course, groups__subject)
+
+}
+
+func (rx *Rx) Create_Runner(ctx context.Context,
+	runner_runner_number Runner_RunnerNumber_Field,
+	runner_date_of_compilation Runner_DateOfCompilation_Field,
+	runner_date_of_expiration Runner_DateOfExpiration_Field,
+	runner_postponing_reason Runner_PostponingReason_Field,
+	runner_type_of_control Runner_TypeOfControl_Field,
+	runner_teacher Runner_Teacher_Field) (
+	runner *Runner, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Runner(ctx, runner_runner_number, runner_date_of_compilation, runner_date_of_expiration, runner_postponing_reason, runner_type_of_control, runner_teacher)
+
+}
+
+func (rx *Rx) Create_RunnerMarks(ctx context.Context,
+	runner_marks_check_mark RunnerMarks_CheckMark_Field,
+	runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+	runner_marks_national_mark RunnerMarks_NationalMark_Field,
+	runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+	runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+	runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+	runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+	runner_marks_runner RunnerMarks_Runner_Field) (
+	runner_marks *RunnerMarks, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_RunnerMarks(ctx, runner_marks_check_mark, runner_marks_runner_mark_number, runner_marks_national_mark, runner_marks_semester_mark, runner_marks_together_mark, runner_marks_ects_mark, runner_marks_sheet_mark, runner_marks_runner)
+
+}
+
+func (rx *Rx) Create_Sheet(ctx context.Context,
+	sheet_sheetid Sheet_Sheetid_Field,
+	sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+	sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+	sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+	sheet_type_of_control Sheet_TypeOfControl_Field,
+	sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+	sheet_teacher Sheet_Teacher_Field,
+	sheet_group_cipher Sheet_GroupCipher_Field) (
+	sheet *Sheet, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Sheet(ctx, sheet_sheetid, sheet_number_of_attendees, sheet_number_of_absent, sheet_number_of_ineligible, sheet_type_of_control, sheet_date_of_compilation, sheet_teacher, sheet_group_cipher)
+
+}
+
+func (rx *Rx) Create_SheetMarks(ctx context.Context,
+	sheet_marks_check_mark SheetMarks_CheckMark_Field,
+	sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+	sheet_marks_national_mark SheetMarks_NationalMark_Field,
+	sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+	sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+	sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+	sheet_marks_sheet SheetMarks_Sheet_Field,
+	sheet_marks_student SheetMarks_Student_Field) (
+	sheet_marks *SheetMarks, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_SheetMarks(ctx, sheet_marks_check_mark, sheet_marks_mark_number, sheet_marks_national_mark, sheet_marks_semester_mark, sheet_marks_together_mark, sheet_marks_ects_mark, sheet_marks_sheet, sheet_marks_student)
 
 }
 
@@ -1395,15 +2523,74 @@ func (rx *Rx) Create_TableNew(ctx context.Context,
 
 }
 
+func (rx *Rx) Create_Teachers(ctx context.Context,
+	teachers_teacher_cipher Teachers_TeacherCipher_Field,
+	teachers_firstname Teachers_Firstname_Field,
+	teachers_lastname Teachers_Lastname_Field,
+	teachers_middlename Teachers_Middlename_Field,
+	teachers_scientificdegree Teachers_Scientificdegree_Field,
+	teachers_academictitles Teachers_Academictitles_Field,
+	teachers_post Teachers_Post_Field) (
+	teachers *Teachers, err error) {
+	var tx *Tx
+	if tx, err = rx.getTx(ctx); err != nil {
+		return
+	}
+	return tx.Create_Teachers(ctx, teachers_teacher_cipher, teachers_firstname, teachers_lastname, teachers_middlename, teachers_scientificdegree, teachers_academictitles, teachers_post)
+
+}
+
 type Methods interface {
 	Create_Groups(ctx context.Context,
-		groups_cipher Groups_Cipher_Field,
-		groups_groupname Groups_Groupname_Field,
-		groups_educationalyear Groups_Educationalyear_Field,
-		groups_semester Groups_Semester_Field,
-		groups_course Groups_Course_Field,
-		groups_subject Groups_Subject_Field) (
-		groups *Groups, err error)
+		groups__cipher Groups_Cipher_Field,
+		groups__groupname Groups_Groupname_Field,
+		groups__educationalyear Groups_Educationalyear_Field,
+		groups__semester Groups_Semester_Field,
+		groups__course Groups_Course_Field,
+		groups__subject Groups_Subject_Field) (
+		groups_ *Groups, err error)
+
+	Create_Runner(ctx context.Context,
+		runner_runner_number Runner_RunnerNumber_Field,
+		runner_date_of_compilation Runner_DateOfCompilation_Field,
+		runner_date_of_expiration Runner_DateOfExpiration_Field,
+		runner_postponing_reason Runner_PostponingReason_Field,
+		runner_type_of_control Runner_TypeOfControl_Field,
+		runner_teacher Runner_Teacher_Field) (
+		runner *Runner, err error)
+
+	Create_RunnerMarks(ctx context.Context,
+		runner_marks_check_mark RunnerMarks_CheckMark_Field,
+		runner_marks_runner_mark_number RunnerMarks_RunnerMarkNumber_Field,
+		runner_marks_national_mark RunnerMarks_NationalMark_Field,
+		runner_marks_semester_mark RunnerMarks_SemesterMark_Field,
+		runner_marks_together_mark RunnerMarks_TogetherMark_Field,
+		runner_marks_ects_mark RunnerMarks_EctsMark_Field,
+		runner_marks_sheet_mark RunnerMarks_SheetMark_Field,
+		runner_marks_runner RunnerMarks_Runner_Field) (
+		runner_marks *RunnerMarks, err error)
+
+	Create_Sheet(ctx context.Context,
+		sheet_sheetid Sheet_Sheetid_Field,
+		sheet_number_of_attendees Sheet_NumberOfAttendees_Field,
+		sheet_number_of_absent Sheet_NumberOfAbsent_Field,
+		sheet_number_of_ineligible Sheet_NumberOfIneligible_Field,
+		sheet_type_of_control Sheet_TypeOfControl_Field,
+		sheet_date_of_compilation Sheet_DateOfCompilation_Field,
+		sheet_teacher Sheet_Teacher_Field,
+		sheet_group_cipher Sheet_GroupCipher_Field) (
+		sheet *Sheet, err error)
+
+	Create_SheetMarks(ctx context.Context,
+		sheet_marks_check_mark SheetMarks_CheckMark_Field,
+		sheet_marks_mark_number SheetMarks_MarkNumber_Field,
+		sheet_marks_national_mark SheetMarks_NationalMark_Field,
+		sheet_marks_semester_mark SheetMarks_SemesterMark_Field,
+		sheet_marks_together_mark SheetMarks_TogetherMark_Field,
+		sheet_marks_ects_mark SheetMarks_EctsMark_Field,
+		sheet_marks_sheet SheetMarks_Sheet_Field,
+		sheet_marks_student SheetMarks_Student_Field) (
+		sheet_marks *SheetMarks, err error)
 
 	Create_Student(ctx context.Context,
 		student_student_cipher Student_StudentCipher_Field,
@@ -1423,6 +2610,16 @@ type Methods interface {
 	Create_TableNew(ctx context.Context,
 		tableNew_id_t TableNew_IdT_Field) (
 		tableNew *TableNew, err error)
+
+	Create_Teachers(ctx context.Context,
+		teachers_teacher_cipher Teachers_TeacherCipher_Field,
+		teachers_firstname Teachers_Firstname_Field,
+		teachers_lastname Teachers_Lastname_Field,
+		teachers_middlename Teachers_Middlename_Field,
+		teachers_scientificdegree Teachers_Scientificdegree_Field,
+		teachers_academictitles Teachers_Academictitles_Field,
+		teachers_post Teachers_Post_Field) (
+		teachers *Teachers, err error)
 }
 
 type TxMethods interface {

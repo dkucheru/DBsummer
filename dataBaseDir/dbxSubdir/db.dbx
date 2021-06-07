@@ -13,7 +13,7 @@ model subjects (
     )
 create subjects()
 
-model groups (
+model groups_ (
     key cipher
     field cipher text
     field groupname text
@@ -22,7 +22,7 @@ model groups (
     field course text
     field subject int
     )
-create groups()
+create groups_()
 
 model student (
     key student_cipher
@@ -33,3 +33,67 @@ model student (
     field record_book_number text
     )
 create student()
+
+model teachers (
+    key teacher_cipher
+    field teacher_cipher text
+    field firstname text
+    field lastname text
+    field middlename text
+    field scientificdegree text
+    field academictitles text
+    field post text
+    )
+create teachers()
+
+model sheet (
+    key sheetid
+    unique group_cipher
+    field sheetid int
+    field number_of_attendees int
+    field number_of_absent int
+    field number_of_ineligible int
+    field type_of_control text
+    field date_of_compilation timestamp
+    field teacher text
+    field group_cipher text
+   )
+create sheet()
+
+model runner_marks (
+    key runner_mark_number
+    unique sheet_mark
+    field check_mark int
+    field runner_mark_number int
+    field national_mark text
+    field semester_mark int
+    field together_mark int
+    field ects_mark text
+    field sheet_mark int
+    field runner int
+   )
+create runner_marks()
+
+model runner (
+    key runner_number
+    field runner_number int
+    field date_of_compilation timestamp
+    field date_of_expiration timestamp
+    field postponing_reason text
+    field type_of_control text
+    field teacher text
+   )
+create runner()
+
+model sheet_marks (
+    key mark_number
+    field check_mark int
+    field mark_number int
+    field national_mark text
+    field semester_mark int
+    field together_mark int
+    field ects_mark text
+    field sheet int
+    field student text
+    )
+create sheet_marks()

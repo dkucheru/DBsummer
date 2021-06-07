@@ -11,9 +11,14 @@ type Config struct {
 type Service struct {
 	repository db.Repository
 
-	Subjects *subjectsService
-	Groups   *groupsService
-	Students *studentsService
+	Subjects    *subjectsService
+	Groups      *groupsService
+	Students    *studentsService
+	Teachers    *teachersService
+	Sheets      *sheetsService
+	RunnerMarks *runnerMarksService
+	Runners     *runnersService
+	SheetMarks  *sheetMarksService
 }
 
 func NewService(conf *Config) *Service {
@@ -24,5 +29,10 @@ func NewService(conf *Config) *Service {
 	service.Subjects = newSubjectsService(service, service.repository)
 	service.Groups = newGroupsService(service, service.repository)
 	service.Students = newStudentsService(service, service.repository)
+	service.Teachers = newTeachersService(service, service.repository)
+	service.Sheets = newSheetsService(service, service.repository)
+	service.RunnerMarks = newrunnerMarksService(service, service.repository)
+	service.Runners = newRunnersService(service, service.repository)
+	service.SheetMarks = newSheetMarksService(service, service.repository)
 	return service
 }

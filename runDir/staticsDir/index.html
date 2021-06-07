@@ -17,9 +17,33 @@
     </tbody>
 </table>
 <form>
+<!--    <label>-->
+<!--        ID:-->
+<!--        <input type="text" id="input-id">-->
+<!--    </label>-->
     <label>
-        ID:
-        <input type="text" id="input-id">
+        FirstName:
+        <input type="text" id="fn">
+    </label>
+    <label>
+        LastName:
+        <input type="text" id="ln">
+    </label>
+    <label>
+        MiddleName:
+        <input type="text" id="mn">
+    </label>
+    <label>
+        Subject:
+        <input type="text" id="subj">
+    </label>
+    <label>
+        Group:
+        <input type="text" id="gr">
+    </label>
+    <label>
+        Year:
+        <input type="text" id="ye">
     </label>
     <button type="submit" onclick="loadSubject()">Get</button>
 </form>
@@ -46,13 +70,33 @@
         };
 
         // let field = document.getElementById("input-id");
+        let fn = document.getElementById("fn");
+        console.log("firstname : ", fn.value);
+
+        let ln = document.getElementById("ln");
+        console.log("lastname : ", ln.value);
+
+        let mn = document.getElementById("mn");
+        console.log("secondname : ", mn.value);
+
+        let  subj = document.getElementById("subj");
+        console.log("subject : ", subj.value);
+
+        let  gr = document.getElementById("gr");
+        console.log("group : ", gr.value);
+
+        let  ye = document.getElementById("ye");
+        console.log("year : ", ye.value);
+
         //
         // let url = "/subjects/"+field.value;
+        // let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
+        let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
+
         // //alert(url);
         //
         // xhttp.open("GET", url, false);
-        let url = "/students";
-        //alert(url);
+        // let url = "/students/who_skipped_exam";
 
         xhttp.open("GET", url, false);
         xhttp.send();
