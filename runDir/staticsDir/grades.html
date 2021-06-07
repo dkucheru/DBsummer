@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -22,5 +23,111 @@
         </div>
     </header>
 </head>
+<script src=
+        "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+
+</script>
+<style>
+    ul.hr {
+        max-width: 100%;
+        text-align: center;
+
+    }
+    ul.hr div {
+        display: inline-block;
+        text-align: left;
+    }
+</style>
+<body onload="loadPresidents()">
+<ul class="hr">
+    <div><input type="number" id="idStud" onKeyUp="myFunction(0,'idStud')"
+                placeholder="Type student ID.."></div>
+    <div><input type="text" id="studPib" onKeyUp="myFunction(1,'studPib')"
+                placeholder="Type student PIB.."></div>
+    <div><input type="text" id="subjName" onKeyUp="myFunction(2,'subjName')"
+                placeholder="Type subject name.."></div>
+    <div><input type="number" id="groupID" onKeyUp="myFunction(3,'groupID')"
+                placeholder="Type group ID.." ></div>
+    <div><input type="text" id="groupName" onKeyUp="myFunction(4,'groupName')"
+                placeholder="Type group Name.."></div>
+    <div><input type="text" id="teachPib" onKeyUp="myFunction(5,'teachPib')"
+                placeholder="Type teacher PIB.." ></div>
+</ul>
+<table class="table table-striped" id="info-table">
+    <thead>
+    <tr>
+        <th>Код студенту</th>
+        <th>ПІБ студента</th>
+        <th>Назва</th>
+        <th>Год групи</th>
+        <th>Назва групи</th>
+        <th>Викладач</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+    function loadPresidents() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                var data = this.responseText;
+                var jsonResponse = JSON.parse(data);
+                // console.log(jsonResponse["presidents"]);
+                var table = document.getElementById('info-table');
+                table.setAttribute('class', 'history');
+                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupCipher','GroupName','PibTeach']; // changed this
+
+                var tr = document.createElement('tr');
+
+                table.appendChild(tr);
+                var tr, row;
+                console.log("jsonResponse", jsonResponse); // changed this
+                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
+                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
+                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
+                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
+
+
+                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                    tr = document.createElement('tr');
+                    row = jsonResponse.Data[r]; // changed this
+                    for (var i = 0; i < properties.length; i++) {
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(row[properties[i]]));
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+            }
+        };
+        let url = "/students";
+        //alert(url);
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
+    function myFunction(index,inputname) {
+        var phrase = document.getElementById(inputname);
+        var table = document.getElementById('info-table');
+        var regPhrase = new RegExp(phrase.value, 'i');
+        var flag = false;
+        for (var i = 1; i < table.rows.length; i++) {
+            flag = false;
+            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
+                flag = regPhrase.test(table.rows[i].cells[index].innerHTML);
+                if (flag) break;
+            }
+            if (flag) {
+                table.rows[i].style.display = "";
+            } else {
+                table.rows[i].style.display = "none";
+            }
+
+        }
+    }
+</script>
 </body>
 </html>
+
