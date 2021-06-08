@@ -2,7 +2,6 @@ package pdfReading
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/ledongthuc/pdf"
 	"log"
 	"regexp"
@@ -53,7 +52,7 @@ type ExtractedInformation struct {
 	ExtractedStudents []*StudInfoFromPDF
 }
 
-func parsePDFfile(content string) ExtractedInformation {
+func ParsePDFfile(content string) *ExtractedInformation {
 	s := ExtractedInformation{}
 	var allStudInfo []*StudInfoFromPDF
 	regexWords := regexp.MustCompile(`([^_\s.:\-,]+)`)
@@ -64,7 +63,7 @@ func parsePDFfile(content string) ExtractedInformation {
 		if s1 != "№" {
 			s1 = strings.ToLower(formatWord(&s1))
 		}
-		fmt.Println(s1)
+		//fmt.Println(s1)
 		if s1 != "" {
 			if s1 == "група" {
 				s2 := strings.ToLower(formatWord(&(words[i+1])[0]))
@@ -243,7 +242,8 @@ func parsePDFfile(content string) ExtractedInformation {
 				_, err = strconv.Atoi(isNumberIfStudentHasMiddleName)
 				if err != nil {
 					//not a number => student doesn`t have a middle name
-					log.Println(err)
+					//log.Println(err )
+					log.Print(" A person doesn`t have a middle name")
 					stud.FirstName = strings.ToLower(formatWord(&(words[i-3])[0]))
 					stud.Lastname = strings.ToLower(formatWord(&(words[i-4])[0]))
 				} else {
@@ -258,7 +258,7 @@ func parsePDFfile(content string) ExtractedInformation {
 
 	}
 	s.ExtractedStudents = allStudInfo
-	return s
+	return &s
 }
 
 func formatWord(str *string) string {
@@ -302,7 +302,7 @@ func getMonthNumber(mon string) int {
 	return 1
 }
 
-func readPdf(path string) (string, error) {
+func ReadPdf(path string) (string, error) {
 	f, r, err := pdf.Open(path)
 	// remember close file
 	defer f.Close()

@@ -20,7 +20,7 @@ func (r SheetsRepository) Get(ctx context.Context) error {
 	panic("implement me")
 }
 
-func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation) error {
+func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*pdfReading.ExtractedInformation, error) {
 	getTeacherCipher := r.db.Rebind(`
 		SELECT teacher_cipher
 		FROM teachers
@@ -31,7 +31,7 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 	var teacherID string
 	err := row.Scan(&teacherID)
 	if err != nil {
-		return err
+		return sheet, err
 	}
 
 	getGroupCipher := r.db.Rebind(`
@@ -40,10 +40,14 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 		WHERE groupname = ? AND educationalyear = ? AND semester = ?;
 	`)
 	row = r.db.QueryRowContext(ctx, getGroupCipher, sheet.GroupName, sheet.EducationalYear, sheet.Semester)
+	//fmt.Println("group name : " + sheet.GroupName)
+	//fmt.Println("year : " + sheet.EducationalYear)
+	//fmt.Println("semester : "+ sheet.Semester)
 	var groupID string
 	err = row.Scan(&groupID)
 	if err != nil {
-		return err
+		log.Println(err)
+		return sheet, err
 	}
 
 	query := r.db.Rebind(`
@@ -54,10 +58,12 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 	_, err = r.db.Exec(query, sheet.IdDocument, sheet.AmountPresent, sheet.AmountAbscent,
 		sheet.AmountBanned, sheet.ControlType, sheet.Date, teacherID, groupID)
 	if err != nil {
-		return err
+		fmt.Println("here sql")
+		log.Println(err)
+		return sheet, err
 	}
 
-	return nil
+	return sheet, nil
 }
 
 func (r SheetsRepository) GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error) {

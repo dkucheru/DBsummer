@@ -2,6 +2,7 @@ package serviceDir
 
 import (
 	"DBsummer/dataBaseDir"
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 )
@@ -34,4 +35,13 @@ func (s *sheetsService) GetSheetFromParameters(ctx context.Context, fn string, l
 	}
 
 	return struc, nil
+}
+
+func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*pdfReading.ExtractedInformation, error) {
+	str, err := s.repository.Sheets().PostSheetToDataBase(ctx, sheet)
+	if err != nil {
+		return nil, err
+	}
+
+	return str, nil
 }
