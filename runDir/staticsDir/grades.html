@@ -38,29 +38,54 @@
         text-align: left;
     }
 </style>
+<style>
+    ul.hr1 {
+        max-width: 100%;
+        text-align: center;
+
+    }
+    ul.hr1 div {
+        display: inline-block;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+</style>
 <body onload="loadPresidents()">
+<ul class="hr1">
+    <div><input type="text" id="lastName"
+                               placeholder="Type student last name.."></div>
+    <div><input type="text" id="firstName"
+                placeholder="Type student first name.."></div>
+    <div><input type="text" id="middleName"
+                placeholder="Type student middle name.."></div>
+    <div><input type="number" id="yearOfStudy"
+                placeholder="Type year of study.."></div>
+    <div><button onclick="loadPresidents()">Search</button></div>
+</ul>
+<style > ul.hr2 {
+        max-width: 100%;
+        text-align: center;
+    }
+</style>
+<ul class="hr2">
+    <label id="filter">Фільтр</label>
+    </ul>
 <ul class="hr">
-    <div><input type="number" id="idStud" onKeyUp="myFunction(0,'idStud')"
-                placeholder="Type student ID.."></div>
-    <div><input type="text" id="studPib" onKeyUp="myFunction(1,'studPib')"
-                placeholder="Type student PIB.."></div>
-    <div><input type="text" id="subjName" onKeyUp="myFunction(2,'subjName')"
+    <div><input type="text" id="subjName" onKeyUp="myFunction(0,'subjName')"
                 placeholder="Type subject name.."></div>
-    <div><input type="number" id="groupID" onKeyUp="myFunction(3,'groupID')"
-                placeholder="Type group ID.." ></div>
-    <div><input type="text" id="groupName" onKeyUp="myFunction(4,'groupName')"
-                placeholder="Type group Name.."></div>
-    <div><input type="text" id="teachPib" onKeyUp="myFunction(5,'teachPib')"
+    <div><input type="number" id="grade" onKeyUp="myFunction(1,'grade')"
+                placeholder="Type grade.."></div>
+    <div><input type="text" id="gradeECTS" onKeyUp="myFunction(2,'gradeECTS')"
+                placeholder="Type ECTS grade.."></div>
+    <div><input type="text" id="teachPib" onKeyUp="myFunction(3,'teachPib')"
                 placeholder="Type teacher PIB.." ></div>
 </ul>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
-        <th>Код студенту</th>
-        <th>ПІБ студента</th>
-        <th>Назва</th>
-        <th>Год групи</th>
-        <th>Назва групи</th>
+        <th>Назва предмету</th>
+        <th>Оцінка</th>
+        <th>Оцінка за ЄКТС</th>
         <th>Викладач</th>
     </tr>
     </thead>
@@ -68,7 +93,37 @@
     </tbody>
 </table>
 <script>
+
+    function loadSubject() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                //let response = JSON.parse(this.responseText);
+                alert(this.responseText);
+            }
+        };
+
+        // let field = document.getElementById("input-id");
+        let  ln = document.getElementById("lastName");
+        console.log("lastname : ", ln.value);
+        let  fn = document.getElementById("firstName");
+        console.log("lastname : ", fn.value);
+        let  mn = document.getElementById("middleName");
+        console.log("lastname : ", mn.value);
+        let  ye = document.getElementById("yearOfStudy");
+        console.log("lastname : ", ye.value);
+
+        // xhttp.open("GET", url, false);
+        let url = "/students";
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
     function loadPresidents() {
+        let  ln = document.getElementById("lastName");
+        let  fn = document.getElementById("firstName");
+        let  mn = document.getElementById("middleName");
+        let  ye = document.getElementById("yearOfStudy");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -77,7 +132,7 @@
                 // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupCipher','GroupName','PibTeach']; // changed this
+                var properties = ['SubjectName', 'MarkTogether', 'EctsMark', 'TeacherPIB']; // changed this
 
                 var tr = document.createElement('tr');
 
@@ -102,7 +157,7 @@
                 }
             }
         };
-        let url = "/students";
+        let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+ye.value;
         //alert(url);
 
         xhttp.open("GET", url, false);
