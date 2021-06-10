@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"DBsummer/pdfReading"
 	"context"
 )
 
@@ -14,4 +15,36 @@ func (r TeachersRepository) Create(ctx context.Context) (id int, err error) {
 
 func (r TeachersRepository) Get(ctx context.Context) error {
 	panic("implement me")
+}
+
+func (r TeachersRepository) FindTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	getTeacherCipher := r.db.Rebind(`
+		SELECT teacher_cipher
+		FROM teachers
+		WHERE firstname = ? AND lastname = ? AND (middlename = ? OR middlename IS NULL OR middlename = '')
+;
+	`)
+
+	row := r.db.QueryRowContext(ctx, getTeacherCipher, sheet.TeacherFirstName, sheet.TeacherLastname, sheet.TeacherMiddleName)
+	var teacherID int
+	err := row.Scan(&teacherID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &teacherID, err
+}
+
+func (r TeachersRepository) AddTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	query := r.db.Rebind(`
+		INSERT into teachers(firstname,lastname,middlename,scientificdegree,academictitles) VALUES(?,?,?,?,?);
+		`)
+
+	_, err := r.db.Exec(query, sheet.TeacherFirstName, sheet.TeacherLastname, sheet.TeacherMiddleName, sheet.ScientificDegree, sheet.AcademicTitle)
+
+	if err != nil {
+		return nil, err
+	}
+	fine := 1
+	return &fine, nil
 }

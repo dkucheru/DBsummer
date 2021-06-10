@@ -15,12 +15,27 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	//Finding in DB the teacher from a PDF
 	doc := pdfReading.ParsePDFfile(content)
-	//ret,err := rest.service.Sheets.PostSheetToDataBase(r.Context(),doc)
-	//if err != nil {
-	//	rest.sendError(w, err)
-	//	return
-	//}
+	idTeacher, err := rest.service.Teachers.FindTeacher(r.Context(), doc)
+	if err != nil {
+		//rest.sendError(w, err)
+		idTeacher, err = rest.service.Teachers.AddTeacher(r.Context(), doc)
+
+		if err != nil {
+			rest.sendError(w, err)
+			return
+		}
+		//return
+
+	}
+
+	//Adding Sheet instance to DB after checking teacher
+	ret, err := rest.service.Sheets.PostSheetToDataBase(r.Context(), doc, *idTeacher)
+	if err != nil {
+		rest.sendError(w, err)
+		return
+	}
 
 	for _, v := range doc.ExtractedStudents {
 		id, err := rest.service.SheetMarks.PostSheetMarksToDataBase(r.Context(), doc.IdDocument, v)
@@ -31,5 +46,5 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	rest.sendData(w, doc)
+	rest.sendData(w, ret)
 }

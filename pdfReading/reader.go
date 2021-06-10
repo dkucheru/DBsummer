@@ -49,6 +49,8 @@ type ExtractedInformation struct {
 	AmountAbscent     int
 	AmountBanned      int
 	ReasonOfAbscence  string
+	AcademicTitle     string
+	ScientificDegree  string
 	ExtractedStudents []*StudInfoFromPDF
 }
 
@@ -65,6 +67,43 @@ func ParsePDFfile(content string) *ExtractedInformation {
 		}
 		//fmt.Println(s1)
 		if s1 != "" {
+
+			if s1 == "кандидат" {
+				result := "кандидат"
+				j := i
+				for strings.ToLower(formatWord(&(words[j+1])[0])) != "наук" {
+					result += " "
+					result += strings.ToLower(formatWord(&(words[j+1])[0]))
+					j++
+				}
+				result += "наук"
+				s.ScientificDegree = result
+			}
+
+			if s1 == "доктор" {
+				result := "доктор"
+				j := i
+				for strings.ToLower(formatWord(&(words[j+1])[0])) != "наук" {
+					result += " "
+					result += strings.ToLower(formatWord(&(words[j+1])[0]))
+					j++
+				}
+				result += "наук"
+				s.ScientificDegree = result
+			}
+
+			if s1 == "доцент" || s1 == "професор" {
+				s.AcademicTitle = s1
+			}
+
+			if s1 == "старший" {
+				s2 := strings.ToLower(formatWord(&(words[i+1])[0]))
+				if s2 == "дослідник" {
+					result := s1 + " " + s2
+					s.AcademicTitle = result
+				}
+			}
+
 			if s1 == "група" {
 				s2 := strings.ToLower(formatWord(&(words[i+1])[0]))
 				if s2 == "бігунець" {
