@@ -78,7 +78,11 @@ nav a:hover::before {
     width: 100%;
 }
 
-
+th {
+    height: 70px;
+    font-size: 20px;
+    background: cornflowerblue;
+}
 table, th, td {
     border: 1px solid black;
 
@@ -89,11 +93,7 @@ table,input {
     margin-left: auto;
     margin-right: auto;
 }
-th {
-    height: 70px;
-    font-size: 20px;
-    background: cornflowerblue;
-}
+
 table{
     margin-top: 30px;
 }
