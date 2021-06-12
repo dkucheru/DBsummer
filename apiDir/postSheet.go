@@ -2,6 +2,7 @@ package apiDir
 
 import (
 	"DBsummer/pdfReading"
+	"errors"
 	"fmt"
 	"github.com/ledongthuc/pdf"
 	"net/http"
@@ -12,11 +13,21 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	pdf.DebugOn = true
 	content, err := pdfReading.ReadPdf("./collection/phil.pdf") // Read local pdf file
 	if err != nil {
-		panic(err)
+		rest.sendError(w, err)
+		return
+	}
+	if content == "" {
+		rest.sendError(w, errors.New("не валідний файл, використовуйте шаблон з сайту"))
+		return
 	}
 
 	//Finding in DB the teacher from a PDF
-	doc := pdfReading.ParsePDFfile(content)
+	doc, err := pdfReading.ParsePDFfile(content)
+	if err != nil {
+		rest.sendError(w, err)
+		return
+	}
+
 	idTeacher, err := rest.service.Teachers.FindTeacher(r.Context(), doc)
 	if err != nil {
 		//rest.sendError(w, err)
