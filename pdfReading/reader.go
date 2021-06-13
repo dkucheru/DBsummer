@@ -70,7 +70,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 		if s1 != "№" {
 			s1 = strings.ToLower(formatWord(&s1))
 		}
-		fmt.Println(s1)
+		//fmt.Println(s1)
 		if s1 != "" {
 
 			if s1 == "кандидат" {
@@ -109,9 +109,6 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 				if strings.Contains(s2, "дослідник") {
 					result := s1 + " дослідник"
 					s.AcademicTitle = result
-				} else if strings.Contains(s2, "викладач") {
-					result := s1 + " викладач"
-					s.TeacherPost = result
 				}
 			}
 
@@ -372,14 +369,20 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 					if NationalMarks[i_plus_4] || i_plus_4 == "незараховано" {
 						_, err = strconv.Atoi(i_plus_5)
 						if err != nil {
-							stud.EctsMark = i_plus_5
+							stud.EctsMark = formatWord(&(words[i+5])[0])
+							if !checkMarkAccordance(stud.EctsMark, stud.NationalMark, stud.TogetherMark) {
+								return nil, errors.New("перевірте у студента [" + stud.RecordBook + "] оцінку національну, єктс та разом ")
+							}
 						} else {
 							return nil, errors.New("у студента що складав роботу має бути оцінка ЄКТС ")
 						}
 					} else {
 						_, err = strconv.Atoi(i_plus_6)
 						if err != nil {
-							stud.EctsMark = i_plus_6
+							stud.EctsMark = formatWord(&(words[i+6])[0])
+							if !checkMarkAccordance(stud.EctsMark, stud.NationalMark, stud.TogetherMark) {
+								return nil, errors.New("перевірте у студента [" + stud.RecordBook + "] оцінку національну, єктс та разом ")
+							}
 						} else {
 							return nil, errors.New("у студента що складав роботу має бути оцінка ЄКТС ")
 						}
@@ -480,4 +483,34 @@ func ReadPdf(path string) (string, error) {
 	}
 	buf.ReadFrom(b)
 	return buf.String(), nil
+}
+
+func checkMarkAccordance(ects string, national string, together int) bool {
+	//fmt.Println(ects + national +fmt.Sprint(together))
+	if (ects == "A" || ects == "А") && (national == "відмінно" || national == "зараховано") && (together > 90 && together < 101) {
+		return true
+	}
+	if (ects == "B" || ects == "В") && (national == "добре" || national == "зараховано") && (together > 80 && together < 91) {
+		return true
+	}
+	if (ects == "C" || ects == "С") && (national == "добре" || national == "зараховано") && (together > 70 && together < 81) {
+		return true
+	}
+	if ects == "D" && (national == "задовільно" || national == "зараховано") && (together > 65 && together < 71) {
+		return true
+	}
+	if (ects == "E" || ects == "Е") && national == "задовільно" && together >= 61 && together <= 65 {
+		return true
+	}
+	if (ects == "E" || ects == "Е") && national == "зараховано" && together >= 60 && together <= 65 {
+		return true
+	}
+	if ects == "F" && national == "незадовільно" && together >= 0 && together <= 60 {
+		return true
+	}
+	if ects == "F" && national == "не зараховано" && together >= 0 && together <= 59 {
+		return true
+	}
+
+	return false
 }

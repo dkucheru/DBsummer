@@ -32,15 +32,16 @@ func (r TeachersRepository) FindTeacher(ctx context.Context, sheet *pdfReading.E
 		return nil, err
 	}
 
-	return &teacherID, err
+	return &teacherID, nil
 }
 
 func (r TeachersRepository) AddTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
 	query := r.db.Rebind(`
-		INSERT into teachers(firstname,lastname,middlename,scientificdegree,academictitles) VALUES(?,?,?,?,?);
+		INSERT into teachers(firstname,lastname,middlename,scientificdegree,academictitles,post) VALUES(?,?,?,?,?,?);
 		`)
 
-	_, err := r.db.Exec(query, sheet.TeacherFirstName, sheet.TeacherLastname, sheet.TeacherMiddleName, sheet.ScientificDegree, sheet.AcademicTitle)
+	_, err := r.db.Exec(query, sheet.TeacherFirstName, sheet.TeacherLastname, sheet.TeacherMiddleName, sheet.ScientificDegree, sheet.AcademicTitle,
+		sheet.TeacherPost)
 
 	if err != nil {
 		return nil, err

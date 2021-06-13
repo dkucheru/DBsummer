@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 	"log"
@@ -40,6 +41,38 @@ func (r SubjectsRepository) Get(ctx context.Context, id int) (*structs.Subject, 
 	}
 
 	return subjectFromDbx(ctx, s)
+}
+
+func (r SubjectsRepository) FindSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	getSubjectId := r.db.Rebind(`
+		SELECT subjectid
+		FROM subjects
+		WHERE subjectname = ? AND educationallevel = ? AND faculty = ?
+;
+	`)
+
+	row := r.db.QueryRowContext(ctx, getSubjectId, sheet.Subject, sheet.EducationalLevel, sheet.Faculty)
+	var subjectID int
+	err := row.Scan(&subjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &subjectID, nil
+}
+
+func (r SubjectsRepository) AddSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	query := r.db.Rebind(`
+		INSERT into subjects(subjectname,educationallevel,faculty) VALUES(?,?,?);
+		`)
+
+	_, err := r.db.Exec(query, sheet.Subject, sheet.EducationalLevel, sheet.Faculty)
+
+	if err != nil {
+		return nil, err
+	}
+	fine := 1
+	return &fine, nil
 }
 
 func (r SubjectsRepository) GetAll(ctx context.Context) ([]*structs.Subject, error) {

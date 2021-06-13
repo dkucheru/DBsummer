@@ -37,8 +37,8 @@ func (s *sheetsService) GetSheetFromParameters(ctx context.Context, fn string, l
 	return struc, nil
 }
 
-func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int) (*pdfReading.ExtractedInformation, error) {
-	str, err := s.repository.Sheets().PostSheetToDataBase(ctx, sheet, teacherId)
+func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int, groupId int) (*pdfReading.ExtractedInformation, error) {
+	str, err := s.repository.Sheets().PostSheetToDataBase(ctx, sheet, teacherId, groupId)
 	if err != nil {
 		return nil, err
 	}

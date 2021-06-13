@@ -27,8 +27,8 @@ func (s *sheetMarksService) Get(ctx context.Context) error {
 	panic("implement me")
 }
 
-func (s *sheetMarksService) PostSheetMarksToDataBase(ctx context.Context, sheetID int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error) {
-	id, err := s.repository.SheetMarks().PostSheetMarksToDataBase(ctx, sheetID, sheetMarks)
+func (s *sheetMarksService) PostSheetMarksToDataBase(ctx context.Context, sheetID int, studentId int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error) {
+	id, err := s.repository.SheetMarks().PostSheetMarksToDataBase(ctx, sheetID, studentId, sheetMarks)
 	if err != nil {
 		return id, err
 	}

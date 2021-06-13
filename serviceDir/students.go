@@ -2,6 +2,7 @@ package serviceDir
 
 import (
 	"DBsummer/dataBaseDir"
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 )
@@ -52,4 +53,22 @@ func (s *studentsService) GetStudentByPIB(ctx context.Context, fn string, ln str
 	}
 
 	return subj, nil
+}
+
+func (s *studentsService) AddStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error) {
+	id, err := s.repository.Students().AddStudent(ctx, sheetMarks)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
+}
+
+func (s *studentsService) FindStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error) {
+	id, err := s.repository.Students().FindStudent(ctx, sheetMarks)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
 }

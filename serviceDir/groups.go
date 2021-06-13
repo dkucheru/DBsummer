@@ -2,6 +2,7 @@ package serviceDir
 
 import (
 	"DBsummer/dataBaseDir"
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 )
@@ -25,4 +26,22 @@ func (s *groupsService) Create(ctx context.Context, subject structs.Group) (stru
 
 func (s *groupsService) Get(ctx context.Context, idVid int) (*structs.Group, error) {
 	panic("implement me")
+}
+
+func (s *groupsService) FindGroup(ctx context.Context, sheet *pdfReading.ExtractedInformation, subjectId int) (*int, error) {
+	id, err := s.repository.Groups().FindGroup(ctx, sheet, subjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
+}
+
+func (s *groupsService) AddGroup(ctx context.Context, sheet *pdfReading.ExtractedInformation, subjectId int) (*int, error) {
+	id, err := s.repository.Groups().AddGroup(ctx, sheet, subjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
 }
