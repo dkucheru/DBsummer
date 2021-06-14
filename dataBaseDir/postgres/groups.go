@@ -2,7 +2,10 @@ package postgres
 
 import (
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
+	"fmt"
+	"log"
 	"math/rand"
 )
 
@@ -23,6 +26,41 @@ func (r GroupsRepository) Create(ctx context.Context) (id int, err error) {
 	}
 
 	return id, nil
+}
+
+func (r GroupsRepository) FindGroupsOfScientist(ctx context.Context, scientificDegree string) ([]*structs.GroupOfScientist, error) {
+	query := r.db.Rebind(`
+		SELECT G.cipher,G.group_name,T.last_name,T.first_name
+FROM (sheet Sh INNER JOIN Groups_ G ON G.cipher=Sh.Group_cipher) INNER JOIN Teachers T ON Sh.teacher=T.teacher_cipher
+WHERE scientific_degree=?;
+
+	`)
+
+	rows, err := r.db.QueryContext(ctx, query, scientificDegree)
+	if err != nil {
+		fmt.Println("error performing sql query")
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var groups []*structs.GroupOfScientist
+	for rows.Next() {
+		var s structs.GroupOfScientist
+		err = rows.Scan(&s.Cipher, &s.Groupname, &s.TeacherLastname, &s.TeacherFirstname)
+		if err != nil {
+			fmt.Println("error in scan")
+			return nil, err
+		}
+
+		groups = append(groups, &s)
+	}
+
+	return groups, nil
 }
 
 func (r GroupsRepository) FindGroup(ctx context.Context, sheet *pdfReading.ExtractedInformation, subjectId int) (*int, error) {
