@@ -15,7 +15,7 @@ CREATE TABLE runners (
 	date_of_expiration timestamp with time zone NOT NULL,
 	postponing_reason text NOT NULL,
 	type_of_control text NOT NULL,
-	teacher text NOT NULL,
+	teacher integer NOT NULL,
 	PRIMARY KEY ( runner_number )
 );
 CREATE TABLE runner_marks (
@@ -37,7 +37,7 @@ CREATE TABLE sheets (
 	number_of_ineligible integer NOT NULL,
 	type_of_control text NOT NULL,
 	date_of_compilation timestamp with time zone NOT NULL,
-	teacher text NOT NULL,
+	teacher integer NOT NULL,
 	group_cipher text NOT NULL,
 	PRIMARY KEY ( sheetid ),
 	UNIQUE ( group_cipher )
@@ -73,7 +73,7 @@ CREATE TABLE tableNews (
 	PRIMARY KEY ( id_t )
 );
 CREATE TABLE teachers (
-	teacher_cipher text NOT NULL,
+	teacher_cipher integer NOT NULL,
 	firstname text NOT NULL,
 	lastname text NOT NULL,
 	middlename text NOT NULL,

@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 	"log"
@@ -26,6 +27,45 @@ func (r SubjectsRepository) Create(ctx context.Context) (id int, err error) {
 	return id, nil
 }
 
+func (r SubjectsRepository) FindSubjectsWithYearParameter(ctx context.Context, year int) ([]*structs.SubjectName, error) {
+	query := r.db.Rebind(`
+		SELECT subjectid,subjectname
+		FROM subjects
+		WHERE subjectid IN (
+  			SELECT groups_.subject
+  			FROM groups_
+  			WHERE cipher IN (
+    		SELECT group_cipher
+    		FROM sheet
+    		WHERE date_part('year', date_of_compilation) < ?
+  )
+);
+	`)
+	rows, err := r.db.QueryContext(ctx, query, year)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var subjects []*structs.SubjectName
+	for rows.Next() {
+		var s structs.SubjectName
+		err = rows.Scan(&s.SubjectId, &s.SubjectName)
+		if err != nil {
+			return nil, err
+		}
+
+		subjects = append(subjects, &s)
+	}
+
+	return subjects, nil
+}
+
 func (r SubjectsRepository) Get(ctx context.Context, id int) (*structs.Subject, error) {
 	query := r.db.Rebind(`
 		SELECT subjectid, subjectname, educationallevel, faculty FROM subjects WHERE subjectid = ?;
@@ -40,6 +80,38 @@ func (r SubjectsRepository) Get(ctx context.Context, id int) (*structs.Subject, 
 	}
 
 	return subjectFromDbx(ctx, s)
+}
+
+func (r SubjectsRepository) FindSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	getSubjectId := r.db.Rebind(`
+		SELECT subjectid
+		FROM subjects
+		WHERE subjectname = ? AND educationallevel = ? AND faculty = ?
+;
+	`)
+
+	row := r.db.QueryRowContext(ctx, getSubjectId, sheet.Subject, sheet.EducationalLevel, sheet.Faculty)
+	var subjectID int
+	err := row.Scan(&subjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &subjectID, nil
+}
+
+func (r SubjectsRepository) AddSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	query := r.db.Rebind(`
+		INSERT into subjects(subjectname,educationallevel,faculty) VALUES(?,?,?);
+		`)
+
+	_, err := r.db.Exec(query, sheet.Subject, sheet.EducationalLevel, sheet.Faculty)
+
+	if err != nil {
+		return nil, err
+	}
+	fine := 1
+	return &fine, nil
 }
 
 func (r SubjectsRepository) GetAll(ctx context.Context) ([]*structs.Subject, error) {
