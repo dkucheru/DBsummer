@@ -10,8 +10,7 @@ type Group struct {
 }
 
 type GroupOfScientist struct {
-	Cipher           int
-	Groupname        string
-	TeacherLastname  string
-	TeacherFirstname string
+	Cipher      int
+	Groupname   string
+	TeacherName string
 }

@@ -29,15 +29,18 @@
 </style>
 <body onload="loadPresidents()">
 <ul class="hr1">
-    <div><input type="" id="year"
-                placeholder="Type year.."></div>
+    <div><input type="" id="sciDegree"
+                placeholder="Type degree.."></div>
     <div><button onclick="loadPresidents()">Search</button></div>
 </ul>
+
+
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
-        <th>ID предмету</th>
-        <th>Назва предмету</th>
+        <th>Код групи</th>
+        <th>Назва групи</th>
+        <th>Викладач</th>
     </tr>
     </thead>
     <tbody>
@@ -54,18 +57,18 @@
             }
         };
         // let field = document.getElementById("input-id");
-        let  ye = document.getElementById("year");
-        console.log("lastname : ", ye.value);
+        let  sD = document.getElementById("sciDegree");
+        console.log("lastname : ", sD.value);
 
         // xhttp.open("GET", url, false);
-        let url = "/subjects/by_year/"+ye.value;
+        let url = "/groups/scientific_degree/"+sD.value;
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
 
     function loadPresidents() {
-        let  ye = document.getElementById("year");
+        let  sD = document.getElementById("sciDegree");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -74,7 +77,8 @@
                 // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['SubjectId', 'SubjectName']; // changed this
+
+                var properties = ['Cipher', 'Groupname','TeacherName']; // changed this
 
                 var tr = document.createElement('tr');
 
@@ -100,7 +104,7 @@
             }
         };
         // "/subjects/{year}"
-        let url = "/subjects/by_year/"+ye.value;
+        let url = "/groups/scientific_degree/"+sD.value;
         //alert(url);
 
         xhttp.open("GET", url, false);

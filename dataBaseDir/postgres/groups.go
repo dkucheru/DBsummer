@@ -30,9 +30,9 @@ func (r GroupsRepository) Create(ctx context.Context) (id int, err error) {
 
 func (r GroupsRepository) FindGroupsOfScientist(ctx context.Context, scientificDegree string) ([]*structs.GroupOfScientist, error) {
 	query := r.db.Rebind(`
-		SELECT G.cipher,G.group_name,T.last_name,T.first_name
+		SELECT G.cipher,G.groupname,T.lastname || ' ' || T.firstname
 FROM (sheet Sh INNER JOIN Groups_ G ON G.cipher=Sh.Group_cipher) INNER JOIN Teachers T ON Sh.teacher=T.teacher_cipher
-WHERE scientific_degree=?;
+WHERE scientificdegree=?;
 
 	`)
 
@@ -51,7 +51,7 @@ WHERE scientific_degree=?;
 	var groups []*structs.GroupOfScientist
 	for rows.Next() {
 		var s structs.GroupOfScientist
-		err = rows.Scan(&s.Cipher, &s.Groupname, &s.TeacherLastname, &s.TeacherFirstname)
+		err = rows.Scan(&s.Cipher, &s.Groupname, &s.TeacherName)
 		if err != nil {
 			fmt.Println("error in scan")
 			return nil, err
