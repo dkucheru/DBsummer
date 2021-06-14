@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<link rel="stylesheet" href="style_main.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <header>
+    </header>
+</head>
+<script src=
+                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+
+</script>
+<style>
+    ul.hr1 {
+        max-width: 100%;
+        text-align: center;
+
+    }
+    ul.hr1 div {
+        display: inline-block;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+</style>
+<body onload="loadPresidents()">
+<ul class="hr1">
+    <div><input type="" id="year"
+                placeholder="Type year.."></div>
+    <div><button onclick="loadPresidents()">Search</button></div>
+</ul>
+<table class="table table-striped" id="info-table">
+    <thead>
+    <tr>
+        <th>ID предмету</th>
+        <th>Назва предмету</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+
+    function loadSubject() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                //let response = JSON.parse(this.responseText);
+                alert(this.responseText);
+            }
+        };
+        // let field = document.getElementById("input-id");
+        let  ye = document.getElementById("year");
+        console.log("lastname : ", ye.value);
+
+        // xhttp.open("GET", url, false);
+        let url = "/subjects/by_year/"+ye.value;
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
+
+    function loadPresidents() {
+        let  ye = document.getElementById("year");
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                var data = this.responseText;
+                var jsonResponse = JSON.parse(data);
+                // console.log(jsonResponse["presidents"]);
+                var table = document.getElementById('info-table');
+                table.setAttribute('class', 'history');
+                var properties = ['SubjectId', 'SubjectName']; // changed this
+
+                var tr = document.createElement('tr');
+
+                table.appendChild(tr);
+                var tr, row;
+                console.log("jsonResponse", jsonResponse); // changed this
+                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
+                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
+                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
+                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
+
+
+                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                    tr = document.createElement('tr');
+                    row = jsonResponse.Data[r]; // changed this
+                    for (var i = 0; i < properties.length; i++) {
+                        var td = document.createElement('td');
+                        td.appendChild(document.createTextNode(row[properties[i]]));
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+            }
+        };
+        // "/subjects/{year}"
+        let url = "/subjects/by_year/"+ye.value;
+        //alert(url);
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
+
+</script>
+</body>
+</html>
+
