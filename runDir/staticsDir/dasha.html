@@ -29,7 +29,7 @@
 </style>
 <body onload="loadPresidents()">
 <ul class="hr1">
-    <div><input type="" id="sciDegree"
+    <div><input type="" id="ok"
                 placeholder="Type degree.."></div>
     <div><button onclick="loadPresidents()">Search</button></div>
 </ul>
@@ -38,9 +38,9 @@
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
-        <th>Код групи</th>
-        <th>Назва групи</th>
-        <th>Викладач</th>
+        <th>Код викладача</th>
+        <th>ПІБ</th>
+        <th>Кількість</th>
     </tr>
     </thead>
     <tbody>
@@ -57,18 +57,18 @@
             }
         };
         // let field = document.getElementById("input-id");
-        let  sD = document.getElementById("sciDegree");
-        console.log("lastname : ", sD.value);
+        let  oK = document.getElementById("ok");
+        //console.log("lastname : ", sD.value);
 
         // xhttp.open("GET", url, false);
-        let url = "/groups/scientific_degree/"+sD.value;
+        let url = "/teachers/"+oK.value;
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
 
     function loadPresidents() {
-        let  sD = document.getElementById("sciDegree");
+        let  oK = document.getElementById("ok");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -78,7 +78,7 @@
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
 
-                var properties = ['Cipher', 'Groupname','TeacherName']; // changed this
+                var properties = ['TeacherCipher', 'PIB','PassStatistics']; // changed this
 
                 var tr = document.createElement('tr');
 
@@ -104,7 +104,7 @@
             }
         };
         // "/subjects/{year}"
-        let url = "/groups/scientific_degree/"+sD.value;
+        let url = "/teachers/"+oK.value;
         //alert(url);
 
         xhttp.open("GET", url, false);
