@@ -38,6 +38,7 @@ type SubjectsInterface interface { //functions to be used for the table 'subject
 	Create(ctx context.Context) (id int, err error)
 	FindSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
 	AddSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
+	FindSubjectsWithYearParameter(ctx context.Context, year int) ([]*structs.SubjectName, error)
 }
 
 type GroupsInterface interface {

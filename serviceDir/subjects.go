@@ -59,3 +59,12 @@ func (s *subjectsService) FindSubject(ctx context.Context, sheet *pdfReading.Ext
 
 	return id, nil
 }
+
+func (s *subjectsService) FindSubjectsWithYearParameter(ctx context.Context, year int) ([]*structs.SubjectName, error) {
+	subjects, err := s.repository.Subjects().FindSubjectsWithYearParameter(ctx, year)
+	if err != nil {
+		return nil, err
+	}
+
+	return subjects, nil
+}

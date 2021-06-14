@@ -7,6 +7,11 @@ type Subject struct {
 	Faculty          string
 }
 
+type SubjectName struct {
+	SubjectId   int
+	SubjectName string
+}
+
 type Ed_level string
 
 const (
