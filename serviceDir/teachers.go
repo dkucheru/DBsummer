@@ -3,6 +3,7 @@ package serviceDir
 import (
 	"DBsummer/dataBaseDir"
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
 )
 
@@ -43,4 +44,13 @@ func (s *teachersService) AddTeacher(ctx context.Context, sheet *pdfReading.Extr
 	}
 
 	return id, nil
+}
+
+func (s *teachersService) GetTeacherPassStatistics(ctx context.Context, passedOrNot string) ([]*structs.TeacherPassStatistics, error) {
+	teacherStatistics, err := s.repository.Teachers().GetTeacherPassStatistics(ctx, passedOrNot)
+	if err != nil {
+		return nil, err
+	}
+
+	return teacherStatistics, nil
 }

@@ -5,6 +5,7 @@ import (
 	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
+	"fmt"
 )
 
 type subjectsService struct {
@@ -63,6 +64,8 @@ func (s *subjectsService) FindSubject(ctx context.Context, sheet *pdfReading.Ext
 func (s *subjectsService) FindSubjectsWithYearParameter(ctx context.Context, year int) ([]*structs.SubjectName, error) {
 	subjects, err := s.repository.Subjects().FindSubjectsWithYearParameter(ctx, year)
 	if err != nil {
+		fmt.Println("error in interface")
+
 		return nil, err
 	}
 

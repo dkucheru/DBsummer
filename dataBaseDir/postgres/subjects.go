@@ -4,6 +4,7 @@ import (
 	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
+	"fmt"
 	"log"
 	"math/rand"
 )
@@ -43,6 +44,7 @@ func (r SubjectsRepository) FindSubjectsWithYearParameter(ctx context.Context, y
 	`)
 	rows, err := r.db.QueryContext(ctx, query, year)
 	if err != nil {
+		fmt.Println("error performing sql query")
 		return nil, err
 	}
 	defer func() {
@@ -57,6 +59,7 @@ func (r SubjectsRepository) FindSubjectsWithYearParameter(ctx context.Context, y
 		var s structs.SubjectName
 		err = rows.Scan(&s.SubjectId, &s.SubjectName)
 		if err != nil {
+			fmt.Println("error in scan")
 			return nil, err
 		}
 

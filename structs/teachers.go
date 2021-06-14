@@ -1,10 +1,16 @@
 package structs
 
 type Teacher struct {
-	TeacherCipher    string
+	TeacherCipher    int
 	FirstName        string
 	MiddleName       string
 	ScientificDegree string
 	AcademicTitles   string
 	Post             string
+}
+
+type TeacherPassStatistics struct {
+	TeacherCipher  int
+	PIB            string
+	PassStatistics int
 }

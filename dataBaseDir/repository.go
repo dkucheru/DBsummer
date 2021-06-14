@@ -61,6 +61,7 @@ type TeachersInterface interface {
 	Get(ctx context.Context) error
 	FindTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
 	AddTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
+	GetTeacherPassStatistics(ctx context.Context, passedOrNot string) ([]*structs.TeacherPassStatistics, error)
 }
 
 type SheetsInterface interface {

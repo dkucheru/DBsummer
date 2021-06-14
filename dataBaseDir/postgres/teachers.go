@@ -2,7 +2,9 @@ package postgres
 
 import (
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
+	"log"
 )
 
 type TeachersRepository struct {
@@ -48,4 +50,40 @@ func (r TeachersRepository) AddTeacher(ctx context.Context, sheet *pdfReading.Ex
 	}
 	fine := 1
 	return &fine, nil
+}
+
+func (r TeachersRepository) GetTeacherPassStatistics(ctx context.Context, passedOrNot string) ([]*structs.TeacherPassStatistics, error) {
+	query := r.db.Rebind(`
+		SELECT firstname || ' ' || lastname || ' ' || COALESCE(middlename, '') AS pibteach, Count(sheet_marks.mark_number) AS Amount_of_F
+		FROM (teachers INNER JOIN sheet ON teachers.teacher_cipher=sheet.teacher) INNER JOIN sheet_marks ON sheet_marks.sheet=sheet.sheetid
+		WHERE sheet_marks.national_mark=?
+		Group BY teachers.teacher_cipher
+		Having Count(sheet_marks.mark_number)>1;
+
+		`)
+
+	rows, err := r.db.QueryContext(ctx, query, passedOrNot)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var teachers []*structs.TeacherPassStatistics
+
+	for rows.Next() {
+		var s structs.TeacherPassStatistics
+		err = rows.Scan(&s.TeacherCipher, &s.PIB, &s.PassStatistics)
+		if err != nil {
+			return nil, err
+		}
+
+		teachers = append(teachers, &s)
+	}
+
+	return teachers, nil
 }
