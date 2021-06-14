@@ -13,9 +13,6 @@ body {
 header {
     background: #15479d;
     margin-bottom: 50px;
-}
-
-    background: #ffffff;
     font-family: 'Nunito', sans-serif;
 }
 
@@ -68,7 +65,7 @@ nav a {
     color: white;;
     text-decoration: none;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 14px;}
 navbar-nav{
     float: right;
 }
