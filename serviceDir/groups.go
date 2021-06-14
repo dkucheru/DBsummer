@@ -45,3 +45,12 @@ func (s *groupsService) AddGroup(ctx context.Context, sheet *pdfReading.Extracte
 
 	return id, nil
 }
+
+func (s *groupsService) FindGroupsOfScientist(ctx context.Context, scientificDegree string) ([]*structs.GroupOfScientist, error) {
+	groups, err := s.repository.Groups().FindGroupsOfScientist(ctx, scientificDegree)
+	if err != nil {
+		return nil, err
+	}
+
+	return groups, nil
+}

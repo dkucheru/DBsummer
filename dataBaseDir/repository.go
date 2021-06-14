@@ -44,6 +44,7 @@ type SubjectsInterface interface { //functions to be used for the table 'subject
 type GroupsInterface interface {
 	FindGroup(ctx context.Context, sheet *pdfReading.ExtractedInformation, subjectId int) (*int, error)
 	AddGroup(ctx context.Context, sheet *pdfReading.ExtractedInformation, subjectId int) (*int, error)
+	FindGroupsOfScientist(ctx context.Context, scientificDegree string) ([]*structs.GroupOfScientist, error)
 }
 
 type StudentsInterface interface {
