@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
 	"fmt"
@@ -17,6 +18,35 @@ func (r StudentRepository) Create(ctx context.Context) (id int, err error) {
 
 func (r StudentRepository) Get(ctx context.Context, id int) (*structs.Student, error) {
 	panic("implement me")
+}
+func (r StudentRepository) FindStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error) {
+	getStudentId := r.db.Rebind(`
+		SELECT student_cipher
+		FROM student
+		WHERE firstname = ? AND last_name = ? AND (middle_name = ? OR middle_name IS NULL OR middle_name = '') AND record_book_number = ?;`)
+
+	row := r.db.QueryRowContext(ctx, getStudentId, sheetMarks.FirstName, sheetMarks.Lastname, sheetMarks.MiddleName, sheetMarks.RecordBook)
+	var subjectID int
+	err := row.Scan(&subjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &subjectID, nil
+}
+
+func (r StudentRepository) AddStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error) {
+	query := r.db.Rebind(`
+		INSERT into student(firstname,last_name,middle_name,record_book_number) VALUES(?,?,?,?);
+		`)
+
+	_, err := r.db.Exec(query, sheetMarks.FirstName, sheetMarks.Lastname, sheetMarks.MiddleName, sheetMarks.RecordBook)
+
+	if err != nil {
+		return nil, err
+	}
+	fine := 1
+	return &fine, nil
 }
 
 func (r StudentRepository) GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.StudentMarks, error) {

@@ -280,7 +280,7 @@ CREATE TABLE runners (
 	date_of_expiration timestamp with time zone NOT NULL,
 	postponing_reason text NOT NULL,
 	type_of_control text NOT NULL,
-	teacher text NOT NULL,
+	teacher integer NOT NULL,
 	PRIMARY KEY ( runner_number )
 );
 CREATE TABLE runner_marks (
@@ -302,7 +302,7 @@ CREATE TABLE sheets (
 	number_of_ineligible integer NOT NULL,
 	type_of_control text NOT NULL,
 	date_of_compilation timestamp with time zone NOT NULL,
-	teacher text NOT NULL,
+	teacher integer NOT NULL,
 	group_cipher text NOT NULL,
 	PRIMARY KEY ( sheetid ),
 	UNIQUE ( group_cipher )
@@ -338,7 +338,7 @@ CREATE TABLE tableNews (
 	PRIMARY KEY ( id_t )
 );
 CREATE TABLE teachers (
-	teacher_cipher text NOT NULL,
+	teacher_cipher integer NOT NULL,
 	firstname text NOT NULL,
 	lastname text NOT NULL,
 	middlename text NOT NULL,
@@ -543,7 +543,7 @@ type Runner struct {
 	DateOfExpiration  time.Time
 	PostponingReason  string
 	TypeOfControl     string
-	Teacher           string
+	Teacher           int
 }
 
 func (Runner) _Table() string { return "runners" }
@@ -649,10 +649,10 @@ func (Runner_TypeOfControl_Field) _Column() string { return "type_of_control" }
 type Runner_Teacher_Field struct {
 	_set   bool
 	_null  bool
-	_value string
+	_value int
 }
 
-func Runner_Teacher(v string) Runner_Teacher_Field {
+func Runner_Teacher(v int) Runner_Teacher_Field {
 	return Runner_Teacher_Field{_set: true, _value: v}
 }
 
@@ -840,7 +840,7 @@ type Sheet struct {
 	NumberOfIneligible int
 	TypeOfControl      string
 	DateOfCompilation  time.Time
-	Teacher            string
+	Teacher            int
 	GroupCipher        string
 }
 
@@ -966,10 +966,10 @@ func (Sheet_DateOfCompilation_Field) _Column() string { return "date_of_compilat
 type Sheet_Teacher_Field struct {
 	_set   bool
 	_null  bool
-	_value string
+	_value int
 }
 
-func Sheet_Teacher(v string) Sheet_Teacher_Field {
+func Sheet_Teacher(v int) Sheet_Teacher_Field {
 	return Sheet_Teacher_Field{_set: true, _value: v}
 }
 
@@ -1394,7 +1394,7 @@ func (f TableNew_IdT_Field) value() interface{} {
 func (TableNew_IdT_Field) _Column() string { return "id_t" }
 
 type Teachers struct {
-	TeacherCipher    string
+	TeacherCipher    int
 	Firstname        string
 	Lastname         string
 	Middlename       string
@@ -1411,10 +1411,10 @@ type Teachers_Update_Fields struct {
 type Teachers_TeacherCipher_Field struct {
 	_set   bool
 	_null  bool
-	_value string
+	_value int
 }
 
-func Teachers_TeacherCipher(v string) Teachers_TeacherCipher_Field {
+func Teachers_TeacherCipher(v int) Teachers_TeacherCipher_Field {
 	return Teachers_TeacherCipher_Field{_set: true, _value: v}
 }
 

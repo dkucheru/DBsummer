@@ -47,8 +47,33 @@
     </label>
     <button type="submit" onclick="loadSubject()">Get</button>
     <button type="test" onclick="test()">Get</button>
+
+    <label>
+        Year:
+        <input type="number" id="year">
+    </label>
+    <button type="find subjects" onclick="findSubjectsByYear()">Get</button>
 </form>
 <script>
+
+    function findSubjectsByYear() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                //let response = JSON.parse(this.responseText);
+                alert(this.responseText);
+            }
+        };
+
+        let  ye = document.getElementById("year");
+        console.log("year : ", ye.value);
+
+        let url = "/subjects/by_year/"+ye.value;
+
+        xhttp.open("GET", url, false);
+        xhttp.send();
+    }
+
     function test() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {

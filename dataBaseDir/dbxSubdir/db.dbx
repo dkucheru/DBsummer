@@ -36,7 +36,7 @@ create student()
 
 model teachers (
     key teacher_cipher
-    field teacher_cipher text
+    field teacher_cipher int
     field firstname text
     field lastname text
     field middlename text
@@ -55,7 +55,7 @@ model sheet (
     field number_of_ineligible int
     field type_of_control text
     field date_of_compilation timestamp
-    field teacher text
+    field teacher int
     field group_cipher text
    )
 create sheet()
@@ -81,7 +81,7 @@ model runner (
     field date_of_expiration timestamp
     field postponing_reason text
     field type_of_control text
-    field teacher text
+    field teacher int
    )
 create runner()
 

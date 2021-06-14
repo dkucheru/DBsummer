@@ -2,8 +2,10 @@ package serviceDir
 
 import (
 	"DBsummer/dataBaseDir"
+	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
+	"fmt"
 )
 
 type subjectsService struct {
@@ -39,4 +41,33 @@ func (s *subjectsService) GetAll(ctx context.Context) ([]*structs.Subject, error
 		return nil, err
 	}
 	return subj, nil
+}
+
+func (s *subjectsService) AddSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	id, err := s.repository.Subjects().AddSubject(ctx, sheet)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
+}
+
+func (s *subjectsService) FindSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
+	id, err := s.repository.Subjects().FindSubject(ctx, sheet)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
+}
+
+func (s *subjectsService) FindSubjectsWithYearParameter(ctx context.Context, year int) ([]*structs.SubjectName, error) {
+	subjects, err := s.repository.Subjects().FindSubjectsWithYearParameter(ctx, year)
+	if err != nil {
+		fmt.Println("error in interface")
+
+		return nil, err
+	}
+
+	return subjects, nil
 }
