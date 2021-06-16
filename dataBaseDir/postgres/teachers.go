@@ -58,9 +58,7 @@ func (r TeachersRepository) GetTeacherPassStatistics(ctx context.Context, passed
     FROM (teachers INNER JOIN sheet ON teachers.teacher_cipher=sheet.teacher) INNER JOIN sheet_marks ON sheet_marks.sheet=sheet.sheetid
     WHERE sheet_marks.national_mark=?
     Group BY teachers.teacher_cipher
-    Having Count(sheet_marks.mark_number)>1;
-
-		`)
+    Having Count(sheet_marks.mark_number)>1;`)
 
 	rows, err := r.db.QueryContext(ctx, query, passedOrNot)
 	if err != nil {
@@ -72,18 +70,41 @@ func (r TeachersRepository) GetTeacherPassStatistics(ctx context.Context, passed
 			log.Println(e)
 		}
 	}()
-
 	var teachers []*structs.TeacherPassStatistics
-
 	for rows.Next() {
 		var s structs.TeacherPassStatistics
 		err = rows.Scan(&s.TeacherCipher, &s.PIB, &s.PassStatistics)
 		if err != nil {
 			return nil, err
 		}
-
 		teachers = append(teachers, &s)
 	}
-
 	return teachers, nil
+}
+
+func (r TeachersRepository) GetTeacherPIBs(ctx context.Context) ([]*structs.TeacherPIB, error) {
+	query := r.db.Rebind(`
+		SELECT DISTINCT(firstname || ' ' || lastname || ' ' || COALESCE(middlename, '')) AS pibteach
+		FROM teachers;`)
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+	var pibs []*structs.TeacherPIB
+	for rows.Next() {
+		var s structs.TeacherPIB
+		err = rows.Scan(&s.Pib)
+		if err != nil {
+			return nil, err
+		}
+		pibs = append(pibs, &s)
+	}
+	return pibs, nil
 }

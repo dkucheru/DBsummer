@@ -14,3 +14,7 @@ type TeacherPassStatistics struct {
 	PIB            string
 	PassStatistics int
 }
+
+type TeacherPIB struct {
+	Pib string
+}

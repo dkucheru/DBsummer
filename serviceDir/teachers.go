@@ -54,3 +54,12 @@ func (s *teachersService) GetTeacherPassStatistics(ctx context.Context, passedOr
 
 	return teacherStatistics, nil
 }
+
+func (s *teachersService) GetTeacherPIBs(ctx context.Context) ([]*structs.TeacherPIB, error) {
+	teacherPIBs, err := s.repository.Teachers().GetTeacherPIBs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return teacherPIBs, nil
+}

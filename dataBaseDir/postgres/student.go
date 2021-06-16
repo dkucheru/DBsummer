@@ -35,6 +35,36 @@ func (r StudentRepository) FindStudent(ctx context.Context, sheetMarks *pdfReadi
 	return &subjectID, nil
 }
 
+func (r StudentRepository) GetPIBAllStudents(ctx context.Context) ([]*structs.StudentPIB, error) {
+	getStudentsPIBs := r.db.Rebind(`
+		SELECT DISTINCT (last_name || ' ' ||firstname || ' ' || COALESCE(middle_name,'')) AS pib_student
+		FROM student
+		;`)
+
+	rows, err := r.db.QueryContext(ctx, getStudentsPIBs)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var allPIBs []*structs.StudentPIB
+	for rows.Next() {
+		var s structs.StudentPIB
+		err = rows.Scan(&s.Pib)
+		if err != nil {
+			return nil, err
+		}
+		allPIBs = append(allPIBs, &s)
+	}
+
+	return allPIBs, nil
+}
+
 func (r StudentRepository) AddStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error) {
 	query := r.db.Rebind(`
 		INSERT into student(firstname,last_name,middle_name,record_book_number) VALUES(?,?,?,?);

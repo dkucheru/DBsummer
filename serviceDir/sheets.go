@@ -45,3 +45,12 @@ func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReadi
 
 	return str, nil
 }
+
+func (s *sheetsService) DeleteAllData(ctx context.Context) error {
+	err := s.repository.Sheets().DeleteAllData(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

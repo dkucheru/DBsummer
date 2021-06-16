@@ -8,6 +8,10 @@ type Student struct {
 	RecordBookNumber string
 }
 
+type StudentPIB struct {
+	Pib string
+}
+
 type StudentMarks struct {
 	SubjectName  string
 	MarkTogether int

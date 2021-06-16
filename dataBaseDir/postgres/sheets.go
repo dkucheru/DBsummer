@@ -21,34 +21,6 @@ func (r SheetsRepository) Get(ctx context.Context) error {
 }
 
 func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int, groupId int) (*pdfReading.ExtractedInformation, error) {
-	//	getTeacherCipher := r.db.Rebind(`
-	//		SELECT teacher_cipher
-	//		FROM teachers
-	//		WHERE firstname = ? AND lastname = ? AND (middlename = ? OR middlename IS NULL OR middlename = '')
-	//;
-	//	`)
-	//	row := r.db.QueryRowContext(ctx, getTeacherCipher, sheet.TeacherFirstName, sheet.TeacherLastname, sheet.TeacherMiddleName)
-	//	var teacherID string
-	//	err := row.Scan(&teacherID)
-	//	if err != nil {
-	//		return sheet, err
-	//	}
-
-	//getGroupCipher := r.db.Rebind(`
-	//	SELECT cipher
-	//	FROM groups_
-	//	WHERE groupname = ? AND educationalyear = ? AND semester = ?;
-	//`)
-	//row := r.db.QueryRowContext(ctx, getGroupCipher, sheet.GroupName, sheet.EducationalYear, sheet.Semester)
-	////fmt.Println("group name : " + sheet.GroupName)
-	////fmt.Println("year : " + sheet.EducationalYear)
-	////fmt.Println("semester : "+ sheet.Semester)
-	//var groupID string
-	//err := row.Scan(&groupID)
-	//if err != nil {
-	//	log.Println(err)
-	//	return sheet, err
-	//}
 
 	query := r.db.Rebind(`
 		INSERT into sheet(sheetid,number_of_attendees,number_of_absent,number_of_ineligible,
@@ -66,6 +38,25 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 	}
 
 	return sheet, nil
+}
+
+func (r SheetsRepository) DeleteAllData(ctx context.Context) error {
+	query := r.db.Rebind(`
+		TRUNCATE runner_marks,
+				sheet_marks,
+				sheet,
+				groups_,
+				runner,
+				teachers,
+				subjects,
+				student;`)
+
+	_, err := r.db.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r SheetsRepository) GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error) {

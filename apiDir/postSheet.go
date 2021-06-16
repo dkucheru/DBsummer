@@ -4,30 +4,120 @@ import (
 	"DBsummer/pdfReading"
 	"errors"
 	"fmt"
-	"github.com/ledongthuc/pdf"
+	"github.com/unidoc/unipdf/v3/common/license"
+	"github.com/unidoc/unipdf/v3/extractor"
+	"github.com/unidoc/unipdf/v3/model"
+	"log"
 	"net/http"
+	"os"
 )
 
+func OutputPdfText(inputPath string) (*string, error) {
+
+	result := ""
+
+	f, err := os.Open(inputPath)
+	if err != nil {
+		return nil, err
+	}
+
+	defer f.Close()
+
+	pdfReader, err := model.NewPdfReader(f)
+	if err != nil {
+		return nil, err
+	}
+
+	numPages, err := pdfReader.GetNumPages()
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < numPages; i++ {
+		pageNum := i + 1
+
+		page, err := pdfReader.GetPage(pageNum)
+		if err != nil {
+			return nil, err
+		}
+
+		ex, err := extractor.New(page)
+		if err != nil {
+			return nil, err
+		}
+
+		text, err := ex.ExtractText()
+		if err != nil {
+			return nil, err
+		}
+
+		result += text
+	}
+
+	return &result, nil
+}
+
 func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
-
-	pdf.DebugOn = true
-	content, err := pdfReading.ReadPdf("./collection/phil_new_version.pdf") // Read local pdf file
+	err := license.SetMeteredKey(`10bc0bc50f7829dffd2a7e8b87d38a8ab09775e890aa1a92db4a8f2d70c695a8`)
 	if err != nil {
 		rest.sendError(w, err)
 		return
 	}
-	if content == "" {
-		rest.sendError(w, errors.New("не валідний файл, використовуйте шаблон з сайту"))
-		return
-	}
 
-	doc, err := pdfReading.ParsePDFfile(content)
+	//params := mux.Vars(r)
+	//path := params["myurl"]
+	//fmt.Println(path)
+	receivedString, err := OutputPdfText("./collection/Vidomosti_pdf/From4Group_pdfs/infoposhuk_good.pdf")
 	if err != nil {
-		fmt.Println("parser")
-		fmt.Println(err)
+		fmt.Printf("Error: %v\n", err)
+		//os.Exit(1)
 		rest.sendError(w, err)
 		return
 	}
+
+	doc, err := pdfReading.ParsePDFfile(*receivedString)
+	if err != nil {
+		log.Println(err)
+		rest.sendError(w, err)
+		return
+	}
+
+	if doc.ControlType == "екзамен" {
+		//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+		_, err = w.Write([]byte("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+		if err != nil {
+			log.Println(err)
+		}
+		doc.ControlType = "іспит"
+	}
+
+	if doc.Faculty == "" {
+		//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+		_, err = w.Write([]byte("У відомості не зазначено факультет"))
+		if err != nil {
+			log.Println(err)
+		}
+		rest.sendError(w, errors.New("перепешіть відомість"))
+		return
+	}
+	//pdf.DebugOn = true
+	//content, err := pdfReading.ReadPdf("./collection/phil_new_version.pdf") // Read local pdf file
+	//if err != nil {
+	//	rest.sendError(w, err)
+	//	return
+	//}
+	//if content == "" {
+	//	rest.sendError(w, errors.New("не валідний файл, використовуйте шаблон з сайту"))
+	//	return
+	//}
+	//
+	//doc, err := pdfReading.ParsePDFfile(content)
+	//if err != nil {
+	//	fmt.Println("parser")
+	//	fmt.Println(err)
+	//	rest.sendError(w, err)
+	//	return
+	//}
 
 	//Finding in DB the teacher from a PDF
 	idTeacher, err := rest.service.Teachers.FindTeacher(r.Context(), doc)

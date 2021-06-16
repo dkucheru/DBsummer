@@ -51,6 +51,7 @@ type StudentsInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context, id int) (*structs.Student, error)
 	GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error)
+	GetPIBAllStudents(ctx context.Context) ([]*structs.StudentPIB, error)
 	GetAllBorjniki(ctx context.Context) ([]*structs.AllStudInfo, error)
 	GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.StudentMarks, error)
 	FindStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error)
@@ -63,6 +64,7 @@ type TeachersInterface interface {
 	FindTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
 	AddTeacher(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error)
 	GetTeacherPassStatistics(ctx context.Context, passedOrNot string) ([]*structs.TeacherPassStatistics, error)
+	GetTeacherPIBs(ctx context.Context) ([]*structs.TeacherPIB, error)
 }
 
 type SheetsInterface interface {
@@ -70,6 +72,7 @@ type SheetsInterface interface {
 	Get(ctx context.Context) error
 	GetSheetFromParameters(ctx context.Context, fn string, ln string, mn string, subj string, gr string, year string) ([]*structs.SheetByQuery, error)
 	PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int, groupId int) (*pdfReading.ExtractedInformation, error)
+	DeleteAllData(ctx context.Context) error
 }
 
 type RunnerMarksInterface interface {

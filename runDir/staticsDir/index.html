@@ -6,8 +6,9 @@
     <title>Title</title>
 </head>
 <body>
-<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">
-<button type="button" onclick="loadPresidents()">Search for Presidents</button>
+<button type="button" onclick="deleteAllData()">Delete All DB data</button>
+<!--<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">-->
+<!--<button type="button" onclick="loadPresidents()">Search for Presidents</button>-->
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -21,38 +22,38 @@
     <!--        ID:-->
     <!--        <input type="text" id="input-id">-->
     <!--    </label>-->
-    <label>
-        FirstName:
-        <input type="text" id="fn">
-    </label>
-    <label>
-        LastName:
-        <input type="text" id="ln">
-    </label>
-    <label>
-        MiddleName:
-        <input type="text" id="mn">
-    </label>
-    <label>
-        Subject:
-        <input type="text" id="subj">
-    </label>
-    <label>
-        Group:
-        <input type="text" id="gr">
-    </label>
-    <label>
-        Year:
-        <input type="text" id="ye">
-    </label>
-    <button type="submit" onclick="loadSubject()">Get</button>
-    <button type="test" onclick="test()">Get</button>
+<!--    <label>-->
+<!--        FirstName:-->
+<!--        <input type="text" id="fn">-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        LastName:-->
+<!--        <input type="text" id="ln">-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        MiddleName:-->
+<!--        <input type="text" id="mn">-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        Subject:-->
+<!--        <input type="text" id="subj">-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        Group:-->
+<!--        <input type="text" id="gr">-->
+<!--    </label>-->
+<!--    <label>-->
+<!--        MyURL:-->
+<!--        <input type="text" id="my">-->
+<!--    </label>-->
+<!--    <button type="submit" onclick="loadSubject()">Get</button>-->
+    <button type="submit" onclick="test()">Post Sheet</button>
 
-    <label>
-        Year:
-        <input type="number" id="year">
-    </label>
-    <button type="find subjects" onclick="findSubjectsByYear()">Get</button>
+<!--    <label>-->
+<!--        Year:-->
+<!--        <input type="number" id="year">-->
+<!--    </label>-->
+<!--    <button type="find subjects" onclick="findSubjectsByYear()">Get</button>-->
 </form>
 <script>
 
@@ -73,7 +74,18 @@
         xhttp.open("GET", url, false);
         xhttp.send();
     }
+    function deleteAllData(){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                //let response = JSON.parse(this.responseText);
+                alert(this.responseText);
+            }
+        };
 
+        xhttp.open("GET", "/deleteAllData", false);
+        xhttp.send()
+    }
     function test() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -82,7 +94,12 @@
                 alert(this.responseText);
             }
         };
-        xhttp.open("GET", "/sheets/add", false);
+
+
+
+        let url = "/sheets/add"
+        console.log(url)
+        xhttp.open("GET", url, false);
         xhttp.send();
     }
 
