@@ -10,11 +10,12 @@ type Teacher struct {
 }
 
 type TeacherPassStatistics struct {
-	TeacherCipher  int
 	PIB            string
+	TeacherCipher  int
 	PassStatistics int
 }
 
 type TeacherPIB struct {
-	Pib string
+	Pib           string
+	TeacherCipher int
 }
