@@ -214,8 +214,8 @@ WHERE check_mark IS NULL AND subjectname IS NOT NULL;`)
 func (r StudentRepository) GetAllStudentMarksByID(ctx context.Context, id int) ([]*structs.StudentAllMarks, error) {
 	query := r.db.Rebind(`
 		SELECT subjectname,sheet_marks.together_mark,sheetid,
-		COALESCE(NULLIF(COALESCE(runner_marks.together_mark,0),0)::character varying(15),'') AS runner_mark,
-		COALESCE(NULLIF(COALESCE(runner_number,0),0)::character varying(15),'') AS runnerid,
+		COALESCE(NULLIF(COALESCE(runner_marks.together_mark,0),0)::character varying(15),'0') AS runner_mark,
+		COALESCE(NULLIF(COALESCE(runner_number,0),0)::character varying(15),'0') AS runnerid,
   		semester,educationalyear
 FROM (((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
       INNER JOIN sheet ON sheet_marks.sheet = sheetid)

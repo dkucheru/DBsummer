@@ -1,79 +1,64 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<link rel="stylesheet" href="style_main.css">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-
-    <header>
-        <div class="container">
-            <h1 class="logo"></h1>
-            <nav>
-                <ul>
-                    <li><a href="Main.html">Головна</a></li>
-                    <li><a href="student_list.html">Список cтудентів</a></li>
-                    <li><a href="grades.html">Перелік оцінок</a></li>
-                    <li><a href="vidomist.html">Відомість</a></li>
-                    <li><a href="adding.html">Додати дані</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
+    <link rel="stylesheet" href="style_main.css">
+    <style>
+        ul.hr {
+            max-width: 100%;
+            text-align: center;
+        }
+        ul.hr div {
+            display: inline-block;
+            text-align: left;
+        }
+        ul.hr1 {
+            max-width: 100%;
+            text-align: center;
+        }
+        ul.hr1 div {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        ul.hr2 {
+            max-width: 100%;
+            text-align: center;
+        }
+    </style>
 </head>
-<script src=
-        "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+<body>
+<header>
+    <div class="container">
+        <h1 class="logo"></h1>
+        <nav>
+            <ul>
+                <li><a href="Main.html">Головна</a></li>
+                <li><a href="student_list.html">Список cтудентів</a></li>
+                <li><a href="grades.html">Перелік оцінок</a></li>
+                <li><a href="vidomist.html">Відомість</a></li>
+                <li><a href="adding.html">Додати дані</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="hr1 centered">
 
-</script>
-<style>
-    ul.hr {
-        max-width: 100%;
-        text-align: center;
+    <!--<div><input type="number" id="id"
+       placeholder="Type id.."></div>-->
+    <span><select class="mySelect2" id="id"></select> <button onclick="loadPresidents()">Search</button></span>
 
-    }
-    ul.hr div {
-        display: inline-block;
-        text-align: left;
-    }
-</style>
-<style>
-    ul.hr1 {
-        max-width: 100%;
-        text-align: center;
-
-    }
-    ul.hr1 div {
-        display: inline-block;
-        text-align: left;
-        margin-bottom: 10px;
-    }
-</style>
-<body onload="loadPresidents()">
-<ul class="hr1">
-    <div><input type="number" id="id"
-                               placeholder="Type id.."></div>
-    <div><button onclick="loadSubject()">Search</button></div>
-</ul>
-<style > ul.hr2 {
-        max-width: 100%;
-        text-align: center;
-    }
-</style>
-<ul class="hr2">
-    <label id="filter">Фільтр</label>
-    </ul>
-<ul class="hr">
-    <div><input type="text" id="subjName" onKeyUp="myFunction(0,'subjName')"
-                placeholder="Type subject name.."></div>
-    <div><input type="number" id="grade" onKeyUp="myFunction(1,'grade')"
-                placeholder="Type grade.."></div>
-    <div><input type="text" id="gradeECTS" onKeyUp="myFunction(2,'gradeECTS')"
-                placeholder="Type ECTS grade.."></div>
-    <div><input type="text" id="teachPib" onKeyUp="myFunction(3,'teachPib')"
-                placeholder="Type teacher PIB.." ></div>
-</ul>
+    <span><input type="text" id="sem" onKeyUp="myFunction(5,'sem')"
+                placeholder="Type semester.."></span>
+    <span><input type="text" id="year" onKeyUp="myFunction(6,'year')"
+                placeholder="Type year.." ></span>
+</div>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -90,7 +75,6 @@
     </tbody>
 </table>
 <script>
-
     function loadSubject() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -102,6 +86,7 @@
 
         // let field = document.getElementById("input-id");
         let  id = document.getElementById("id");
+        console.log(id);
         // xhttp.open("GET", url, false);
         let url = "/student/marks/"+id.value;
 
@@ -109,8 +94,7 @@
         xhttp.send();
     }
     function loadPresidents() {
-        //let  id = document.getElementById("id");
-        let  id = 1;
+        let  id = document.getElementById("id");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -169,7 +153,33 @@
 
         }
     }
+
+    $(document).ready(function () {
+        $('select.mySelect2').select2({
+            dropdownAutoWidth : true,
+            width: 'auto',
+            ajax: {
+                url: '/studentPIBs',
+                dataType: 'json',
+                processResults: function (data) {
+                    let students = [];
+                    for(studentKey in data.Data) {
+                        let student = data.Data[studentKey];
+                        students.push({id: student.StudentCipher, text: student.Pib + ' ' + student.RecordNumber});
+                    }
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: students
+                    };
+                }
+            }
+        });
+
+        $('select.mySelect2').on('select2:select', function (e) {
+            let studentCipher = $(this).val();
+            console.log(studentCipher);
+        });
+    });
 </script>
 </body>
 </html>
-
