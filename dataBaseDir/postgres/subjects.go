@@ -105,10 +105,10 @@ func (r SubjectsRepository) FindSubject(ctx context.Context, sheet *pdfReading.E
 
 func (r SubjectsRepository) AddSubject(ctx context.Context, sheet *pdfReading.ExtractedInformation) (*int, error) {
 	query := r.db.Rebind(`
-		INSERT into subjects(subjectname,educationallevel,faculty) VALUES(?,?,?);
+		INSERT into subjects(subjectname,educationallevel,faculty,credits) VALUES(?,?,?,?);
 		`)
 
-	_, err := r.db.Exec(query, sheet.Subject, sheet.EducationalLevel, sheet.Faculty)
+	_, err := r.db.Exec(query, sheet.Subject, sheet.EducationalLevel, sheet.Faculty, sheet.Credits)
 
 	if err != nil {
 		return nil, err
