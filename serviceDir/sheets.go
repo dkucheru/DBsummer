@@ -46,6 +46,15 @@ func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReadi
 	return str, nil
 }
 
+func (s *sheetsService) GetAVGSheetMark(ctx context.Context, sheetId int) (*float32, error) {
+	avgMark, err := s.repository.Sheets().GetAVGSheetMark(ctx, sheetId)
+	if err != nil {
+		return nil, err
+	}
+
+	return avgMark, nil
+}
+
 func (s *sheetsService) DeleteAllData(ctx context.Context) error {
 	err := s.repository.Sheets().DeleteAllData(ctx)
 	if err != nil {

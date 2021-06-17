@@ -40,6 +40,7 @@ func New(address string, service *serviceDir.Service) *Rest {
 
 	api.HandleFunc("/sheets/{fn}/{ln}/{mn}/{subj}/{gr}/{ye}", rest.getSheetFromParams).Methods("GET")
 	api.HandleFunc("/sheets/add", rest.postSheet).Methods("POST")
+	api.HandleFunc("/sheets_avg_mark/{sheetId}", rest.getAvgSheetMark).Methods("GET")
 
 	api.HandleFunc("/teachers/{pass}", rest.getTeacherPasses).Methods("GET")
 	api.HandleFunc("/teachers/All/pib", rest.getTeacherPIBs).Methods("GET")
