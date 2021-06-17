@@ -9,7 +9,8 @@ type Student struct {
 }
 
 type StudentPIB struct {
-	Pib string
+	StudentCipher string
+	Pib           string
 }
 
 type StudentMarks struct {
