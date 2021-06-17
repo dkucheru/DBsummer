@@ -25,8 +25,8 @@ type StudentAllMarks struct {
 	SubjectName     string
 	SheetMark       int
 	SheetID         int
-	RunnerMark      int
-	RunnerID        int
+	RunnerMark      string
+	RunnerID        string
 	Semester        string
 	EducationalYear string
 }
