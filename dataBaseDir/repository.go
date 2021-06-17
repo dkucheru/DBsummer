@@ -79,6 +79,7 @@ type RunnerMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 	PostRunnerMarksToDataBase(ctx context.Context, sheetMarkID int, runnerID int, runnerMarks *pdfReading.StudInfoFromPDF) error
+	GetRatingStudentWithRunners(ctx context.Context, sem string, ed_y string) ([]*structs.RatingWithRunners, error)
 }
 
 type RunnerInterface interface {
@@ -92,4 +93,5 @@ type SheetMarksInterface interface {
 	Get(ctx context.Context) error
 	PostSheetMarksToDataBase(ctx context.Context, sheetID int, studentId int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error)
 	FindNezarahOrNezadov(ctx context.Context, studentId int, runner *pdfReading.ExtractedInformation) (*int, error)
+	GetRatingStudents(ctx context.Context, sem string, ed_y string) ([]*structs.RatingWithRunners, error)
 }

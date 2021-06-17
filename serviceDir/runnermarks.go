@@ -3,6 +3,7 @@ package serviceDir
 import (
 	"DBsummer/dataBaseDir"
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
 )
 
@@ -33,4 +34,12 @@ func (s *runnerMarksService) PostRunnerMarksToDataBase(ctx context.Context, shee
 		return err
 	}
 	return nil
+}
+
+func (s *runnerMarksService) GetRatingStudentWithRunners(ctx context.Context, sem string, ed_y string) ([]*structs.RatingWithRunners, error) {
+	ratings, err := s.repository.RunnerMarks().GetRatingStudentWithRunners(ctx, sem, ed_y)
+	if err != nil {
+		return nil, err
+	}
+	return ratings, nil
 }

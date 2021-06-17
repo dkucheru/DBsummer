@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
 	"fmt"
 	"log"
@@ -59,4 +60,68 @@ func (r SheetMarksRepository) FindNezarahOrNezadov(ctx context.Context, studentI
 	}
 
 	return &sheetMarkID, nil
+}
+
+func (r SheetMarksRepository) GetRatingStudents(ctx context.Context, sem string, ed_y string) ([]*structs.RatingWithRunners, error) {
+	createParametrizedView := r.db.Rebind(`
+CREATE VIEW weighted_scores_sheets AS
+SELECT student_cipher,record_book_number, 
+    last_name || ' ' || firstname || ' ' || middle_name AS pib_student,
+      sheet_marks.together_mark * credits AS weight, credits
+  
+FROM ((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
+      INNER JOIN sheet ON sheet_marks.sheet = sheetid)
+      INNER JOIN groups_ ON cipher = group_cipher)
+      LEFT JOIN runner_marks ON mark_number = runner_marks.sheet_mark)
+    LEFT JOIN subjects ON subjectid = groups_.subject
+    
+WHERE student_cipher NOT IN (
+    SELECT student_cipher
+    FROM (student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
+        LEFT JOIN runner_marks ON mark_number = runner_marks.sheet_mark
+    WHERE runner_marks.check_mark IS NOT NULL
+  )
+AND semester = ? AND educationalyear = ?
+;`)
+	_, err := r.db.Exec(createParametrizedView, sem, ed_y)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	query := r.db.Rebind(`
+		SELECT record_book_number,pib_student, SUM(weight)::numeric/SUM(credits) AS rating
+		FROM weighted_scores_sheets
+		GROUP BY student_cipher,record_book_number,pib_student;
+		`)
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var allInfo []*structs.RatingWithRunners
+	for rows.Next() {
+		var s structs.RatingWithRunners
+		err = rows.Scan(&s.RecordBookNumber, &s.PibStudent, &s.Rating)
+		if err != nil {
+			return nil, err
+		}
+		allInfo = append(allInfo, &s)
+	}
+
+	dropParametrizedView := r.db.Rebind(`DROP VIEW weighted_scores_sheets ;`)
+	_, err = r.db.Exec(dropParametrizedView, sem, ed_y)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return allInfo, nil
 }
