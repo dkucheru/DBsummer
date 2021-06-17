@@ -42,14 +42,14 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 
 func (r SheetsRepository) DeleteAllData(ctx context.Context) error {
 	query := r.db.Rebind(`
-		TRUNCATE runner_marks,
-				sheet_marks,
-				sheet,
-				groups_,
-				runner,
-				teachers,
-				subjects,
-				student;`)
+		TRUNCATE runner_marks ,
+        sheet_marks ,
+        sheet,
+        groups_ ,
+        runner,
+        teachers,
+        subjects,
+        student RESTART IDENTITY;`)
 
 	_, err := r.db.Exec(query)
 	if err != nil {

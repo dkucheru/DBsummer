@@ -48,11 +48,13 @@ type ExtractedInformation struct {
 	EducationalLevel  string
 	Faculty           string
 	EducationalYear   string
+	Course            string
 	GroupName         string
 	Subject           string
 	Semester          string
 	ControlType       string
 	Date              time.Time
+	ExpirationDate    time.Time
 	TeacherLastname   string
 	TeacherFirstName  string
 	TeacherMiddleName string
@@ -184,6 +186,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 			if s1 == "навчання" {
 				s2 := strings.ToLower(formatWord(&(words[i+1])[0]))
 				s.EducationalYear = s2
+				s.Course = s2
 			}
 			if s1 == "перенесення" {
 				result := strings.ToLower(formatWord(&(words[i+1])[0]))
@@ -234,6 +237,24 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 			if s1 == "контролю" {
 				s2 := strings.ToLower(formatWord(&(words[i+1])[0]))
 				s.ControlType = s2
+			}
+			if s1 == "дійсне" && strings.ToLower(formatWord(&(words[i+1])[0])) == "до" &&
+				isNumber(formatWord(&(words[i+2])[0])) {
+				s2 := strings.ToLower(formatWord(&(words[i+2])[0]))
+				day, err := strconv.Atoi(s2)
+				if err != nil {
+					log.Println(err)
+					return nil, errors.New("помилка при зчитуванні дня дати")
+				}
+				s2 = strings.ToLower(formatWord(&(words[i+3])[0]))
+				month := getMonthNumber(s2)
+				s2 = strings.ToLower(formatWord(&(words[i+4])[0]))
+				year, err := strconv.Atoi(s2)
+				if err != nil {
+					log.Println(err)
+					return nil, errors.New("помилка при зчитуванні року дати")
+				}
+				s.ExpirationDate = transformStringDate(day, month, year)
 			}
 			if s1 == "дата" && (strings.ToLower(formatWord(&(words[i-1])[0])) == "екзамен" ||
 				strings.ToLower(formatWord(&(words[i-1])[0])) == "залік" ||
@@ -587,6 +608,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 		}
 
 	}
+	s.EducationalYear = fmt.Sprint(s.Date.Year())
 	s.ExtractedStudents = allStudInfo
 	return &s, nil
 }

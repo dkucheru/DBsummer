@@ -34,3 +34,11 @@ func (s *sheetMarksService) PostSheetMarksToDataBase(ctx context.Context, sheetI
 	}
 	return id, nil
 }
+
+func (s *sheetMarksService) FindNezarahOrNezadov(ctx context.Context, studentId int, runner *pdfReading.ExtractedInformation) (*int, error) {
+	id, err := s.repository.SheetMarks().FindNezarahOrNezadov(ctx, studentId, runner)
+	if err != nil {
+		return id, err
+	}
+	return id, nil
+}
