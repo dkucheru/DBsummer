@@ -4,6 +4,7 @@ import (
 	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
+	"fmt"
 	"log"
 )
 
@@ -84,7 +85,8 @@ func (r TeachersRepository) GetTeacherPassStatistics(ctx context.Context, passed
 
 func (r TeachersRepository) GetTeacherPIBs(ctx context.Context) ([]*structs.TeacherPIB, error) {
 	query := r.db.Rebind(`
-		SELECT DISTINCT(firstname || ' ' || lastname || ' ' || COALESCE(middlename, '')) AS pibteach
+		SELECT DISTINCT(firstname || ' ' || lastname || ' ' || COALESCE(middlename, '')) AS pibteach,
+			teacher_cipher AS TeacherCipher
 		FROM teachers;`)
 
 	rows, err := r.db.QueryContext(ctx, query)
@@ -100,11 +102,12 @@ func (r TeachersRepository) GetTeacherPIBs(ctx context.Context) ([]*structs.Teac
 	var pibs []*structs.TeacherPIB
 	for rows.Next() {
 		var s structs.TeacherPIB
-		err = rows.Scan(&s.Pib)
+		err = rows.Scan(&s.Pib, &s.TeacherCipher)
 		if err != nil {
 			return nil, err
 		}
 		pibs = append(pibs, &s)
 	}
+	fmt.Println(pibs)
 	return pibs, nil
 }

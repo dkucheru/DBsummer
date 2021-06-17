@@ -68,9 +68,8 @@
         <th>Оцінка</th>
         <th>№ відомості</th>
         <th>№ бігунця</th>
-        <th>Рік</th>
         <th>Семестр</th>
-
+        <th>Рік</th>
     </tr>
     </thead>
     <tbody>
@@ -86,7 +85,7 @@
                 // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupName','Mark','SheetId','RunnerId','EducationalYear','Semester']; // changed this
+                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupCipher','GroupName','PibTeach']; // changed this
 
                 var tr = document.createElement('tr');
 

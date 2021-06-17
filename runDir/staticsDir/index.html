@@ -14,6 +14,7 @@
 <!--<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">-->
 <!--<button type="button" onclick="loadPresidents()">Search for Presidents</button>-->
 <select class="mySelect2"></select>
+<select class="mySelect2Teachers"></select>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -124,6 +125,31 @@
                     // Transforms the top-level key of the response object from 'items' to 'results'
                     return {
                         results: students
+                    };
+                }
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('select.mySelect2Teachers').select2({
+            dropdownAutoWidth : true,
+            width: 'auto',
+            ajax: {
+                url: '/teachers/All/pib',
+                dataType: 'json',
+                processResults: function (data) {
+                    alert("ooll");
+                    let teachers = [];
+
+                    for(teacherKey in data.Data) {
+                        let teacher = data.Data[teacherKey];
+                        teachers.push({id: teacher.TeacherCipher, text: teacher.Pib});
+                    }
+                    console.log(data);
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: teachers
                     };
                 }
             }
