@@ -121,17 +121,25 @@ WHERE educationalyear = ? AND student.firstname = ? AND last_name = ? AND (middl
 
 func (r StudentRepository) GetAllStudInfo(ctx context.Context) ([]*structs.AllStudInfo, error) {
 	query := r.db.Rebind(`
-		SELECT COALESCE(record_book_number,'вільний слухач'), 
-		student.firstname || ' ' || last_name || ' ' || COALESCE(middle_name, '') AS pibstud, 
-		COALESCE(subjectname, '') AS subj, 
-		COALESCE(group_cipher, '') AS group, 
-		COALESCE(groupname,'') AS groupname,
-		COALESCE(teachers.firstname,'') || ' ' || COALESCE(lastname,'') || ' ' || COALESCE(middlename, '') AS pibteach
-FROM ((((student LEFT JOIN sheet_marks ON student_cipher = student ) 
-	   LEFT JOIN sheet ON sheet = sheet.sheetid) 
-	  LEFT JOIN groups_ ON group_cipher = cipher) 
-	  LEFT JOIN subjects ON subject = subjectid)
-	  LEFT JOIN teachers ON teacher_cipher = sheet.teacher;`)
+		SELECT record_book_number, last_name || ' ' || firstname || ' ' || middle_name AS pib_stud,
+		subjectname,groupname,
+    CASE 
+      WHEN runner_marks.together_mark ISNULL
+        THEN sheet_marks.together_mark
+      WHEN runner_marks.together_mark NOTNULL
+        THEN runner_marks.together_mark
+    END mark,
+    sheetid,
+	COALESCE(NULLIF(COALESCE(runner_number,0),0)::character varying(15),'')
+    AS runner,
+    educationalyear,
+    semester
+FROM (((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
+		INNER JOIN sheet ON sheetid = sheet_marks.sheet)
+		INNER JOIN groups_ ON cipher = group_cipher)
+		INNER JOIN subjects ON subjectid = groups_.subject)
+		LEFT JOIN runner_marks ON sheet_mark = mark_number)
+		LEFT JOIN runner ON runner_number = runner_marks.runner;`)
 
 	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
@@ -147,7 +155,8 @@ FROM ((((student LEFT JOIN sheet_marks ON student_cipher = student )
 	var allInfo []*structs.AllStudInfo
 	for rows.Next() {
 		var s structs.AllStudInfo
-		err = rows.Scan(&s.RecordBook, &s.PibStud, &s.SubjectName, &s.GroupCipher, &s.GroupName, &s.PibTeach)
+		err = rows.Scan(&s.RecordBook, &s.PibStud, &s.SubjectName, &s.GroupName, &s.Mark, &s.SheetId, &s.RunnerId, &s.EducationalYear,
+			&s.Semester)
 		if err != nil {
 			return nil, err
 		}
@@ -189,7 +198,7 @@ WHERE check_mark IS NULL AND subjectname IS NOT NULL;`)
 	var allInfo []*structs.AllStudInfo
 	for rows.Next() {
 		var s structs.AllStudInfo
-		err = rows.Scan(&s.RecordBook, &s.PibStud, &s.SubjectName, &s.GroupCipher, &s.GroupName, &s.PibTeach)
+		err = rows.Scan(&s.RecordBook, &s.PibStud, &s.SubjectName, &s.GroupName)
 		if err != nil {
 			return nil, err
 		}
