@@ -210,3 +210,41 @@ WHERE check_mark IS NULL AND subjectname IS NOT NULL;`)
 	fmt.Println(&allInfo)
 	return allInfo, nil
 }
+
+func (r StudentRepository) GetAllStudentMarksByID(ctx context.Context, id int) ([]*structs.StudentAllMarks, error) {
+	query := r.db.Rebind(`
+		SELECT subjectname,sheet_marks.together_mark,sheetid,
+		COALESCE(NULLIF(COALESCE(runner_marks.together_mark,0),0)::character varying(15),'') AS runner_mark,
+		COALESCE(NULLIF(COALESCE(runner_number,0),0)::character varying(15),'') AS runnerid,
+  		semester,educationalyear
+FROM (((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
+      INNER JOIN sheet ON sheet_marks.sheet = sheetid)
+      INNER JOIN groups_ ON cipher = group_cipher)
+      LEFT JOIN runner_marks ON mark_number = runner_marks.sheet_mark)
+    LEFT JOIN subjects ON subjectid = groups_.subject)
+	LEFT JOIN runner ON runner_marks.runner = runner_number
+WHERE student_cipher = ?;`)
+
+	rows, err := r.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var allInfo []*structs.StudentAllMarks
+	for rows.Next() {
+		var s structs.StudentAllMarks
+		err = rows.Scan(&s.SubjectName, &s.SheetMark, &s.SheetID, &s.RunnerMark, &s.RunnerID, &s.Semester, &s.EducationalYear)
+		if err != nil {
+			return nil, err
+		}
+		allInfo = append(allInfo, &s)
+	}
+	return allInfo, nil
+
+}

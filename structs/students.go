@@ -20,3 +20,13 @@ type StudentMarks struct {
 	EctsMark     string
 	TeacherPIB   string
 }
+
+type StudentAllMarks struct {
+	SubjectName     string
+	SheetMark       int
+	SheetID         int
+	RunnerMark      int
+	RunnerID        int
+	Semester        string
+	EducationalYear string
+}
