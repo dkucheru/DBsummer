@@ -55,6 +55,15 @@ func (s *sheetsService) GetAVGSheetMark(ctx context.Context, sheetId int) (*floa
 	return avgMark, nil
 }
 
+func (s *sheetsService) GetSheetByID(ctx context.Context, id int) ([]*structs.SheetByID, error) {
+	sheet, err := s.repository.Sheets().GetSheetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return sheet, nil
+}
+
 func (s *sheetsService) DeleteAllData(ctx context.Context) error {
 	err := s.repository.Sheets().DeleteAllData(ctx)
 	if err != nil {

@@ -75,6 +75,7 @@ type SheetsInterface interface {
 	PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int, groupId int) (*pdfReading.ExtractedInformation, error)
 	DeleteAllData(ctx context.Context) error
 	GetAVGSheetMark(ctx context.Context, sheetId int) (*float32, error)
+	GetSheetByID(ctx context.Context, id int) ([]*structs.SheetByID, error)
 }
 
 type RunnerMarksInterface interface {

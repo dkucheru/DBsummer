@@ -20,6 +20,38 @@ func (r SheetsRepository) Get(ctx context.Context) error {
 	panic("implement me")
 }
 
+func (r SheetsRepository) GetSheetByID(ctx context.Context, id int) ([]*structs.SheetByID, error) {
+	query := r.db.Rebind(`
+		SELECT record_book_number,
+		last_name || ' ' || firstname || ' ' || middle_name AS pib_student,
+		semester_mark, check_mark,together_mark,national_mark,ects_mark
+			FROM (student INNER JOIN sheet_marks ON student_cipher=sheet_marks.student) 
+					INNER JOIN sheet ON sheet_marks.sheet=sheet.sheetid
+			WHERE sheetid = ?;`)
+
+	rows, err := r.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		e := rows.Close()
+		if e != nil {
+			log.Println(e)
+		}
+	}()
+
+	var allInfo []*structs.SheetByID
+	for rows.Next() {
+		var s structs.SheetByID
+		err = rows.Scan(&s.RecordBook, &s.PibStudent, &s.SemesterMark, &s.ControlMark, &s.TogetherMark, &s.NationalMark, &s.ECTS)
+		if err != nil {
+			return nil, err
+		}
+		allInfo = append(allInfo, &s)
+	}
+	return allInfo, nil
+}
+
 func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfReading.ExtractedInformation, teacherId int, groupId int) (*pdfReading.ExtractedInformation, error) {
 
 	query := r.db.Rebind(`

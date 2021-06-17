@@ -88,6 +88,44 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 		//fmt.Println(s1)
 		if s1 != "" {
 
+			//check if student has a student_cipher
+			if isNumber(s1) && (words[i-1])[0] != "№" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "навчання" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "група" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "семестр" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "бали" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "дата" &&
+				strings.ToLower(formatWord(&(words[i+1])[0])) != "р" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "бп" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "мп" &&
+				!isNumber(formatWord(&(words[i-1])[0])) &&
+				!isNumber(formatWord(&(words[i+1])[0])) &&
+				!NationalMarks[strings.ToLower(formatWord(&(words[i+1])[0]))] &&
+				!NationalMarks[strings.ToLower(formatWord(&(words[i+2])[0]))] &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "заліку" &&
+				strings.ToLower(formatWord(&(words[i-1])[0])) != "залік" {
+
+				if strings.ToLower(formatWord(&(words[i+6])[0])) != "бп" &&
+					strings.ToLower(formatWord(&(words[i+5])[0])) != "бп" &&
+					strings.ToLower(formatWord(&(words[i+6])[0])) != "мп" &&
+					strings.ToLower(formatWord(&(words[i+5])[0])) != "мп" {
+
+					if formatWord(&(words[i+4])[0]) != "I" &&
+						formatWord(&(words[i+4])[0]) != "І" &&
+						formatWord(&(words[i+3])[0]) != "I" &&
+						formatWord(&(words[i+3])[0]) != "І" {
+						log.Println("A person does not have a record book number")
+						infoOfFreeListener, err := ReadInfoAboutStudentWithNoRecordBook(words, i, &numPresent, &numNotAllowed)
+						if err != nil {
+							return nil, err
+						}
+						allStudInfo = append(allStudInfo, infoOfFreeListener)
+					} else {
+						return nil, errors.New("неправильний формат номеру залікової книжки")
+					}
+				}
+			}
+
 			if s1 == "кандидат" {
 				result := "кандидат"
 				j := i
@@ -618,6 +656,16 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 	}
 	s.EducationalYear = fmt.Sprint(s.Date.Year())
 	s.ExtractedStudents = allStudInfo
+
+	if s.DocumentType != "бігунець" {
+		if s.AmountPresent != numPresent {
+			return nil, errors.New("неправильна кількість присутніх")
+		}
+		if s.AmountBanned != numNotAllowed {
+			return nil, errors.New("неправильна кількість не допущених студентів")
+		}
+	}
+
 	return &s, nil
 }
 

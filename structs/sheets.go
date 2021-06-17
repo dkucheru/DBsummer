@@ -22,3 +22,13 @@ type SheetByQuery struct {
 	NationalMark string
 	EctsMark     string
 }
+
+type SheetByID struct {
+	RecordBook   string
+	PibStudent   string
+	SemesterMark int
+	ControlMark  int
+	TogetherMark int
+	NationalMark string
+	ECTS         string
+}
