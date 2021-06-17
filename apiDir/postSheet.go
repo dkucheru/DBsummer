@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/unidoc/unipdf/v3/common/license"
 	"github.com/unidoc/unipdf/v3/extractor"
 	"github.com/unidoc/unipdf/v3/model"
 	"io"
@@ -85,12 +84,6 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	buf.Reset()
 	// do something else
 	// etc write header
-
-	err2 := license.SetMeteredKey(`10bc0bc50f7829dffd2a7e8b87d38a8ab09775e890aa1a92db4a8f2d70c695a8`)
-	if err2 != nil {
-		rest.sendError(w, err2)
-		return
-	}
 
 	//params := mux.Vars(r)
 	//path := params["myurl"]
