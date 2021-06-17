@@ -87,7 +87,7 @@ table, th, td {
     border: 1px solid black;
 
 }
-table,input {
+table {
     width: 90%;
     height: 70%;
     margin-left: auto;
@@ -106,3 +106,5 @@ input[type=text]:focus {
     border: 3px solid #555;
 
 }
+
+.centered { text-align: center; }
