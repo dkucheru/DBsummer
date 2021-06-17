@@ -40,6 +40,22 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 	return sheet, nil
 }
 
+func (r SheetsRepository) GetAVGSheetMark(ctx context.Context, sheetId int) (*float32, error) {
+	query := r.db.Rebind(`
+		SELECT AVG(together_mark)
+		FROM sheet INNER JOIN sheet_marks ON sheetid =  sheet_marks.sheet
+		WHERE sheetid = ?`)
+
+	row := r.db.QueryRowContext(ctx, query, sheetId)
+	var avgMark float32
+	err := row.Scan(&avgMark)
+	if err != nil {
+		return nil, err
+	}
+
+	return &avgMark, nil
+}
+
 func (r SheetsRepository) DeleteAllData(ctx context.Context) error {
 	query := r.db.Rebind(`
 		TRUNCATE runner_marks ,
