@@ -52,15 +52,9 @@
 </style>
 <body onload="loadPresidents()">
 <ul class="hr1">
-    <div><input type="text" id="lastName"
-                               placeholder="Type student last name.."></div>
-    <div><input type="text" id="firstName"
-                placeholder="Type student first name.."></div>
-    <div><input type="text" id="middleName"
-                placeholder="Type student middle name.."></div>
-    <div><input type="number" id="yearOfStudy"
-                placeholder="Type year of study.."></div>
-    <div><button onclick="loadPresidents()">Search</button></div>
+    <div><input type="number" id="id"
+                               placeholder="Type id.."></div>
+    <div><button onclick="loadSubject()">Search</button></div>
 </ul>
 <style > ul.hr2 {
         max-width: 100%;
@@ -85,8 +79,11 @@
     <tr>
         <th>Назва предмету</th>
         <th>Оцінка</th>
-        <th>Оцінка за ЄКТС</th>
-        <th>Викладач</th>
+        <th>№ відомості</th>
+        <th>Оцінка бігунець</th>
+        <th>№ бігунець</th>
+        <th>Семестр</th>
+        <th>Рік</th>
     </tr>
     </thead>
     <tbody>
@@ -104,26 +101,16 @@
         };
 
         // let field = document.getElementById("input-id");
-        let  ln = document.getElementById("lastName");
-        console.log("lastname : ", ln.value);
-        let  fn = document.getElementById("firstName");
-        console.log("lastname : ", fn.value);
-        let  mn = document.getElementById("middleName");
-        console.log("lastname : ", mn.value);
-        let  ye = document.getElementById("yearOfStudy");
-        console.log("lastname : ", ye.value);
-
+        let  id = document.getElementById("id");
         // xhttp.open("GET", url, false);
-        let url = "/students";
+        let url = "/student/marks/"+id.value;
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
     function loadPresidents() {
-        let  ln = document.getElementById("lastName");
-        let  fn = document.getElementById("firstName");
-        let  mn = document.getElementById("middleName");
-        let  ye = document.getElementById("yearOfStudy");
+        //let  id = document.getElementById("id");
+        let  id = 1;
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -132,7 +119,7 @@
                 // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['SubjectName', 'MarkTogether', 'EctsMark', 'TeacherPIB']; // changed this
+                var properties = ['SubjectName', 'SheetMark', 'SheetID', 'RunnerMark','RunnerID','Semester','EducationalYear']; // changed this
 
                 var tr = document.createElement('tr');
 
@@ -157,7 +144,7 @@
                 }
             }
         };
-        let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+ye.value;
+        let url = "/student/marks/"+id.value;
         //alert(url);
 
         xhttp.open("GET", url, false);
