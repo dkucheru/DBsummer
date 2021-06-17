@@ -2,14 +2,18 @@ package apiDir
 
 import (
 	"DBsummer/pdfReading"
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/unidoc/unipdf/v3/common/license"
 	"github.com/unidoc/unipdf/v3/extractor"
 	"github.com/unidoc/unipdf/v3/model"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func OutputPdfText(inputPath string) (*string, error) {
@@ -58,16 +62,40 @@ func OutputPdfText(inputPath string) (*string, error) {
 }
 
 func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
-	err := license.SetMeteredKey(`10bc0bc50f7829dffd2a7e8b87d38a8ab09775e890aa1a92db4a8f2d70c695a8`)
+	r.ParseMultipartForm(64 << 20) // limit your max input length!
+	var buf bytes.Buffer
+	// in your case file would be fileupload
+	file, header, err := r.FormFile("qqfile")
 	if err != nil {
-		rest.sendError(w, err)
+		panic(err)
+	}
+	defer file.Close()
+	name := strings.Split(header.Filename, ".")
+	fmt.Printf("File name %s\n", name[0])
+	// Copy the file data to my buffer
+	io.Copy(&buf, file)
+	ioutil.WriteFile("runDir/staticsDir/upload/"+header.Filename, buf.Bytes(), 0644)
+	// do something with the contents...
+	// I normally have a struct defined and unmarshal into a struct, but this will
+	// work as an example
+	contents := buf.String()
+	fmt.Println(contents)
+	// I reset the buffer in case I want to use it again
+	// reduces memory allocations in more intense projects
+	buf.Reset()
+	// do something else
+	// etc write header
+
+	err2 := license.SetMeteredKey(`10bc0bc50f7829dffd2a7e8b87d38a8ab09775e890aa1a92db4a8f2d70c695a8`)
+	if err2 != nil {
+		rest.sendError(w, err2)
 		return
 	}
 
 	//params := mux.Vars(r)
 	//path := params["myurl"]
 	//fmt.Println(path)
-	receivedString, err := OutputPdfText("./collection/Vidomosti_pdf/From4Group_pdfs/ios_bigunets.pdf")
+	receivedString, err := OutputPdfText("runDir/staticsDir/upload/" + header.Filename)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
 		//os.Exit(1)
@@ -280,5 +308,5 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	rest.sendData(w, "PDF added successfully")
+	rest.sendFileData(w, header.Filename)
 }

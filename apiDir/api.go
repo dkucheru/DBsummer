@@ -3,6 +3,7 @@ package apiDir
 import (
 	"DBsummer/serviceDir"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net"
@@ -24,7 +25,7 @@ func New(address string, service *serviceDir.Service) *Rest {
 
 	api := mux.NewRouter()
 
-	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("C:\\Users\\Dariia\\go\\src\\DBsummer\\runDir\\staticsDir"))))
+	api.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("C:\\Users\\Алина\\go\\src\\DBsummer\\runDir\\staticsDir"))))
 	api.HandleFunc("/test", rest.test)
 
 	api.HandleFunc("/subjects/{id}", rest.getSubject).Methods("GET")
@@ -37,7 +38,7 @@ func New(address string, service *serviceDir.Service) *Rest {
 	api.HandleFunc("/studentPIBs", rest.getAllStudentPIBs).Methods("GET")
 
 	api.HandleFunc("/sheets/{fn}/{ln}/{mn}/{subj}/{gr}/{ye}", rest.getSheetFromParams).Methods("GET")
-	api.HandleFunc("/sheets/add", rest.postSheet).Methods("GET")
+	api.HandleFunc("/sheets/add", rest.postSheet).Methods("POST")
 
 	api.HandleFunc("/teachers/{pass}", rest.getTeacherPasses).Methods("GET")
 	api.HandleFunc("/teachers/All/pib", rest.getTeacherPIBs).Methods("GET")
@@ -83,6 +84,11 @@ type Response struct {
 	Data   interface{}
 }
 
+type FileResponse struct {
+	success string
+	Data    interface{}
+}
+
 func (rest *Rest) sendError(w http.ResponseWriter, err error) {
 	bytes, err := json.Marshal(Response{
 		Status: 2,
@@ -103,6 +109,23 @@ func (rest *Rest) sendData(w http.ResponseWriter, data interface{}) {
 		Status: 1,
 		Data:   data,
 	})
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = w.Write(bytes)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func (rest *Rest) sendFileData(w http.ResponseWriter, data interface{}) {
+	m := map[string]string{
+		"success": "true",
+		"Data":    fmt.Sprintf("%s", data),
+		// SkipWhenMarshal *not* marshaled here
+	}
+	bytes, err := json.Marshal(m)
 	if err != nil {
 		log.Println(err)
 	}

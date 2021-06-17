@@ -37,7 +37,7 @@ func (r StudentRepository) FindStudent(ctx context.Context, sheetMarks *pdfReadi
 
 func (r StudentRepository) GetPIBAllStudents(ctx context.Context) ([]*structs.StudentPIB, error) {
 	getStudentsPIBs := r.db.Rebind(`
-		SELECT DISTINCT (last_name || ' ' ||firstname || ' ' || COALESCE(middle_name,'')) AS pib_student, student_cipher AS StudentCipher
+		SELECT DISTINCT (last_name || ' ' ||firstname || ' ' || COALESCE(middle_name,'')) AS pib_student, student_cipher AS StudentCipher, record_book_number AS RecordNumber
 		FROM student
 		;`)
 
@@ -55,7 +55,7 @@ func (r StudentRepository) GetPIBAllStudents(ctx context.Context) ([]*structs.St
 	var allPIBs []*structs.StudentPIB
 	for rows.Next() {
 		var s structs.StudentPIB
-		err = rows.Scan(&s.Pib, &s.StudentCipher)
+		err = rows.Scan(&s.Pib, &s.StudentCipher, &s.RecordNumber)
 		if err != nil {
 			return nil, err
 		}

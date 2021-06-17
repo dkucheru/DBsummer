@@ -4,6 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <link rel="stylesheet" href="style_main.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -11,25 +12,7 @@
     <header>
     </header>
 </head>
-<script src=
-                "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
-
-</script>
-<style>
-    ul.hr1 {
-        max-width: 100%;
-        text-align: center;
-
-    }
-    ul.hr1 div {
-        display: inline-block;
-        text-align: left;
-        margin-bottom: 10px;
-    }
-</style>
 <body onload="loadSubject()">
-
-
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -55,7 +38,7 @@
         //console.log("lastname : ", sD.value);
 
         // xhttp.open("GET", url, false);
-        let url = "/teachers/All/pib"
+        let url = "/studentPIBs"
 
         xhttp.open("GET", url, false);
         xhttp.send();

@@ -1,13 +1,73 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<link rel="stylesheet" href="style_main.css">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/fine-uploader.min.js" integrity="sha512-8H6Fe/2QnJgxNhCOgnsDHBslpz3XNfWljueeGAAgfJY02jT9SYo9hFAFmbcgi6+KPNsSVPUHi2hSjWpjZIdeDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/jquery.fine-uploader/jquery.fine-uploader.min.js" integrity="sha512-YQcg9O6rUgRmxGskSzqPNGOXNOOzeYjvGkRVTEIXdlg8tbYKPNyHXyjHyEe5v0KlrJg6kFlIPNM9660FTW/2/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/template" id="qq-template">
+        <div class="qq-uploader-selector qq-uploader">
+            <div class="qq-total-progress-bar-container-selector qq-total-progress-bar-container">
+                <div class="qq-total-progress-bar-selector qq-progress-bar qq-total-progress-bar"></div>
+            </div>
+            <div class="qq-upload-drop-area-selector qq-upload-drop-area" qq-hide-dropzone>
+                <span>Drop files here to upload</span>
+            </div>
+            <div class="qq-upload-button-selector qq-upload-button">
+                <div>Upload a file</div>
+            </div>
+            <span class="qq-drop-processing-selector qq-drop-processing">
+                <span>Processing dropped files...</span>
+                <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+            </span>
+            <ul class="qq-upload-list-selector qq-upload-list">
+                <li>
+                    <div class="qq-progress-bar-container-selector">
+                        <div class="qq-progress-bar-selector qq-progress-bar"></div>
+                    </div>
+                    <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
+                    <span class="qq-edit-filename-icon-selector qq-edit-filename-icon"></span>
+                    <span class="qq-upload-file-selector qq-upload-file"></span>
+                    <input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">
+                    <span class="qq-upload-size-selector qq-upload-size"></span>
+                    <a class="qq-upload-cancel-selector qq-upload-cancel" href="#">Cancel</a>
+                    <a class="qq-upload-retry-selector qq-upload-retry" href="#">Retry</a>
+                    <a class="qq-upload-delete-selector qq-upload-delete" href="#">Delete</a>
+                    <span class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                </li>
+            </ul>
+        </div>
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/file-uploader/5.16.2/fine-uploader.min.css" integrity="sha512-RIjvm40hf5zylq2bAzo6gq7zle9d02ivUUrIB9FjBZYd2N87P9VcKoSufenZp5NSMR47IjvG1R2g3EnQ0qEjYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style_main.css">
     <meta charset="UTF-8">
     <title>Title</title>
-
+    <script>
+        $(document).ready(function () {
+            $("#fine-uploader").fineUploader({
+                request: {
+                    endpoint: '/sheets/add'
+                },
+                callbacks: {
+                    onComplete: function(id, fileName, responseJSON) {
+                        console.log(responseJSON);
+                        if (responseJSON.success == true) {
+                            alert('noice! ' + responseJSON.Data);
+                        } else {
+                            alert('FFFUUUUU');
+                        }
+                    }
+                },
+                validation: {
+                    allowedExtensions: ['pdf'],
+                    sizeLimit: 2048000 // 2000 kB = 200 * 1024 bytes
+                },
+            });
+        });
+    </script>
+</head>
+<body>
     <header>
         <div class="container">
             <h1 class="logo"></h1>
@@ -22,7 +82,7 @@
             </nav>
         </div>
     </header>
-</head>
+<div id="fine-uploader"></div>
 </body>
 </html>
 

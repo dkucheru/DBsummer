@@ -120,7 +120,7 @@
                     let students = [];
                     for(studentKey in data.Data) {
                         let student = data.Data[studentKey];
-                        students.push({id: student.StudentCipher, text: student.Pib});
+                        students.push({id: student.StudentCipher, text: student.Pib + ' ' + student.RecordNumber});
                     }
                     // Transforms the top-level key of the response object from 'items' to 'results'
                     return {
@@ -129,9 +129,12 @@
                 }
             }
         });
-    });
 
-    $(document).ready(function () {
+        $('select.mySelect2').on('select2:select', function (e) {
+            let studentCipher = $(this).val();
+            console.log(studentCipher);
+        });
+
         $('select.mySelect2Teachers').select2({
             dropdownAutoWidth : true,
             width: 'auto',
