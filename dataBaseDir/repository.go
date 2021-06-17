@@ -56,6 +56,7 @@ type StudentsInterface interface {
 	GetStudentByPIB(ctx context.Context, fn string, ln string, mn string, year string) ([]*structs.StudentMarks, error)
 	FindStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error)
 	AddStudent(ctx context.Context, sheetMarks *pdfReading.StudInfoFromPDF) (*int, error)
+	GetAllStudentMarksByID(ctx context.Context, id int) ([]*structs.StudentAllMarks, error)
 }
 
 type TeachersInterface interface {

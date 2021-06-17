@@ -70,6 +70,9 @@ type ExtractedInformation struct {
 }
 
 func ParsePDFfile(content string) (*ExtractedInformation, error) {
+
+	numPresent := 0
+	numNotAllowed := 0
 	s := ExtractedInformation{}
 	var allStudInfo []*StudInfoFromPDF
 	regexWords := regexp.MustCompile(`([^_\s.:\-,«»]+)`)
@@ -405,6 +408,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 						}
 					}
 					stud.EctsMark = "F"
+					numNotAllowed += 1
 
 				} else if (i_plus_3 == "не" && strings.Contains(i_plus_4, "допущ")) ||
 					strings.Contains(i_plus_3, "недоп") {
@@ -442,7 +446,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 						}
 					}
 					stud.EctsMark = "F"
-
+					numNotAllowed += 1
 				} else if (i_plus_2 == "не" && strings.Contains(i_plus_3, "допущ")) ||
 					strings.Contains(i_plus_2, "недоп") {
 
@@ -473,6 +477,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 						}
 					}
 					stud.EctsMark = "F"
+					numNotAllowed += 1
 
 				} else if (i_plus_1 == "не" && strings.Contains(i_plus_2, "допущ")) ||
 					strings.Contains(i_plus_1, "недоп") {
@@ -521,7 +526,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 						} else if isNumber(i_plus_5) {
 							return nil, errors.New("у студента що складав роботу має бути оцінка ЄКТС ")
 						}
-
+						numPresent += 1
 					} else if strings.Contains(i_plus_4, "незад") || strings.Contains(i_plus_4, "незар") {
 
 						if strings.Contains(i_plus_4, "незад") {
@@ -551,6 +556,7 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 								}
 							}
 						}
+						numPresent += 1
 					} else if (i_plus_4 == "не" && strings.Contains(i_plus_5, "зад")) ||
 						(i_plus_4 == "не" && strings.Contains(i_plus_5, "зар")) {
 
@@ -581,6 +587,8 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 								}
 							}
 						}
+
+						numPresent += 1
 					} else {
 						return nil, errors.New("error with student [" + stud.RecordBook + "]")
 					}
