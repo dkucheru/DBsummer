@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
 </head>
 <body>
 <button type="button" onclick="deleteAllData()">Delete All DB data</button>
 <!--<input class="form-control" type="text" placeholder="Фамилия или телефон" id="search-text" onkeyup="tableSearch()">-->
 <!--<button type="button" onclick="loadPresidents()">Search for Presidents</button>-->
+<select class="mySelect2"></select>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -18,62 +23,11 @@
     </tbody>
 </table>
 <form>
-    <!--    <label>-->
-    <!--        ID:-->
-    <!--        <input type="text" id="input-id">-->
-    <!--    </label>-->
-<!--    <label>-->
-<!--        FirstName:-->
-<!--        <input type="text" id="fn">-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        LastName:-->
-<!--        <input type="text" id="ln">-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        MiddleName:-->
-<!--        <input type="text" id="mn">-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        Subject:-->
-<!--        <input type="text" id="subj">-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        Group:-->
-<!--        <input type="text" id="gr">-->
-<!--    </label>-->
-<!--    <label>-->
-<!--        MyURL:-->
-<!--        <input type="text" id="my">-->
-<!--    </label>-->
-<!--    <button type="submit" onclick="loadSubject()">Get</button>-->
+
     <button type="submit" onclick="test()">Post Sheet</button>
 
-<!--    <label>-->
-<!--        Year:-->
-<!--        <input type="number" id="year">-->
-<!--    </label>-->
-<!--    <button type="find subjects" onclick="findSubjectsByYear()">Get</button>-->
 </form>
 <script>
-
-    function findSubjectsByYear() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                //let response = JSON.parse(this.responseText);
-                alert(this.responseText);
-            }
-        };
-
-        let  ye = document.getElementById("year");
-        console.log("year : ", ye.value);
-
-        let url = "/subjects/by_year/"+ye.value;
-
-        xhttp.open("GET", url, false);
-        xhttp.send();
-    }
     function deleteAllData(){
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -94,75 +48,10 @@
                 alert(this.responseText);
             }
         };
-
-
-
         let url = "/sheets/add"
         console.log(url)
         xhttp.open("GET", url, false);
         xhttp.send();
-    }
-
-    function loadSubject() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                //let response = JSON.parse(this.responseText);
-                alert(this.responseText);
-            }
-        };
-
-        // let field = document.getElementById("input-id");
-        let fn = document.getElementById("fn");
-        console.log("firstname : ", fn.value);
-
-        let ln = document.getElementById("ln");
-        console.log("lastname : ", ln.value);
-
-        let mn = document.getElementById("mn");
-        console.log("secondname : ", mn.value);
-
-        let  subj = document.getElementById("subj");
-        console.log("subject : ", subj.value);
-
-        let  gr = document.getElementById("gr");
-        console.log("group : ", gr.value);
-
-        let  ye = document.getElementById("ye");
-        console.log("year : ", ye.value);
-
-        //
-        // let url = "/subjects/"+field.value;
-        // let url = "/subjects/"+fn.value+"/"+ln.value+"/"+mn.value;
-        // let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
-
-        // //alert(url);
-        //
-        // xhttp.open("GET", url, false);
-        let url = "/students";
-
-        xhttp.open("GET", url, false);
-        xhttp.send();
-    }
-
-    function tableSearch() {
-        var phrase = document.getElementById('search-text');
-        var table = document.getElementById('info-table');
-        var regPhrase = new RegExp(phrase.value, 'i');
-        var flag = false;
-        for (var i = 1; i < table.rows.length; i++) {
-            flag = false;
-            for (var j = table.rows[i].cells.length - 1; j >= 0; j--) {
-                flag = regPhrase.test(table.rows[i].cells[j].innerHTML);
-                if (flag) break;
-            }
-            if (flag) {
-                table.rows[i].style.display = "";
-            } else {
-                table.rows[i].style.display = "none";
-            }
-
-        }
     }
 
     function loadPresidents() {
@@ -219,6 +108,27 @@
         // xhttp.open("GET", "http://schwartzcomputer.com/ICT4570/Resources/USPresidents.json", true);
         xhttp.send();
     }
+    $(document).ready(function () {
+        $('select.mySelect2').select2({
+            dropdownAutoWidth : true,
+            width: 'auto',
+            ajax: {
+                url: '/studentPIBs',
+                dataType: 'json',
+                processResults: function (data) {
+                    let students = [];
+                    for(studentKey in data.Data) {
+                        let student = data.Data[studentKey];
+                        students.push({id: student.StudentCipher, text: student.Pib});
+                    }
+                    // Transforms the top-level key of the response object from 'items' to 'results'
+                    return {
+                        results: students
+                    };
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>
