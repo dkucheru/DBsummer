@@ -3,6 +3,7 @@ package postgres
 import (
 	"DBsummer/pdfReading"
 	"context"
+	"fmt"
 	"log"
 )
 
@@ -19,36 +20,11 @@ func (r SheetMarksRepository) Get(ctx context.Context) error {
 }
 
 func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, sheetID int, studentId int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error) {
-	//	getStudentCipher := r.db.Rebind(`
-	//		SELECT student_cipher
-	//		FROM student
-	//		WHERE firstname = ? AND last_name = ? AND (middle_name = ? OR middle_name IS NULL OR middle_name = '')
-	//;
-	//	`)
-	//	row := r.db.QueryRowContext(ctx, getStudentCipher, sheetMarks.FirstName, sheetMarks.Lastname, sheetMarks.MiddleName)
-	//	fmt.Println("group name : " + sheetMarks.FirstName)
-	//	fmt.Println("year : " + sheetMarks.Lastname)
-	//	fmt.Println("semester : " + sheetMarks.MiddleName)
-	//
-	//var studentID string
-	//err := row.Scan(&studentID)
-	//if err != nil {
-	//	log.Println(err)
-	//	return sheetID, err
-	//}
 
 	query := r.db.Rebind(`
 		INSERT into sheet_marks(check_mark,national_mark,semester_mark,
 	together_mark,ects_mark,sheet,student) VALUES(?,?,?,?,?,?,?);
 		`)
-
-	//rand.Seed(time.Now().UnixNano())
-	//min := 1
-	//max := 1000
-	//random := rand.Intn(max-min+1) + min
-	//random2 := rand.Intn(max-min+1) + min
-	//id := int(sheetID + sheetMarks.SemesterMark + random + random2)
-	//fmt.Println(id)
 
 	_, err := r.db.Exec(query, sheetMarks.ControlMark, sheetMarks.NationalMark, sheetMarks.SemesterMark, sheetMarks.TogetherMark,
 		sheetMarks.EctsMark, sheetID, studentId)
@@ -57,4 +33,30 @@ func (r SheetMarksRepository) PostSheetMarksToDataBase(ctx context.Context, shee
 		return sheetID, err
 	}
 	return sheetID, nil
+}
+
+func (r SheetMarksRepository) FindNezarahOrNezadov(ctx context.Context, studentId int, runner *pdfReading.ExtractedInformation) (*int, error) {
+
+	query := r.db.Rebind(`
+		SELECT mark_number as sheetMarkID
+		FROM (((sheet_marks INNER JOIN student ON sheet_marks.student = student_cipher)
+  				INNER JOIN sheet ON sheet_marks.sheet = sheetid)
+  				INNER JOIN groups_ ON sheet.group_cipher = cipher)
+  				INNER JOIN subjects ON subject = subjectid
+    	WHERE student_cipher = ? AND subjectname = ? AND semester = ? AND educationalyear = ? AND
+		(national_mark = 'не зараховано' OR national_mark = 'незадовільно');
+		`)
+
+	fmt.Println(studentId)
+	fmt.Println(runner.Subject)
+	fmt.Println(runner.Semester)
+	fmt.Println(runner.EducationalYear)
+	row := r.db.QueryRowContext(ctx, query, studentId, runner.Subject, runner.Semester, runner.EducationalYear)
+	var sheetMarkID int
+	err := row.Scan(&sheetMarkID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &sheetMarkID, nil
 }

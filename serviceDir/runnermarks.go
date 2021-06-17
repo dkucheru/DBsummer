@@ -2,6 +2,7 @@ package serviceDir
 
 import (
 	"DBsummer/dataBaseDir"
+	"DBsummer/pdfReading"
 	"context"
 )
 
@@ -24,4 +25,12 @@ func (s *runnerMarksService) Create(ctx context.Context) (int, error) {
 
 func (s *runnerMarksService) Get(ctx context.Context) error {
 	panic("implement me")
+}
+
+func (s *runnerMarksService) PostRunnerMarksToDataBase(ctx context.Context, sheetMarkID int, runnerID int, runnerMarks *pdfReading.StudInfoFromPDF) error {
+	err := s.repository.RunnerMarks().PostRunnerMarksToDataBase(ctx, sheetMarkID, runnerID, runnerMarks)
+	if err != nil {
+		return err
+	}
+	return nil
 }

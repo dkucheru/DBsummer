@@ -78,15 +78,18 @@ type SheetsInterface interface {
 type RunnerMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
+	PostRunnerMarksToDataBase(ctx context.Context, sheetMarkID int, runnerID int, runnerMarks *pdfReading.StudInfoFromPDF) error
 }
 
 type RunnerInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
+	PostRunnerToDataBase(ctx context.Context, runner *pdfReading.ExtractedInformation, teacherId int) error
 }
 
 type SheetMarksInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 	PostSheetMarksToDataBase(ctx context.Context, sheetID int, studentId int, sheetMarks *pdfReading.StudInfoFromPDF) (int, error)
+	FindNezarahOrNezadov(ctx context.Context, studentId int, runner *pdfReading.ExtractedInformation) (*int, error)
 }

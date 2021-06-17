@@ -73,8 +73,8 @@ func (r GroupsRepository) FindGroup(ctx context.Context, sheet *pdfReading.Extra
 
 	//fmt.Println(sheet.GroupName +" "+ fmt.Sprint(sheet.Date.Year()) + " " + sheet.Semester + sheet.EducationalYear + fmt.Sprint(subjectId))
 
-	row := r.db.QueryRowContext(ctx, getGroupCipher, sheet.GroupName, sheet.Date.Year(), sheet.Semester,
-		sheet.EducationalYear, subjectId)
+	row := r.db.QueryRowContext(ctx, getGroupCipher, sheet.GroupName, sheet.EducationalYear, sheet.Semester,
+		sheet.Course, subjectId)
 	var groupID int
 	err := row.Scan(&groupID)
 	if err != nil {
@@ -89,8 +89,8 @@ func (r GroupsRepository) AddGroup(ctx context.Context, sheet *pdfReading.Extrac
 		INSERT into groups_(groupname,educationalyear,semester,course,subject) VALUES(?,?,?,?,?);
 		`)
 	//fmt.Println(sheet.GroupName +" "+ fmt.Sprint(sheet.Date.Year()) + " " + sheet.Semester + sheet.EducationalYear + fmt.Sprint(subjectId))
-	_, err := r.db.Exec(query, sheet.GroupName, sheet.Date.Year(), sheet.Semester,
-		sheet.EducationalYear, subjectId)
+	_, err := r.db.Exec(query, sheet.GroupName, sheet.EducationalYear, sheet.Semester,
+		sheet.Course, subjectId)
 
 	if err != nil {
 		return nil, err
