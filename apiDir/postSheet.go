@@ -3,7 +3,6 @@ package apiDir
 import (
 	"DBsummer/pdfReading"
 	"bytes"
-	"errors"
 	"fmt"
 	"github.com/unidoc/unipdf/v3/extractor"
 	"github.com/unidoc/unipdf/v3/model"
@@ -103,24 +102,24 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if doc.ControlType == "екзамен" {
-		//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
-		_, err = w.Write([]byte("У відомості зазначено слово екзамен, у базу вноситься іспит"))
-		if err != nil {
-			log.Println(err)
-		}
-		doc.ControlType = "іспит"
-	}
+	//if doc.ControlType == "екзамен" {
+	//	//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+	//	_, err = w.Write([]byte("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//	doc.ControlType = "іспит"
+	//}
 
-	if doc.Faculty == "" {
-		//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
-		_, err = w.Write([]byte("У відомості не зазначено факультет"))
-		if err != nil {
-			log.Println(err)
-		}
-		rest.sendError(w, errors.New("перепешіть відомість"))
-		return
-	}
+	//if doc.Faculty == "" {
+	//	//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+	//	_, err = w.Write([]byte("У відомості не зазначено факультет"))
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//	rest.sendError(w, errors.New("перепешіть відомість"))
+	//	return
+	//}
 	//pdf.DebugOn = true
 	//content, err := pdfReading.ReadPdf("./collection/phil_new_version.pdf") // Read local pdf file
 	//if err != nil {
