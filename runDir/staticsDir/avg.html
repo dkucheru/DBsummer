@@ -81,6 +81,7 @@
         let  sem = document.getElementById("sem");
         let  year = document.getElementById("year");
         var xhttp = new XMLHttpRequest();
+        var isRunner = false;
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
@@ -99,17 +100,19 @@
                     row = jsonResponse.Data[r];
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
+                        if (isRunner) td.classList.add('runner');
                         td.appendChild(document.createTextNode(row[properties[i]]));
                         tr.appendChild(td);
                     }
                     table.appendChild(tr);
                 }
+                isRunner = false;
             }
         };
-        $("#info-table tr").remove();
         let url = "/getRatingSheets/"+sem.value+"/"+year.value;
         xhttp.open("GET", url, false);
         xhttp.send();
+        isRunner = true;
         url = "/getRatingRunners/"+sem.value+"/"+year.value;
         xhttp.open("GET", url, false);
         xhttp.send();
