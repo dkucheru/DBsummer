@@ -3,10 +3,12 @@
 <html lang="en">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" href="style_main.css">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Відомість</title>
 
     <header>
         <div class="container">
@@ -17,16 +19,12 @@
                     <li><a href="student_list.html">Список cтудентів</a></li>
                     <li><a href="grades.html">Перелік оцінок</a></li>
                     <li><a href="vidomist.html">Відомість</a></li>
-                    <li><a href="adding.html">Додати дані</a></li>
+                    <li><a href="avg.html">Середній бал</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 </head>
-<script src=
-        "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
-
-</script>
 <style>
     ul.hr {
         text-align: center;
@@ -57,44 +55,21 @@
         margin-bottom: 10px;
     }
 </style>
-<body onload="loadPresidents()">
-<ul class="hr1">
-    <div><input type="text" id="lastName"
-                placeholder="Type teacher last name.."></div>
-    <div><input type="text" id="firstName"
-                placeholder="Type teacher first name.."></div>
-    <div><input type="text" id="middleName"
-                placeholder="Type teacher middle name.."></div>
-    <div><input type="text" id="subject"
-                placeholder="Type subject name.."></div>
-    <div><input type="text" id="groupName"
-                placeholder="Type group name.."></div>
-    <div><input type="number" id="yearOfStudy"
-                placeholder="Type year of study.."></div>
-    <div><button onclick="loadPresidents()">Search</button></div>
-</ul>
-<style > ul.hr2 {
-        max-width: 100%;
-        text-align: center;
-    }
-</style>
-<ul class="hr2">
-    <label id="filter">Фільтр</label>
-</ul>
-<ul class="hr">
-    <div><input type="text" id="studentPIB" onKeyUp="myFunction(0,'studentPIB')"
-                placeholder="Type student PIB.."></div>
-    <div><input type="number" id="trimesterGrade" onKeyUp="myFunction(1,'trimesterGrade')"
-                placeholder="Type trimester grade .."></div>
-    <div><input type="number" id="examGrade" onKeyUp="myFunction(2,'examGrade')"
-                placeholder="Type exam grade.."></div>
-    <div><input type="number" id="together" onKeyUp="myFunction(3,'together')"
-                placeholder="Type together grade.."></div>
-    <div><input type="text" id="natGrade" onKeyUp="myFunction(4,'natGrade')"
-                placeholder="Type national grade.." ></div>
-    <div><input type="text" id="gradeECTS" onKeyUp="myFunction(5,'gradeECTS')"
-                placeholder="Type ECTS grade.."></div>
-</ul>
+<body onload="loadTable()">
+<div class="hr1 centered">
+
+    <span><input type="text" id="id"
+                placeholder="Номер відомості.."></span>
+    <span><button onclick="loadTable(),avg()">Шукати</button></span>
+ <!--<span><button onclick="avg()">Avg</button></span>-->
+    <span><label>Фільтр:</label></span>
+    <span><label>Середній бал: </label></span>
+        <span><input type="text" id="studentPIB" onKeyUp="sort(1,'studentPIB')"
+                    placeholder="ПІБ студента.."></span>
+        <span><input type="text" id="gradeECTS" onKeyUp="sort(5,'gradeECTS')"
+                     placeholder="Оцінка за ЄКТС.."></span></div>
+
+
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -104,15 +79,15 @@
         <th>За тезу, залік, екзамен</th>
         <th>Разом</th>
         <th>Національна оцінка</th>
-        <th>Оцінка ЄКТС</th>
+        <th>Оцінка за ЄКТС</th>
     </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
 <script>
-
-    function loadSubject() {
+    function avg() {
+        let  id = document.getElementById("id");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -121,27 +96,15 @@
             }
         };
 
-        let  ln = document.getElementById("lastName");
-        let  fn = document.getElementById("firstName");
-        let  mn = document.getElementById("middleName");
-        let  subj = document.getElementById("subject");
-        let  gr = document.getElementById("groupName");
-        let  ye = document.getElementById("yearOfStudy");
-
         // xhttp.open("GET", url, false);
-        let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
-        alert(url);
+        let url = "/sheets_avg_mark/"+id.value;
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
-    function loadPresidents() {
-        let  ln = document.getElementById("lastName");
-        let  fn = document.getElementById("firstName");
-        let  mn = document.getElementById("middleName");
-        let  subj = document.getElementById("subject");
-        let  gr = document.getElementById("groupName");
-        let  ye = document.getElementById("yearOfStudy");
+    function loadTable() {
+        let  id = document.getElementById("id");
+
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
@@ -151,7 +114,7 @@
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
 
-                var properties = ['SheetId', 'PibStudent', 'SemesterMark', 'CheckMark','TogetherMark','NationalMark','EctsMark']; // changed this
+                var properties = ['RecordBook', 'PibStudent', 'SemesterMark', 'ControlMark','TogetherMark','NationalMark','ECTS']; // changed this
 
                 var tr = document.createElement('tr');
 
@@ -176,13 +139,13 @@
                 }
             }
         };
-        let url = "/sheets/"+fn.value+"/"+ln.value+"/"+mn.value+"/"+subj.value+"/"+gr.value+"/"+ye.value;
+        let url = "/get_sheet_by_id/"+id.value;
         //alert(url);
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
-    function myFunction(index,inputname) {
+    function sort(index,inputname) {
         var phrase = document.getElementById(inputname);
         var table = document.getElementById('info-table');
         var regPhrase = new RegExp(phrase.value, 'i');
@@ -201,6 +164,17 @@
 
         }
     }
+
+    $(document).ready(function () {
+        if(window.location.hash) {
+            var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+            document.getElementById("id").value = hash;
+            loadTable();
+            // hash found
+        } else {
+            // No hash found
+        }
+    })
 </script>
 </body>
 </html>

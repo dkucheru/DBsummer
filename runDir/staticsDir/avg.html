@@ -7,7 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
-    <title>Список студентів</title>
+    <title>Середній бал</title>
 
     <header>
         <div class="container">
@@ -18,7 +18,7 @@
                     <li><a href="student_list.html">Список cтудентів</a></li>
                     <li><a href="grades.html">Перелік оцінок</a></li>
                     <li><a href="vidomist.html">Відомість</a></li>
-                    <li><a href="adding.html">Додати дані</a></li>
+                    <li><a href="avg.html">Середній бал</a></li>
                 </ul>
             </nav>
         </div>
@@ -39,68 +39,63 @@
         white-space: nowrap;
     }
 </style>
-<body onload="loadPresidents()">
+<body>
 <ul class="hr">
-    <div><input type="number" id="idStud" onKeyUp="myFunction(0,'idStud')"
+    <span><input type="text" id="sem"
+                 placeholder="Семестр.."></span>
+    <span><input type="text" id="year"
+                 placeholder="Рік.."></span>
+    <span><button onclick="loadTable()">Шукати</button></span>
+    <!--<div><input type="text" id="idStud" onKeyUp="sort(0,'idStud')"
                 placeholder="№ заліковки.."></div>
-    <div><input type="text" id="studPib" onKeyUp="myFunction(1,'studPib')"
+    <div><input type="text" id="studPib" onKeyUp="sort(1,'studPib')"
                 placeholder="ПІБ студента.."></div>
-    <div><input type="text" id="subjName" onKeyUp="myFunction(2,'subjName')"
+    <div><input type="text" id="subjName" onKeyUp="sort(2,'subjName')"
                 placeholder="Дисципліна.."></div>
-    <div><input type="text" id="groupName" onKeyUp="myFunction(3,'groupName')"
+    <div><input type="text" id="groupName" onKeyUp="sort(3,'groupName')"
                 placeholder="Назва групи.."></div>
-    <div><input type="number" id="vidomistID" onKeyUp="myFunction(5,'vidomistID')"
+    <div><input type="text" id="vidomistID" onKeyUp="sort(5,'vidomistID')"
                 placeholder="№ відомості.." ></div>
-    <div><input type="number" id="bigunetsID" onKeyUp="myFunction(6,'bigunetsID')"
+    <div><input type="text" id="bigunetsID" onKeyUp="sort(6,'bigunetsID')"
                 placeholder="№ бігунця.." ></div>
-    <div><input type="text" id="sem" onKeyUp="myFunction(7,'sem')"
-                placeholder="Семестр.." ></div>
-    <div><input type="text" id="year" onKeyUp="myFunction(8,'year')"
+    <div><input type="text" id="year" onKeyUp="sort(7,'year')"
                 placeholder="Рік.." ></div>
+    <div><input type="text" id="sem" onKeyUp="sort(8,'sem')"
+                placeholder="Семестр.." ></div>-->
+
 </ul>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
         <th>№ заліковки</th>
         <th>ПІБ студента</th>
-        <th>Дисципліна</th>
-        <th>Назва групи</th>
-        <th>Оцінка</th>
-        <th>№ відомості</th>
-        <th>№ бігунця</th>
-        <th>Семестр</th>
-        <th>Рік</th>
+        <th>Рейтинг</th>
     </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
 <script>
-    function loadPresidents() {
+    function loadTable() {
+        let  sem = document.getElementById("sem");
+        let  year = document.getElementById("year");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
                 var jsonResponse = JSON.parse(data);
-                // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
-                var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupCipher','GroupName','PibTeach']; // changed this
+                var properties = ['RecordBookNumber', 'PibStudent', 'Rating'];
 
                 var tr = document.createElement('tr');
 
                 table.appendChild(tr);
                 var tr, row;
-                console.log("jsonResponse", jsonResponse); // changed this
-                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
-                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
-                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
-                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
 
-
-                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                for (var r = 0; r < jsonResponse.Data.length; r++) {
                     tr = document.createElement('tr');
-                    row = jsonResponse.Data[r]; // changed this
+                    row = jsonResponse.Data[r];
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
                         td.appendChild(document.createTextNode(row[properties[i]]));
@@ -110,13 +105,13 @@
                 }
             }
         };
-        let url = "/students";
-        //alert(url);
+        let url = "/getRatingSheets/"+sem.value+"/"+year.value;
+       // alert(url);
 
         xhttp.open("GET", url, false);
         xhttp.send();
     }
-    function myFunction(index,inputname) {
+    function sort(index, inputname) {
         var phrase = document.getElementById(inputname);
         var table = document.getElementById('info-table');
         var regPhrase = new RegExp(phrase.value, 'i');
@@ -135,6 +130,7 @@
 
         }
     }
+
 </script>
 </body>
 </html>

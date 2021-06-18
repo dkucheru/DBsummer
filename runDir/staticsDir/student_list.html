@@ -18,7 +18,7 @@
                     <li><a href="student_list.html">Список cтудентів</a></li>
                     <li><a href="grades.html">Перелік оцінок</a></li>
                     <li><a href="vidomist.html">Відомість</a></li>
-                    <li><a href="adding.html">Додати дані</a></li>
+                    <li><a href="avg.html">Середній бал</a></li>
                 </ul>
             </nav>
         </div>
@@ -39,24 +39,25 @@
         white-space: nowrap;
     }
 </style>
-<body onload="loadPresidents()">
+<body onload="loadTable()">
 <ul class="hr">
-    <div><input type="number" id="idStud" onKeyUp="myFunction(0,'idStud')"
+    <div><input type="text" id="idStud" onKeyUp="sort(0,'idStud')"
                 placeholder="№ заліковки.."></div>
-    <div><input type="text" id="studPib" onKeyUp="myFunction(1,'studPib')"
+    <div><input type="text" id="studPib" onKeyUp="sort(1,'studPib')"
                 placeholder="ПІБ студента.."></div>
-    <div><input type="text" id="subjName" onKeyUp="myFunction(2,'subjName')"
+    <div><input type="text" id="subjName" onKeyUp="sort(2,'subjName')"
                 placeholder="Дисципліна.."></div>
-    <div><input type="text" id="groupName" onKeyUp="myFunction(3,'groupName')"
+    <div><input type="text" id="groupName" onKeyUp="sort(3,'groupName')"
                 placeholder="Назва групи.."></div>
-    <div><input type="number" id="vidomistID" onKeyUp="myFunction(5,'vidomistID')"
+    <div><input type="text" id="vidomistID" onKeyUp="sort(5,'vidomistID')"
                 placeholder="№ відомості.." ></div>
-    <div><input type="number" id="bigunetsID" onKeyUp="myFunction(6,'bigunetsID')"
+    <div><input type="text" id="bigunetsID" onKeyUp="sort(6,'bigunetsID')"
                 placeholder="№ бігунця.." ></div>
-    <div><input type="text" id="sem" onKeyUp="myFunction(7,'sem')"
-                placeholder="Семестр.." ></div>
-    <div><input type="text" id="year" onKeyUp="myFunction(8,'year')"
+    <div><input type="text" id="year" onKeyUp="sort(7,'year')"
                 placeholder="Рік.." ></div>
+    <div><input type="text" id="sem" onKeyUp="sort(8,'sem')"
+                placeholder="Семестр.." ></div>
+
 </ul>
 <table class="table table-striped" id="info-table">
     <thead>
@@ -77,13 +78,12 @@
     </tbody>
 </table>
 <script>
-    function loadPresidents() {
+    function loadTable() {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
                 var jsonResponse = JSON.parse(data);
-                // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
                 var properties = ['RecordBook', 'PibStud', 'SubjectName', 'GroupName','Mark','SheetId','RunnerId','EducationalYear','Semester']; // changed this
@@ -92,19 +92,28 @@
 
                 table.appendChild(tr);
                 var tr, row;
-                console.log("jsonResponse", jsonResponse); // changed this
-                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
-                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
-                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
-                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
 
-
-                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                for (var r = 0; r < jsonResponse.Data.length; r++) {
                     tr = document.createElement('tr');
-                    row = jsonResponse.Data[r]; // changed this
+                    row = jsonResponse.Data[r];
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
-                        td.appendChild(document.createTextNode(row[properties[i]]));
+                        console.log(properties[i]);
+                        console.log(i);
+                        if (properties[i] == "SheetId") {
+                            var createA = document.createElement('a');
+                            var createAText = document.createTextNode(row[properties[i]]);
+                            createA.setAttribute('href', '/static/sheetid.html#' + row[properties[i]]);
+                            createA.appendChild(createAText);
+                            td.appendChild(createA);
+                           /* if (properties[i] == "EducationalYear") {
+                                var createB = document.createElement('b');
+                                var createBText = document.createTextNode(row[properties[i]]);
+                                createB.setAttribute('href', '/static/runnerid.html#' + row[properties[i]]);
+                                createB.appendChild(createBText);
+                                td.appendChild(createB);*/
+                        } else
+                            td.appendChild(document.createTextNode(row[properties[i]]));
                         tr.appendChild(td);
                     }
                     table.appendChild(tr);
@@ -117,7 +126,7 @@
         xhttp.open("GET", url, false);
         xhttp.send();
     }
-    function myFunction(index,inputname) {
+    function sort(index, inputname) {
         var phrase = document.getElementById(inputname);
         var table = document.getElementById('info-table');
         var regPhrase = new RegExp(phrase.value, 'i');
@@ -136,6 +145,15 @@
 
         }
     }
+    $(document).ready(function () {
+    if(window.location.hash) {
+        window.location.assign('vidomist.html')
+        //var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+        // hash found
+    } else {
+        // No hash found
+    }
+    });
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Work+Sans:400,600');
 body {
     margin: 0;
-    background: #f6f6f6;
+    background: url(back.svg);
     font-family: 'Nunito', sans-serif;
 }
 
@@ -11,8 +11,8 @@ body {
 }
 
 header {
-    background: #15479d;
-    margin-bottom: 50px;
+    background: #235787;
+    margin-bottom: 100px;
 }
 
 header::after {
@@ -81,7 +81,7 @@ nav a:hover::before {
 th {
     height: 70px;
     font-size: 20px;
-    background: cornflowerblue;
+    background: #478ad0;
 }
 table, th, td {
     border: 1px solid black;
@@ -108,3 +108,13 @@ input[type=text]:focus {
 }
 
 .centered { text-align: center; }
+
+div#fine-uploader {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.qq-upload-button-selector.qq-upload-button {
+    margin: 0 auto;
+    background: #235787;
+}
