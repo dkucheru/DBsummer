@@ -41,6 +41,7 @@ func New(address string, service *serviceDir.Service) *Rest {
 	api.HandleFunc("/sheets/{fn}/{ln}/{mn}/{subj}/{gr}/{ye}", rest.getSheetFromParams).Methods("GET")
 	api.HandleFunc("/sheets/add", rest.postSheet).Methods("POST")
 	api.HandleFunc("/sheets_avg_mark/{sheetId}", rest.getAvgSheetMark).Methods("GET")
+	api.HandleFunc("/sheets_info/{sheetId}", rest.getSheetInfoById).Methods("GET")
 	api.HandleFunc("/get_sheet_by_id/{id}", rest.getSheetByID).Methods("GET")
 
 	api.HandleFunc("/teachers/{pass}", rest.getTeacherPasses).Methods("GET")

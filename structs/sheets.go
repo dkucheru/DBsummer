@@ -30,6 +30,12 @@ type AvgSheetMarkByID struct {
 	AvgMark     float32
 }
 
+type SheetInfo struct {
+	PibTeacher  string
+	SubjectName string
+	GroupName   string
+}
+
 type SheetByID struct {
 	RecordBook   string
 	PibStudent   string

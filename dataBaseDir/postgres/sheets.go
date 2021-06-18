@@ -96,6 +96,27 @@ GROUP BY lastname,firstname,middlename,subjectname,groupname;`)
 	return &result, nil
 }
 
+func (r SheetsRepository) GetSheetInfo(ctx context.Context, sheetId int) (*string, error) {
+	query := r.db.Rebind(`
+		SELECT DISTINCT(lastname || ' ' || firstname || ' ' || middlename) AS pib,
+		subjectname,groupname
+FROM (((sheet INNER JOIN sheet_marks ON sheetid =  sheet_marks.sheet)
+	INNER JOIN teachers ON teacher_cipher = sheet.teacher)
+	INNER JOIN groups_ ON group_cipher = cipher)
+	INNER JOIN subjects ON subjectid = groups_.subject
+WHERE sheetid = ?;`)
+
+	row := r.db.QueryRowContext(ctx, query, sheetId)
+	var avgMark structs.SheetInfo
+	err := row.Scan(&avgMark.PibTeacher, &avgMark.SubjectName, &avgMark.GroupName)
+	if err != nil {
+		return nil, err
+	}
+
+	result := "ПІБ викладача: " + avgMark.PibTeacher + "    Дисципліна: " + avgMark.SubjectName + "    Назва групи: " + avgMark.GroupName
+	return &result, nil
+}
+
 func (r SheetsRepository) DeleteAllData(ctx context.Context) error {
 	query := r.db.Rebind(`
 		TRUNCATE runner_marks ,
