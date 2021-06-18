@@ -8,7 +8,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Відомість</title>
+    <title>Бігунець</title>
 
     <header>
         <div class="container">
@@ -19,7 +19,6 @@
                     <li><a href="student_list.html">Список cтудентів</a></li>
                     <li><a href="grades.html">Перелік оцінок</a></li>
                     <li><a href="vidomist.html">Відомість</a></li>
-                    <li><a href="runner.html">Бігунець</a></li>
                     <li><a href="avg.html">Середній бал</a></li>
                 </ul>
             </nav>
@@ -60,15 +59,15 @@
 <div class="hr1 centered">
 
     <span><input type="text" id="id"
-                placeholder="Номер відомості.."></span>
-    <span><button onclick="loadTable(),avg()">Шукати</button></span>
- <!--<span><button onclick="avg()">Avg</button></span>-->
+                 placeholder="Номер бігунця.."></span>
+    <span><button onclick="loadTable()">Шукати</button></span>
+    <!--<span><button onclick="avg()">Avg</button></span>-->
     <span><label>Фільтр:</label></span>
     <span><label>Середній бал: </label></span>
-        <span><input type="text" id="studentPIB" onKeyUp="sort(1,'studentPIB')"
-                    placeholder="ПІБ студента.."></span>
-        <span><input type="text" id="gradeECTS" onKeyUp="sort(5,'gradeECTS')"
-                     placeholder="Оцінка за ЄКТС.."></span></div>
+    <span><input type="text" id="studentPIB" onKeyUp="sort(1,'studentPIB')"
+                 placeholder="ПІБ студента.."></span>
+    <span><input type="text" id="gradeECTS" onKeyUp="sort(5,'gradeECTS')"
+                 placeholder="Оцінка за ЄКТС.."></span></div>
 
 
 <table class="table table-striped" id="info-table">
@@ -87,22 +86,7 @@
     </tbody>
 </table>
 <script>
-    function avg() {
-        let  id = document.getElementById("id");
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                //let response = JSON.parse(this.responseText);
-                alert(this.responseText);
-            }
-        };
 
-        // xhttp.open("GET", url, false);
-        let url = "/sheets_avg_mark/"+id.value;
-
-        xhttp.open("GET", url, false);
-        xhttp.send();
-    }
     function loadTable() {
         let  id = document.getElementById("id");
 
@@ -140,7 +124,7 @@
                 }
             }
         };
-        let url = "/get_sheet_by_id/"+id.value;
+        let url = "/get_runner_by_id/"+id.value;
         //alert(url);
 
         xhttp.open("GET", url, false);

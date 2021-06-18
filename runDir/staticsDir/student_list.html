@@ -18,6 +18,7 @@
                     <li><a href="student_list.html">Список cтудентів</a></li>
                     <li><a href="grades.html">Перелік оцінок</a></li>
                     <li><a href="vidomist.html">Відомість</a></li>
+                    <li><a href="runner.html">Бігунець</a></li>
                     <li><a href="avg.html">Середній бал</a></li>
                 </ul>
             </nav>
@@ -103,17 +104,16 @@
                         if (properties[i] == "SheetId") {
                             var createA = document.createElement('a');
                             var createAText = document.createTextNode(row[properties[i]]);
-                            createA.setAttribute('href', '/static/sheetid.html#' + row[properties[i]]);
+                            createA.setAttribute('href', '/static/vidomist.html#' + row[properties[i]]);
                             createA.appendChild(createAText);
                             td.appendChild(createA);
-                           /* if (properties[i] == "EducationalYear") {
-                                var createB = document.createElement('b');
-                                var createBText = document.createTextNode(row[properties[i]]);
-                                createB.setAttribute('href', '/static/runnerid.html#' + row[properties[i]]);
-                                createB.appendChild(createBText);
-                                td.appendChild(createB);*/
-                        } else
-                            td.appendChild(document.createTextNode(row[properties[i]]));
+                        } else if (properties[i] == "RunnerId") {
+                            var createA = document.createElement('a');
+                            var createAText = document.createTextNode(row[properties[i]]);
+                            createA.setAttribute('href', '/static/runner.html#' + row[properties[i]]);
+                            createA.appendChild(createAText);
+                            td.appendChild(createA);
+                        } else td.appendChild(document.createTextNode(row[properties[i]]));
                         tr.appendChild(td);
                     }
                     table.appendChild(tr);
