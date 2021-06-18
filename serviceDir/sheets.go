@@ -46,7 +46,7 @@ func (s *sheetsService) PostSheetToDataBase(ctx context.Context, sheet *pdfReadi
 	return str, nil
 }
 
-func (s *sheetsService) GetAVGSheetMark(ctx context.Context, sheetId int) (*float32, error) {
+func (s *sheetsService) GetAVGSheetMark(ctx context.Context, sheetId int) (*string, error) {
 	avgMark, err := s.repository.Sheets().GetAVGSheetMark(ctx, sheetId)
 	if err != nil {
 		return nil, err

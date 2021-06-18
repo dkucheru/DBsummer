@@ -23,6 +23,13 @@ type SheetByQuery struct {
 	EctsMark     string
 }
 
+type AvgSheetMarkByID struct {
+	PibTeacher  string
+	SubjectName string
+	GroupName   string
+	AvgMark     float32
+}
+
 type SheetByID struct {
 	RecordBook   string
 	PibStudent   string

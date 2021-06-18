@@ -72,20 +72,28 @@ func (r SheetsRepository) PostSheetToDataBase(ctx context.Context, sheet *pdfRea
 	return sheet, nil
 }
 
-func (r SheetsRepository) GetAVGSheetMark(ctx context.Context, sheetId int) (*float32, error) {
+func (r SheetsRepository) GetAVGSheetMark(ctx context.Context, sheetId int) (*string, error) {
 	query := r.db.Rebind(`
-		SELECT AVG(together_mark)
-		FROM sheet INNER JOIN sheet_marks ON sheetid =  sheet_marks.sheet
-		WHERE sheetid = ?`)
+		SELECT (lastname || ' ' || firstname || ' ' || middlename) AS pib,
+		subjectname,groupname,
+		AVG(together_mark) AS average_mark
+FROM (((sheet INNER JOIN sheet_marks ON sheetid =  sheet_marks.sheet)
+	INNER JOIN teachers ON teacher_cipher = sheet.teacher)
+	INNER JOIN groups_ ON group_cipher = cipher)
+	INNER JOIN subjects ON subjectid = groups_.subject
+WHERE sheetid = ?
+GROUP BY lastname,firstname,middlename,subjectname,groupname;`)
 
 	row := r.db.QueryRowContext(ctx, query, sheetId)
-	var avgMark float32
-	err := row.Scan(&avgMark)
+	var avgMark structs.AvgSheetMarkByID
+	err := row.Scan(&avgMark.PibTeacher, &avgMark.SubjectName, &avgMark.GroupName, &avgMark.AvgMark)
 	if err != nil {
 		return nil, err
 	}
 
-	return &avgMark, nil
+	result := avgMark.PibTeacher + " " + avgMark.SubjectName + " " + avgMark.GroupName + " " +
+		fmt.Sprint(avgMark.AvgMark)
+	return &result, nil
 }
 
 func (r SheetsRepository) DeleteAllData(ctx context.Context) error {
