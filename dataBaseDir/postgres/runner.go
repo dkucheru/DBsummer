@@ -18,6 +18,30 @@ func (r RunnersRepository) Create(ctx context.Context) (id int, err error) {
 func (r RunnersRepository) Get(ctx context.Context) error {
 	panic("implement me")
 }
+
+func (r RunnersRepository) GetRunnerInfoByID(ctx context.Context, id int) (*string, error) {
+	query := r.db.Rebind(`
+		SELECT  DISTINCT(lastname || ' ' || firstname || ' ' || middlename) AS pib,
+		subjectname,groupname
+		FROM (((((runner INNER JOIN runner_marks ON runner_marks.runner = runner_number)		
+			INNER JOIN sheet_marks ON mark_number=sheet_mark)
+			INNER JOIN sheet ON sheetid =  sheet_marks.sheet)
+			INNER JOIN teachers ON teacher_cipher = sheet.teacher)
+			INNER JOIN groups_ ON group_cipher = cipher)
+			INNER JOIN subjects ON subjectid = groups_.subject
+		WHERE runner_number = ?;`)
+
+	row := r.db.QueryRowContext(ctx, query, id)
+	var avgMark structs.SheetInfo
+	err := row.Scan(&avgMark.PibTeacher, &avgMark.SubjectName, &avgMark.GroupName)
+	if err != nil {
+		return nil, err
+	}
+
+	result := "ПІБ викладача: " + avgMark.PibTeacher + "    Дисципліна: " + avgMark.SubjectName + "    Назва групи: " + avgMark.GroupName
+	return &result, nil
+}
+
 func (r RunnersRepository) GetRunnerByID(ctx context.Context, id int) ([]*structs.SheetByID, error) {
 	query := r.db.Rebind(`
 		SELECT record_book_number,

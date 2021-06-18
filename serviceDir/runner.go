@@ -37,6 +37,15 @@ func (s *runnersService) GetRunnerByID(ctx context.Context, id int) ([]*structs.
 	return runner, nil
 }
 
+func (s *runnersService) GetRunnerInfoByID(ctx context.Context, id int) (*string, error) {
+	runner, err := s.repository.Runners().GetRunnerInfoByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return runner, nil
+}
+
 func (s *runnersService) PostRunnerToDataBase(ctx context.Context, runner *pdfReading.ExtractedInformation, teacherId int) error {
 	err := s.repository.Runners().PostRunnerToDataBase(ctx, runner, teacherId)
 	if err != nil {
