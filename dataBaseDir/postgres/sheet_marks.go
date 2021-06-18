@@ -67,7 +67,7 @@ func (r SheetMarksRepository) GetRatingStudents(ctx context.Context, sem string,
 CREATE VIEW weighted_scores_sheets AS
 SELECT student_cipher,record_book_number, 
     last_name || ' ' || firstname || ' ' || middle_name AS pib_student,
-      sheet_marks.together_mark * credits AS weight, credits
+      sheet_marks.together_mark * credits AS weight, credits,semester,educationalyear
   
 FROM ((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
       INNER JOIN sheet ON sheet_marks.sheet = sheetid)
@@ -81,27 +81,31 @@ WHERE student_cipher NOT IN (
         LEFT JOIN runner_marks ON mark_number = runner_marks.sheet_mark
     WHERE runner_marks.check_mark IS NOT NULL
   )
-AND semester = ? AND educationalyear = ?
 ;`)
-	_, err := r.db.Exec(createParametrizedView, sem, ed_y)
+
+	_, err := r.db.Exec(createParametrizedView)
 	if err != nil {
 		log.Println(err)
+		log.Println("in create vuew")
 		return nil, err
 	}
 
 	query := r.db.Rebind(`
 		SELECT record_book_number,pib_student, SUM(weight)::numeric/SUM(credits) AS rating
 		FROM weighted_scores_sheets
+		WHERE semester = ? AND educationalyear = ? 
 		GROUP BY student_cipher,record_book_number,pib_student;
 		`)
 
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, query, sem, ed_y)
 	if err != nil {
+		log.Println("in select from view")
 		return nil, err
 	}
 	defer func() {
 		e := rows.Close()
 		if e != nil {
+			fmt.Println("close rows")
 			log.Println(e)
 		}
 	}()
@@ -111,15 +115,17 @@ AND semester = ? AND educationalyear = ?
 		var s structs.RatingWithRunners
 		err = rows.Scan(&s.RecordBookNumber, &s.PibStudent, &s.Rating)
 		if err != nil {
+			fmt.Println("scanning rows")
 			return nil, err
 		}
 		allInfo = append(allInfo, &s)
 	}
 
 	dropParametrizedView := r.db.Rebind(`DROP VIEW weighted_scores_sheets ;`)
-	_, err = r.db.Exec(dropParametrizedView, sem, ed_y)
+	_, err = r.db.Exec(dropParametrizedView)
 	if err != nil {
 		log.Println(err)
+		log.Println("in drop vuew")
 		return nil, err
 	}
 

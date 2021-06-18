@@ -42,9 +42,8 @@ WHERE student_cipher IN (
         LEFT JOIN runner_marks ON mark_number = runner_marks.sheet_mark
     WHERE runner_marks.check_mark IS NOT NULL
   )
-AND semester = ? AND educationalyear = ?
 ;`)
-	_, err := r.db.Exec(createParametrizedView, sem, ed_y)
+	_, err := r.db.Exec(createParametrizedView)
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -53,9 +52,10 @@ AND semester = ? AND educationalyear = ?
 	query := r.db.Rebind(`
 		SELECT record_book_number,pib_student, SUM(weight)::numeric/SUM(credits) AS rating
 		FROM weighted_scores_runners
+		WHERE semester = ? AND educationalyear = ?
 		GROUP BY student_cipher,record_book_number,pib_student;`)
 
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, query, sem, ed_y)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ AND semester = ? AND educationalyear = ?
 	}
 
 	dropParametrizedView := r.db.Rebind(`DROP VIEW weighted_scores_runners ;`)
-	_, err = r.db.Exec(dropParametrizedView, sem, ed_y)
+	_, err = r.db.Exec(dropParametrizedView)
 	if err != nil {
 		log.Println(err)
 		return nil, err
