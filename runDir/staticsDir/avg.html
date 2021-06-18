@@ -47,29 +47,14 @@
     <span><input type="text" id="year"
                  placeholder="Рік.."></span>
     <span><button onclick="loadTable()">Шукати</button></span>
-    <!--<div><input type="text" id="idStud" onKeyUp="sort(0,'idStud')"
-                placeholder="№ заліковки.."></div>
-    <div><input type="text" id="studPib" onKeyUp="sort(1,'studPib')"
-                placeholder="ПІБ студента.."></div>
-    <div><input type="text" id="subjName" onKeyUp="sort(2,'subjName')"
-                placeholder="Дисципліна.."></div>
-    <div><input type="text" id="groupName" onKeyUp="sort(3,'groupName')"
-                placeholder="Назва групи.."></div>
-    <div><input type="text" id="vidomistID" onKeyUp="sort(5,'vidomistID')"
-                placeholder="№ відомості.." ></div>
-    <div><input type="text" id="bigunetsID" onKeyUp="sort(6,'bigunetsID')"
-                placeholder="№ бігунця.." ></div>
-    <div><input type="text" id="year" onKeyUp="sort(7,'year')"
-                placeholder="Рік.." ></div>
-    <div><input type="text" id="sem" onKeyUp="sort(8,'sem')"
-                placeholder="Семестр.." ></div>-->
 
 </ul>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
         <th>№ заліковки</th>
-        <th>ПІБ студента</th>
+        <th>ПІБ студента <input type="text" id="studPib" onKeyUp="sort(1,'studPib')"
+                                placeholder="ПІБ студента.."></th>
         <th>Рейтинг</th>
     </tr>
     </thead>

@@ -63,24 +63,22 @@
                  placeholder="Номер бігунця.."></span>
     <span><button onclick="loadTable()">Шукати</button></span>
     <!--<span><button onclick="avg()">Avg</button></span>-->
-    <span><label>Фільтр:</label></span>
-    <span><label>Середній бал: </label></span>
-    <span><input type="text" id="studentPIB" onKeyUp="sort(1,'studentPIB')"
-                 placeholder="ПІБ студента.."></span>
-    <span><input type="text" id="gradeECTS" onKeyUp="sort(5,'gradeECTS')"
-                 placeholder="Оцінка за ЄКТС.."></span></div>
+    <span></span>
+    <span></span></div>
 
 
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
         <th>ID</th>
-        <th>ПІБ студента</th>
+        <th>ПІБ студента <input type="text" id="studentPIB" onKeyUp="sort(1,'studentPIB')"
+                                placeholder="ПІБ студента.."></th>
         <th>За роботу в триместрі</th>
         <th>За тезу, залік, екзамен</th>
         <th>Разом</th>
         <th>Національна оцінка</th>
-        <th>Оцінка за ЄКТС</th>
+        <th>Оцінка за ЄКТС <input type="text" id="gradeECTS" onKeyUp="sort(5,'gradeECTS')"
+                                  placeholder="Оцінка за ЄКТС.."></th>
     </tr>
     </thead>
     <tbody>

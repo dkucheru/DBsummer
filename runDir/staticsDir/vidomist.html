@@ -61,9 +61,8 @@
 
     <span><input type="text" id="id"
                 placeholder="Номер відомості.."></span>
-    <span><button onclick="loadTable(),avg()">Шукати</button></span>
+    <span><button onclick="loadTable()">Шукати</button></span>
  <!--<span><button onclick="avg()">Avg</button></span>-->
-    <span><label>Фільтр:</label></span>
     <span><label>Середній бал: </label></span>
        </div>
 
@@ -86,22 +85,7 @@
     </tbody>
 </table>
 <script>
-    function avg() {
-        let  id = document.getElementById("id");
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                //let response = JSON.parse(this.responseText);
-                alert(this.responseText);
-            }
-        };
 
-        // xhttp.open("GET", url, false);
-        let url = "/sheets_avg_mark/"+id.value;
-
-        xhttp.open("GET", url, false);
-        xhttp.send();
-    }
     function loadTable() {
         let  id = document.getElementById("id");
 
