@@ -31,11 +31,7 @@
     <!--<div><input type="number" id="id"
        placeholder="Type id.."></div>-->
     <span><select class="mySelect2" id="id"></select><button onclick="loadTable()">Шукати</button></span>
-    <span><label>Фільтр:</label></span>
-    <span><input type="text" id="sem" onKeyUp="sort(5,'sem')"
-                placeholder="Type semester.."></span>
-    <span><input type="text" id="year" onKeyUp="sort(6,'year')"
-                 placeholder="Type year.." ></span></div>
+
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -44,8 +40,10 @@
         <th>№ відомості</th>
         <th>Оцінка бігунець</th>
         <th>№ бігунець</th>
-        <th>Семестр</th>
-        <th>Рік</th>
+        <th>Семестр <input type="text" id="sem" onKeyUp="sort(5,'sem')"
+                           placeholder="Семестр.."></th>
+        <th>Рік <input type="text" id="year" onKeyUp="sort(6,'year')"
+                       placeholder="Рік.." ></th>
     </tr>
     </thead>
     <tbody>
@@ -74,16 +72,23 @@
                     row = jsonResponse.Data[r]; // changed this
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
-                        console.log(properties[i]);
-                        console.log(i);
-                        if (properties[i] == "SheetID") {
+                        if (i == 2) {
                             var createA = document.createElement('a');
                             var createAText = document.createTextNode(row[properties[i]]);
                             createA.setAttribute('href', '/static/vidomist.html#' + row[properties[i]]);
                             createA.appendChild(createAText);
                             td.appendChild(createA);
-                        } else
+                        } else if (i == 4 && row[properties[i]] != "0") {
+                            var createA = document.createElement('a');
+                            var createAText = document.createTextNode(row[properties[i]]);
+                            createA.setAttribute('href', '/static/runner.html#' + row[properties[i]]);
+                            createA.appendChild(createAText);
+                            td.appendChild(createA);
+                        } else {
+                            console.log(properties[i]);
+                            console.log(i);
                             td.appendChild(document.createTextNode(row[properties[i]]));
+                        }
                         tr.appendChild(td);
                     }
                     table.appendChild(tr);

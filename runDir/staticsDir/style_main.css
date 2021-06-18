@@ -50,7 +50,7 @@ nav li {
 }
 
 nav a {
-    color: white;;
+    color: white;
     text-decoration: none;
     text-transform: uppercase;
     font-size: 14px;
@@ -116,4 +116,13 @@ div#fine-uploader {
 .qq-upload-button-selector.qq-upload-button {
     margin: 0 auto;
     background: #235787;
+}
+
+td.runner {
+    background: #f06f6f;
+}
+
+th input {
+    width: 100%;
+    margin: 0 !important;
 }
