@@ -64,8 +64,8 @@ func (s *studentsService) AddStudent(ctx context.Context, sheetMarks *pdfReading
 	return id, nil
 }
 
-func (s *studentsService) GetPIBAllStudents(ctx context.Context) ([]*structs.StudentPIB, error) {
-	PIBs, err := s.repository.Students().GetPIBAllStudents(ctx)
+func (s *studentsService) GetPIBAllStudents(ctx context.Context, q string) ([]*structs.StudentPIB, error) {
+	PIBs, err := s.repository.Students().GetPIBAllStudents(ctx, q)
 	if err != nil {
 		return nil, err
 	}

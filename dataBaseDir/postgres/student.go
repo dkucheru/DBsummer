@@ -34,13 +34,13 @@ func (r StudentRepository) FindStudent(ctx context.Context, sheetMarks *pdfReadi
 	return &subjectID, nil
 }
 
-func (r StudentRepository) GetPIBAllStudents(ctx context.Context) ([]*structs.StudentPIB, error) {
+func (r StudentRepository) GetPIBAllStudents(ctx context.Context, q string) ([]*structs.StudentPIB, error) {
 	getStudentsPIBs := r.db.Rebind(`
 		SELECT DISTINCT (last_name || ' ' ||firstname || ' ' || COALESCE(middle_name,'')) AS pib_student, student_cipher AS StudentCipher, record_book_number AS RecordNumber
-		FROM student
+		FROM student WHERE (last_name || ' ' ||firstname || ' ' || COALESCE(middle_name,'')) ILIKE ?
 		;`)
 
-	rows, err := r.db.QueryContext(ctx, getStudentsPIBs)
+	rows, err := r.db.QueryContext(ctx, getStudentsPIBs, q+"%")
 	if err != nil {
 		return nil, err
 	}
