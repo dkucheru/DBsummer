@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	err := license.SetMeteredKey(`57ea372ede16a7f5e5cec5b38036aa87adae616fb05784f6e77dba5389870483`)
+	err := license.SetMeteredKey(`92336d25a4a8ea959e7f560bec6cb054eec41af24552c8da56354090cb2552a2`)
 	if err != nil {
 		return
 	}
