@@ -149,7 +149,7 @@
         $(document).ready(function () {
             if(window.location.hash) {
                 var hash = decodeURI(window.location.hash.substring(1)); //Puts hash in variable, and removes the # character
-                $.getJSON('/studentPIBs', function (data) {
+                $.getJSON('/studentPIBs?q=', function (data) {
                     console.log(data.Data);
                     let studentId = 0;
                     let students = [];
