@@ -52,10 +52,9 @@
                     onComplete: function(id, fileName, responseJSON) {
                         console.log(responseJSON);
                         if (responseJSON.success == true) {
-                            alert('noice! ' + responseJSON.Data);
+                            alert(responseJSON.Data);
                         } else {
-                            // alert(responseJSON.Data);
-                            alert(this.responseText);
+                            alert("ERROR");
                         }
                     }
                 },

@@ -28,7 +28,7 @@ SELECT student_cipher,record_book_number,
       WHEN runner_marks.together_mark IS NULL
         THEN sheet_marks.together_mark * credits
       ELSE  runner_marks.together_mark* credits
-    END weight, credits
+    END weight, credits,semester,educationalyear
   
 FROM ((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student)
       INNER JOIN sheet ON sheet_marks.sheet = sheetid)
