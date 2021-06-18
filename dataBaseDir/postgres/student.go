@@ -4,7 +4,6 @@ import (
 	"DBsummer/pdfReading"
 	"DBsummer/structs"
 	"context"
-	"fmt"
 	"log"
 )
 
@@ -110,12 +109,8 @@ WHERE educationalyear = ? AND student.firstname = ? AND last_name = ? AND (middl
 		if err != nil {
 			return nil, err
 		}
-		fmt.Print("student.go file inside loop : ")
-		fmt.Println(&s)
 		allInfo = append(allInfo, &s)
 	}
-	fmt.Print("student.go after loop: ")
-	fmt.Println(&allInfo)
 	return allInfo, nil
 }
 
@@ -160,12 +155,8 @@ FROM (((((student INNER JOIN sheet_marks ON student_cipher = sheet_marks.student
 		if err != nil {
 			return nil, err
 		}
-		fmt.Print("student.go file inside loop : ")
-		fmt.Println(&s)
 		allInfo = append(allInfo, &s)
 	}
-	fmt.Print("student.go after loop: ")
-	fmt.Println(&allInfo)
 	return allInfo, nil
 }
 
@@ -202,12 +193,8 @@ WHERE check_mark IS NULL AND subjectname IS NOT NULL;`)
 		if err != nil {
 			return nil, err
 		}
-		fmt.Print("student.go file inside loop : ")
-		fmt.Println(&s)
 		allInfo = append(allInfo, &s)
 	}
-	fmt.Print("student.go after loop: ")
-	fmt.Println(&allInfo)
 	return allInfo, nil
 }
 
