@@ -9,29 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
     <link rel="stylesheet" href="style_main.css">
-    <style>
-        ul.hr {
-            max-width: 100%;
-            text-align: center;
-        }
-        ul.hr div {
-            display: inline-block;
-            text-align: left;
-        }
-        ul.hr1 {
-            max-width: 100%;
-            text-align: center;
-        }
-        ul.hr1 div {
-            display: inline-block;
-            text-align: left;
-            margin-bottom: 10px;
-        }
-        ul.hr2 {
-            max-width: 100%;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
 <header>
@@ -43,7 +20,7 @@
                 <li><a href="student_list.html">Список cтудентів</a></li>
                 <li><a href="grades.html">Перелік оцінок</a></li>
                 <li><a href="vidomist.html">Відомість</a></li>
-                <li><a href="adding.html">Додати дані</a></li>
+                <li><a href="avg.html">Середній бал</a></li>
             </ul>
         </nav>
     </div>
@@ -52,13 +29,12 @@
 
     <!--<div><input type="number" id="id"
        placeholder="Type id.."></div>-->
-    <span><select class="mySelect2" id="id"></select> <button onclick="loadPresidents()">Search</button></span>
-
-    <span><input type="text" id="sem" onKeyUp="myFunction(5,'sem')"
+    <span><select class="mySelect2" id="id"></select><button onclick="loadTable()">Шукати</button></span>
+    <span><label>Фільтр:</label></span>
+    <span><input type="text" id="sem" onKeyUp="sort(5,'sem')"
                 placeholder="Type semester.."></span>
-    <span><input type="text" id="year" onKeyUp="myFunction(6,'year')"
-                placeholder="Type year.." ></span>
-</div>
+    <span><input type="text" id="year" onKeyUp="sort(6,'year')"
+                 placeholder="Type year.." ></span></div>
 <table class="table table-striped" id="info-table">
     <thead>
     <tr>
@@ -75,32 +51,14 @@
     </tbody>
 </table>
 <script>
-    function loadSubject() {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                //let response = JSON.parse(this.responseText);
-                alert(this.responseText);
-            }
-        };
 
-        // let field = document.getElementById("input-id");
-        let  id = document.getElementById("id");
-        console.log(id);
-        // xhttp.open("GET", url, false);
-        let url = "/student/marks/"+id.value;
-
-        xhttp.open("GET", url, false);
-        xhttp.send();
-    }
-    function loadPresidents() {
+    function loadTable() {
         let  id = document.getElementById("id");
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 var data = this.responseText;
                 var jsonResponse = JSON.parse(data);
-                // console.log(jsonResponse["presidents"]);
                 var table = document.getElementById('info-table');
                 table.setAttribute('class', 'history');
                 var properties = ['SubjectName', 'SheetMark', 'SheetID', 'RunnerMark','RunnerID','Semester','EducationalYear']; // changed this
@@ -109,19 +67,22 @@
 
                 table.appendChild(tr);
                 var tr, row;
-                console.log("jsonResponse", jsonResponse); // changed this
-                console.log("jsonResponse.Data", jsonResponse.Data); // changed this
-                console.log("jsonResponse.Data.length", jsonResponse.Data.length); // changed this
-                console.log("jsonResponse.Data[0]", jsonResponse.Data[0]); // changed this
-                console.log("jsonResponse.Data[0][properties[0]]", jsonResponse.Data[0][properties[0]]); // changed this
 
-
-                for (var r = 0; r < jsonResponse.Data.length; r++) { // changed this
+                for (var r = 0; r < jsonResponse.Data.length; r++) {
                     tr = document.createElement('tr');
                     row = jsonResponse.Data[r]; // changed this
                     for (var i = 0; i < properties.length; i++) {
                         var td = document.createElement('td');
-                        td.appendChild(document.createTextNode(row[properties[i]]));
+                        console.log(properties[i]);
+                        console.log(i);
+                        if (properties[i] == "SheetID") {
+                            var createA = document.createElement('a');
+                            var createAText = document.createTextNode(row[properties[i]]);
+                            createA.setAttribute('href', '/static/vidomist.html#' + row[properties[i]]);
+                            createA.appendChild(createAText);
+                            td.appendChild(createA);
+                        } else
+                            td.appendChild(document.createTextNode(row[properties[i]]));
                         tr.appendChild(td);
                     }
                     table.appendChild(tr);
@@ -134,7 +95,7 @@
         xhttp.open("GET", url, false);
         xhttp.send();
     }
-    function myFunction(index,inputname) {
+    function sort(index, inputname) {
         var phrase = document.getElementById(inputname);
         var table = document.getElementById('info-table');
         var regPhrase = new RegExp(phrase.value, 'i');
@@ -167,7 +128,6 @@
                         let student = data.Data[studentKey];
                         students.push({id: student.StudentCipher, text: student.Pib + ' ' + student.RecordNumber});
                     }
-                    // Transforms the top-level key of the response object from 'items' to 'results'
                     return {
                         results: students
                     };
