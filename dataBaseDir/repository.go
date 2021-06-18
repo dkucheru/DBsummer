@@ -76,6 +76,7 @@ type SheetsInterface interface {
 	DeleteAllData(ctx context.Context) error
 	GetAVGSheetMark(ctx context.Context, sheetId int) (*string, error)
 	GetSheetByID(ctx context.Context, id int) ([]*structs.SheetByID, error)
+	GetSheetInfo(ctx context.Context, sheetId int) (*string, error)
 }
 
 type RunnerMarksInterface interface {

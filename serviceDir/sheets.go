@@ -64,6 +64,15 @@ func (s *sheetsService) GetSheetByID(ctx context.Context, id int) ([]*structs.Sh
 	return sheet, nil
 }
 
+func (s *sheetsService) GetSheetInfo(ctx context.Context, sheetId int) (*string, error) {
+	sheet, err := s.repository.Sheets().GetSheetInfo(ctx, sheetId)
+	if err != nil {
+		return nil, err
+	}
+
+	return sheet, nil
+}
+
 func (s *sheetsService) DeleteAllData(ctx context.Context) error {
 	err := s.repository.Sheets().DeleteAllData(ctx)
 	if err != nil {
