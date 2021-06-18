@@ -89,6 +89,7 @@ type RunnerInterface interface {
 	Create(ctx context.Context) (id int, err error)
 	Get(ctx context.Context) error
 	PostRunnerToDataBase(ctx context.Context, runner *pdfReading.ExtractedInformation, teacherId int) error
+	GetRunnerByID(ctx context.Context, id int) ([]*structs.SheetByID, error)
 }
 
 type SheetMarksInterface interface {

@@ -90,7 +90,20 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	receivedString, err := OutputPdfText("runDir/staticsDir/upload/" + header.Filename)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		//os.Exit(1)
+		//m := map[string]string{
+		//	"success": "false",
+		//	"Data":    fmt.Sprintf("%s", "Помилка відкривання файлу"),
+		//	// SkipWhenMarshal *not* marshaled here
+		//}
+		//bytes, err := json.Marshal(m)
+		//if err != nil {
+		//	log.Println(err)
+		//}
+		//_, err = w.Write(bytes)
+		//if err != nil {
+		//	log.Println(err)
+		//}
+
 		rest.sendError(w, err)
 		return
 	}
@@ -98,6 +111,21 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	doc, err := pdfReading.ParsePDFfile(*receivedString)
 	if err != nil {
 		log.Println(err)
+
+		//m := map[string]string{
+		//	"success": "false",
+		//	"Data":    fmt.Sprintf("%s", "Помилка відкривання файлу"),
+		//	// SkipWhenMarshal *not* marshaled here
+		//}
+		//bytes, err := json.Marshal(m)
+		//if err != nil {
+		//	log.Println(err)
+		//}
+		//_, err = w.Write(bytes)
+		//if err != nil {
+		//	log.Println(err)
+		//}
+
 		rest.sendError(w, err)
 		return
 	}

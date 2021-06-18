@@ -48,6 +48,8 @@ func New(address string, service *serviceDir.Service) *Rest {
 
 	api.HandleFunc("/groups/scientific_degree/{degree}", rest.getGroupsOfScientist).Methods("GET")
 
+	api.HandleFunc("/get_runner_by_id/{id}", rest.getRunnerByID).Methods("GET")
+
 	api.HandleFunc("/deleteAllData", rest.deleteAllData).Methods("GET")
 
 	api.HandleFunc("/getRatingRunners/{sem}/{year}", rest.getRatingRunners).Methods("GET")

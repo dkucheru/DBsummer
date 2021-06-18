@@ -664,6 +664,10 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 		if s.AmountBanned != numNotAllowed {
 			return nil, errors.New("неправильна кількість не допущених студентів")
 		}
+
+		if len(s.ExtractedStudents) != (s.AmountPresent + s.AmountAbscent + s.AmountBanned) {
+			return nil, errors.New("помилка у кількості студентів")
+		}
 	}
 
 	return &s, nil

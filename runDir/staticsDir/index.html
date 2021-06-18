@@ -25,8 +25,10 @@
 </table>
 <form>
 
-    <button type="submit" onclick="test()">Post Sheet</button>
 
+    <input type="text" id="semeste" >
+    <input type="text" id="year" >
+    <button type="submit" onclick="test()">find avgmark</button>
 </form>
 <script>
     function deleteAllData(){
@@ -49,7 +51,9 @@
                 alert(this.responseText);
             }
         };
-        let url = "/sheets/add"
+        let sem = document.getElementById('semeste');
+        let ye = document.getElementById('year');
+        let url = "/getRatingSheets/"+sem.value+"/"+ye.value
         console.log(url)
         xhttp.open("GET", url, false);
         xhttp.send();

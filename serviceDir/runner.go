@@ -3,6 +3,7 @@ package serviceDir
 import (
 	"DBsummer/dataBaseDir"
 	"DBsummer/pdfReading"
+	"DBsummer/structs"
 	"context"
 )
 
@@ -25,6 +26,15 @@ func (s *runnersService) Create(ctx context.Context) (int, error) {
 
 func (s *runnersService) Get(ctx context.Context) error {
 	panic("implement me")
+}
+
+func (s *runnersService) GetRunnerByID(ctx context.Context, id int) ([]*structs.SheetByID, error) {
+	runner, err := s.repository.Runners().GetRunnerByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return runner, nil
 }
 
 func (s *runnersService) PostRunnerToDataBase(ctx context.Context, runner *pdfReading.ExtractedInformation, teacherId int) error {
