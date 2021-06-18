@@ -145,6 +145,35 @@
             let studentCipher = $(this).val();
             console.log(studentCipher);
         });
+
+        $(document).ready(function () {
+            if(window.location.hash) {
+                var hash = decodeURI(window.location.hash.substring(1)); //Puts hash in variable, and removes the # character
+                $.getJSON('/studentPIBs', function (data) {
+                    console.log(data.Data);
+                    let studentId = 0;
+                    let students = [];
+                    for(studentKey in data.Data) {
+                        let student = data.Data[studentKey];
+                        if (hash == student.Pib) {
+                            studentId = student.StudentCipher;
+                        }
+                    }
+                    for(studentKey in data.Data) {
+                        let student = data.Data[studentKey];
+                        students.push({id: student.StudentCipher, text: student.Pib + ' ' + student.RecordNumber});
+                    }
+                    if (studentId != 0) {
+                        $('select.mySelect2').select2({"data": students});
+                        $('select.mySelect2').val(studentId); // Select the option with a value of '1'
+                        $('select.mySelect2').trigger('change'); // Notify any JS components that the value changed
+                        loadTable()
+                    }
+                });
+            } else {
+
+            }
+        })
     });
 </script>
 </body>

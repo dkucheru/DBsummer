@@ -102,6 +102,12 @@
                             createA.setAttribute('href', '/static/runner.html#' + row[properties[i]]);
                             createA.appendChild(createAText);
                             td.appendChild(createA);
+                        } else if (properties[i] == "PibStud") {
+                            var createA = document.createElement('a');
+                            var createAText = document.createTextNode(row[properties[i]]);
+                            createA.setAttribute('href', '/static/grades.html#' + row[properties[i]]);
+                            createA.appendChild(createAText);
+                            td.appendChild(createA);
                         } else td.appendChild(document.createTextNode(row[properties[i]]));
                         tr.appendChild(td);
                     }

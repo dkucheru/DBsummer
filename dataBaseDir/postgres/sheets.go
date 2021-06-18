@@ -91,7 +91,7 @@ GROUP BY lastname,firstname,middlename,subjectname,groupname;`)
 		return nil, err
 	}
 
-	result := avgMark.PibTeacher + " " + avgMark.SubjectName + " " + avgMark.GroupName + " " +
+	result := "ПІБ викладача: " + avgMark.PibTeacher + "    Дисципліна: " + avgMark.SubjectName + "    Назва групи: " + avgMark.GroupName + "    Середній бал: " +
 		fmt.Sprint(avgMark.AvgMark)
 	return &result, nil
 }
