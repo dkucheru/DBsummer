@@ -124,11 +124,19 @@ func (rest *Rest) sendData(w http.ResponseWriter, data interface{}) {
 	}
 }
 
-func (rest *Rest) sendFileData(w http.ResponseWriter, data interface{}) {
+func (rest *Rest) sendFileData(w http.ResponseWriter, data interface{}, isBad bool) {
 	m := map[string]string{
 		"success": "true",
 		"Data":    fmt.Sprintf("%s", data),
 		// SkipWhenMarshal *not* marshaled here
+	}
+
+	if isBad {
+		m = map[string]string{
+			//"success": "false",
+			"Data": fmt.Sprintf("%s", data),
+			// SkipWhenMarshal *not* marshaled here
+		}
 	}
 	bytes, err := json.Marshal(m)
 	if err != nil {
