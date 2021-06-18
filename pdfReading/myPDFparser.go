@@ -670,6 +670,20 @@ func ParsePDFfile(content string) (*ExtractedInformation, error) {
 		}
 	}
 
+	m := make(map[string]bool)
+	var current *StudInfoFromPDF
+
+	for _, v := range s.ExtractedStudents {
+		current = v
+		record := current.RecordBook
+		if m[record] && record != "" {
+			return nil, errors.New("Повторювані номери заліковок [" + record + "]")
+		} else {
+			m[record] = true
+		}
+	}
+
+	//everything is fine
 	return &s, nil
 }
 

@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 func OutputPdfText(inputPath string) (*string, error) {
@@ -68,16 +67,18 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer file.Close()
-	name := strings.Split(header.Filename, ".")
-	fmt.Printf("File name %s\n", name[0])
+
+	//name := strings.Split(header.Filename, ".")
+	//fmt.Printf("File name %s\n", name[0])
+
 	// Copy the file data to my buffer
 	io.Copy(&buf, file)
 	ioutil.WriteFile("runDir/staticsDir/upload/"+header.Filename, buf.Bytes(), 0644)
 	// do something with the contents...
 	// I normally have a struct defined and unmarshal into a struct, but this will
 	// work as an example
-	contents := buf.String()
-	fmt.Println(contents)
+	//contents := buf.String()
+	//fmt.Println(contents)
 	// I reset the buffer in case I want to use it again
 	// reduces memory allocations in more intense projects
 	buf.Reset()
@@ -221,6 +222,11 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, v := range doc.ExtractedStudents {
+			if err != nil {
+				rest.sendFileData(w, err.Error(), true)
+				return
+			}
+
 			idStudent, err := rest.service.Students.FindStudent(r.Context(), v)
 			if err != nil {
 				//If select SQL query returned error, it means that student does not exist in the DB
