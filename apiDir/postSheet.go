@@ -90,15 +90,15 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	receivedString, err := OutputPdfText("runDir/staticsDir/upload/" + header.Filename)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
-		rest.sendFileData(w, "Помилка відкривання файлу")
-		rest.sendError(w, err)
+		rest.sendFileData(w, "Помилка відкривання файлу", true)
+		//rest.sendError(w, err)
 		return
 	}
 
 	doc, err := pdfReading.ParsePDFfile(*receivedString)
 	if err != nil {
 		log.Println(err)
-		rest.sendFileData(w, err.Error())
+		rest.sendFileData(w, err.Error(), true)
 		//rest.sendError(w, err)
 		return
 	}
@@ -112,15 +112,11 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 	//	doc.ControlType = "іспит"
 	//}
 
-	//if doc.Faculty == "" {
-	//	//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
-	//	_, err = w.Write([]byte("У відомості не зазначено факультет"))
-	//	if err != nil {
-	//		log.Println(err)
-	//	}
-	//	rest.sendError(w, errors.New("перепешіть відомість"))
-	//	return
-	//}
+	if doc.Faculty == "" {
+		//rest.sendError(w, errors.New("У відомості зазначено слово екзамен, у базу вноситься іспит"))
+		rest.sendFileData(w, "У відомості зазначено назву факультету", true)
+		return
+	}
 	//pdf.DebugOn = true
 	//content, err := pdfReading.ReadPdf("./collection/phil_new_version.pdf") // Read local pdf file
 	//if err != nil {
@@ -150,13 +146,15 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error sql-adding teacher")
 			fmt.Println(err)
-			rest.sendError(w, err)
+			//rest.sendError(w, err)
+			rest.sendFileData(w, err.Error(), true)
 			return
 		}
 		//now,when teacher was added we can get his id
 		idTeacher, err = rest.service.Teachers.FindTeacher(r.Context(), doc)
 		if err != nil {
-			rest.sendError(w, err)
+			//rest.sendError(w, err)
+			rest.sendFileData(w, err.Error(), true)
 			return
 		}
 	}
@@ -171,14 +169,16 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println("error adding subject")
 				fmt.Println(err)
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				return
 			}
 
 			//now,when subject was added we can get his id
 			idSubject, err = rest.service.Subjects.FindSubject(r.Context(), doc)
 			if err != nil {
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				fmt.Println("error finding subject")
 				fmt.Println(err)
 				return
@@ -195,14 +195,16 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println("error adding group")
 				fmt.Println(err)
-				rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
+				//rest.sendError(w, err)
 				return
 			}
 
 			//now,when group was added we can get his id
 			idGroup, err = rest.service.Groups.FindGroup(r.Context(), doc, *idSubject)
 			if err != nil {
-				rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
+				//rest.sendError(w, err)
 				return
 			}
 		}
@@ -213,7 +215,8 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error adding sheet")
 			fmt.Println(err)
-			rest.sendError(w, err)
+			rest.sendFileData(w, err.Error(), true)
+			//rest.sendError(w, err)
 			return
 		}
 
@@ -226,14 +229,16 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					fmt.Println("error adding student")
 					fmt.Println(err)
-					rest.sendError(w, err)
+					//rest.sendError(w, err)
+					rest.sendFileData(w, err.Error(), true)
 					return
 				}
 
 				//now,when group was added we can get his id
 				idStudent, err = rest.service.Students.FindStudent(r.Context(), v)
 				if err != nil {
-					rest.sendError(w, err)
+					//rest.sendError(w, err)
+					rest.sendFileData(w, err.Error(), true)
 					return
 				}
 			}
@@ -242,7 +247,8 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				fmt.Println("error adding sheetmarks")
 				fmt.Println(id)
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				return
 			}
 		}
@@ -253,7 +259,8 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error finding subject of a runner")
 			fmt.Println(err)
-			rest.sendError(w, err)
+			//rest.sendError(w, err)
+			rest.sendFileData(w, err.Error(), true)
 			return
 		}
 		//
@@ -270,7 +277,8 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("error adding runner")
 			fmt.Println(err)
-			rest.sendError(w, err)
+			//rest.sendError(w, err)
+			rest.sendFileData(w, err.Error(), true)
 			return
 		}
 
@@ -281,25 +289,28 @@ func (rest *Rest) postSheet(w http.ResponseWriter, r *http.Request) {
 				//Therefore the runner is wrong
 				fmt.Println("error finding student")
 				fmt.Println(err)
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				return
 			}
 
 			sheetMarkID, err := rest.service.SheetMarks.FindNezarahOrNezadov(r.Context(), *idStudent, doc)
 			if err != nil {
 				fmt.Println("the student[" + v.RecordBook + "] did not have nezarah or nezadovilno")
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				return
 			}
 
 			err = rest.service.RunnerMarks.PostRunnerMarksToDataBase(r.Context(), *sheetMarkID, doc.IdDocument, v)
 			if err != nil {
 				fmt.Println("error adding runnermark")
-				rest.sendError(w, err)
+				//rest.sendError(w, err)
+				rest.sendFileData(w, err.Error(), true)
 				return
 			}
 		}
 	}
 
-	rest.sendFileData(w, header.Filename)
+	rest.sendFileData(w, header.Filename, false)
 }
