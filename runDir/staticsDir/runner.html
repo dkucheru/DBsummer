@@ -62,6 +62,7 @@
     <span><input type="text" id="id"
                  placeholder="Номер бігунця.."></span>
     <span><button onclick="loadTable()">Шукати</button></span>
+    <span><label> <span id="avg"></span></label></span>
     <!--<span><button onclick="avg()">Avg</button></span>-->
     <span></span>
     <span></span></div>
@@ -128,6 +129,22 @@
 
         xhttp.open("GET", url, false);
         xhttp.send();
+
+        var xhttp2 = new XMLHttpRequest();
+        xhttp2.onreadystatechange = function() {
+            if (this.readyState === 4 && this.status === 200) {
+                var data = this.responseText;
+                var jsonResponse = JSON.parse(data);
+                // console.log(jsonResponse["presidents"]);
+                document.getElementById('avg').innerText = jsonResponse.Data;
+
+            }
+        };
+        let url2 = "/runner_info/"+id.value;
+        //alert(url);
+
+        xhttp2.open("GET", url2, false);
+        xhttp2.send();
     }
     function sort(index,inputname) {
         var phrase = document.getElementById(inputname);

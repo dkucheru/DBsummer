@@ -57,7 +57,7 @@ nav a {
 }
 
 nav a:hover {
-    color: #000;
+    color: #fff;
 }
 
 nav a::before {
@@ -129,4 +129,15 @@ th input {
 
 span.select2.select2-container.select2-container--default {
     min-width: 200px;
+}
+
+.buttonDrop {
+    text-align: center;
+    margin: 100px 0 0;
+}
+
+.buttonDrop button {
+    background: #235787;
+    border: none;
+    color: #fff;
 }
